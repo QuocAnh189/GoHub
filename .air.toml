@@ -1,0 +1,15 @@
+root = "."
+
+tmp_dir = "tmp"
+
+# Chỉ chạy lệnh build
+cmd = "go run ."
+
+[build]
+  bin = "tmp/main.exe"                   # Đặt tên file binary
+  cmd = "go build -o tmp/main.exe ."      # Build toàn bộ ứng dụng thành binary `main.exe`
+  include_ext = ["go"]                    # Chỉ theo dõi các file .go
+  exclude_ext = ["test.go"]               # Loại trừ các file test.go
+
+[log]
+  level = "info"
