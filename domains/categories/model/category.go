@@ -8,7 +8,7 @@ import (
 
 type Category struct {
 	ID        			string     	`json:"id" gorm:"unique;not null;index;primary_key"`
-	Name      			string     	`json:"name"`
+	Name      			string     	`json:"name" gorm:"not null"`
 	IconImageUrl 		string 		`json:"iconImageUrl"`
 	IconImageFileName 	string 		`json:"iconImageFileName"`
 	Color 				string 		`json:"color"`

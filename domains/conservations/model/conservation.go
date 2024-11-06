@@ -8,7 +8,7 @@ import (
 
 type Conversation struct {
 	ID            string     `json:"id" gorm:"unique;not null;index;primary_key"`
-	EventId       string     `json:"eventId" gorm:"unique;not null;index"`
+	EventId       string     `json:"eventId"`
 	UserId        string     `json:"userId"`
 	HostId        string     `json:"hostId"`
 	LastMessageId string     `json:"lastMessageId"`
