@@ -11,19 +11,19 @@ import (
 type User struct {
 	ID        		string     `json:"id" gorm:"unique;not null;index;primary_key"`
 	Email     		string     `json:"email" gorm:"unique;not null;index:idx_user_email"`
-	AvatarUrl 		string     `json:"avatar_url"`
-	AvatarFileName  string 	   `json:"avatar_file_name"`
-	FullName  		string     `json:"full_name"`
-	UserName 		string 	   `json:"user_name"`
-	PhoneNumber     string     `json:"phone_number"`
+	AvatarUrl 		string     `json:"avatarUrl"`
+	AvatarFileName  string 	   `json:"avatarFileName"`
+	FullName  		string     `json:"fullName"`
+	UserName 		string 	   `json:"userName"`
+	PhoneNumber     string     `json:"phoneNumber"`
 	Dob	   	  		time.Time  `json:"dob"`
 	Password  		string     `json:"password"`
 	Gender    		int 	   `json:"gender" gorm:"default:0"`
 	Status 			int 	   `json:"status" gorm:"default:1"`
-	IsDeleted       bool       `json:"is_deleted" gorm:"default:0"`
-	DeletedAt       *time.Time  `json:"deleted_at" gorm:"index"`
-	CreatedAt       time.Time  `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
-	UpdatedAt       time.Time  `json:"updated_at" gorm:"default:CURRENT_TIMESTAMP"`
+	IsDeleted     	bool       `json:"isDeleted" gorm:"default:0"`
+	DeletedAt     	*time.Time `json:"deletedAt" gorm:"index"`
+	CreatedAt     	time.Time  `json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
+	UpdatedAt     	time.Time  `json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 
