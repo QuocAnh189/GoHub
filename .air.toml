@@ -3,7 +3,7 @@ root = "."
 tmp_dir = "tmp"
 
 # Chỉ chạy lệnh build
-cmd = "go run ."
+cmd = "go run main.go"
 
 [build]
   bin = "tmp/main.exe"                   # Đặt tên file binary

@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"log"
@@ -13,8 +13,8 @@ import (
 const (
 	ProductionEnv = "production"
 
-	DatabaseTimeout    = 5 * time.Second
-	ProductCachingTime = 1 * time.Minute
+	DatabaseTimeout    = time.Second * 5
+	ProductCachingTime = time.Minute * 1
 )
 
 var AuthIgnoreMethods = []string{
