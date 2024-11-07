@@ -378,6 +378,302 @@ paths:
       summary: Validate user credentials
       tags:
       - Auth
+  /api/v1/users:
+    get:
+      description: Fetches a paginated list of users based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of users
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a list of users
+      tags:
+      - Users
+    post:
+      description: Creates a new user based on the provided details. The request must
+        include multipart form data.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create a new user
+      tags:
+      - Users
+  /api/v1/users/{userId}:
+    get:
+      description: Successfully retrieved the user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the user
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a user by its ID
+      tags:
+      - Users
+    put:
+      description: Updates the details of an existing user based on the provided user
+        ID and update information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update an existing user
+      tags:
+      - Users
+  /api/v1/users/{userId}/change-password:
+    patch:
+      description: Changes the password of an existing user based on the provided
+        user ID and new password information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Change a user's password
+      tags:
+      - Users
+  /api/v1/users/{userId}/followers:
+    get:
+      description: Fetches a paginated list of followers based on the provided user
+        ID and filter parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of followers
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a list of a user by its ID
+      tags:
+      - Users
+  /api/v1/users/{userId}/following-users:
+    get:
+      description: Fetches a paginated list of following users based on the provided
+        user ID and filter parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of following users
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a list of a user by its ID
+      tags:
+      - Users
+  /api/v1/users/follow/{followedUserId}:
+    patch:
+      description: Allows the authenticated user to follow another user by specifying
+        the followed user's ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User followed successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Follow a user
+      tags:
+      - Users
+  /api/v1/users/unfollow/{followedUserId}:
+    patch:
+      description: Allows the authenticated user to follow another user by specifying
+        the followed user's ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User followed successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: UnFollow a user
+      tags:
+      - Users
 securityDefinitions:
   ApiKeyAuth:
     in: header
