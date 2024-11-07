@@ -10,6 +10,8 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
+	authHttp "gohub/domains/auth/port/http"
+
 	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
@@ -65,11 +67,7 @@ func (s Server) GetEngine() *gin.Engine {
 }
 
 func (s Server) MapRoutes() error {
-	routes := s.engine.Group("/api/v1")
-	{
-		routes.GET("/ping", func(c *gin.Context) {
-			response.JSON(c, http.StatusOK, gin.H{"message": "Love you change"})
-		})
-	}
+	routes_v1 := s.engine.Group("/api/v1")
+	authHttp.Routes(routes_v1, s.db, s.validator)
 	return nil
 }
