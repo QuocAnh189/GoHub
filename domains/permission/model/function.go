@@ -1,17 +1,23 @@
 package model
 
 import (
-	"time"
+	"gorm.io/gorm"
 )
 
 type Function struct {
-	ID        		string     `json:"id" gorm:"unique;not null;index;primary_key"`
-	Name      		string     `json:"name"`
-	Url       		string     `json:"url"`
-	SortOrder 		string     `json:"sortOrder"`
-	ParentId  		string     `json:"parentId"`
-	IsDeleted     	bool       `json:"isDeleted" gorm:"default:0"`
-	DeletedAt     	*time.Time `json:"deletedAt" gorm:"index"`
-	CreatedAt     	time.Time  `json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	UpdatedAt     	time.Time  `json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
+	gorm.Model
+	ID        		string     			`json:"id" gorm:"unique;not null;index;primary_key"`
+	Name      		string     			`json:"name"`
+	Url       		string     			`json:"url"`
+	SortOrder 		string     			`json:"sortOrder"`
+	ParentId  		string     			`json:"parentId"`
+	IsDeleted     	bool       			`json:"isDeleted" gorm:"default:0"`
+	Commands	  	[]*Command 			`json:"commands"`
+	// DeletedAt     	gorm.DeletedAt  	`json:"deletedAt" gorm:"index"`
+	// CreatedAt     	time.Time  			`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
+	// UpdatedAt     	time.Time  			`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
+}
+
+func (Function) TableName() string {
+	return "functions"
 }
