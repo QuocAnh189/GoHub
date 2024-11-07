@@ -378,6 +378,141 @@ paths:
       summary: Validate user credentials
       tags:
       - Auth
+  /api/v1/categories:
+    get:
+      description: Fetches a paginated list of categories based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a list of categories
+      tags:
+      - Categories
+    post:
+      description: Creates a new category based on the provided details. The request
+        must include multipart form data.
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create a new category
+      tags:
+      - Categories
+  /api/v1/categories/{categoryId}:
+    delete:
+      description: Deletes the category with the specified ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Delete a category
+      tags:
+      - Categories
+    get:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a category by its ID
+      tags:
+      - Categories
+    put:
+      description: Updates the details of an existing category based on the provided
+        category ID and update information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update an existing category
+      tags:
+      - Categories
   /api/v1/conversations/{conversationId}/messages:
     get:
       description: Fetches a paginated list of messages created by the conversation,
