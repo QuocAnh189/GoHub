@@ -1,0 +1,18 @@
+info:
+  contact:
+    email: anhquoctpdev@gmail.com
+    name: Tran Phuoc Anh Quoc
+  description: Swagger API for EventHub.
+  license:
+    name: MIT
+    url: https://github.com/MartinHeinz/go-project-blueprint/blob/master/LICENSE
+  termsOfService: http://swagger.io/terms/
+  title: EventHub (GoHub) Swagger API
+  version: OAS 3.0
+paths: {}
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

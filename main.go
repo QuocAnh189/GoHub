@@ -11,6 +11,21 @@ import (
 	"gohub/database/migrations"
 )
 
+//	@title          EventHub (GoHub) Swagger API
+//	@version		OAS 3.0
+//	@description	Swagger API for EventHub.
+//	@termsOfService	http://swagger.io/terms/
+
+//	@contact.name	Tran Phuoc Anh Quoc
+//	@contact.email	anhquoctpdev@gmail.com
+
+//	@license.name	MIT
+//	@license.url	https://github.com/MartinHeinz/go-project-blueprint/blob/master/LICENSE
+
+//	@securityDefinitions.apikey	ApiKeyAuth
+//	@in							header
+//	@name						Authorization
+
 func main() {
     cfg := configs.LoadConfig()
 

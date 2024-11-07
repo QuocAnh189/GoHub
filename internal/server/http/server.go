@@ -5,6 +5,11 @@ import (
 	"log"
 	"net/http"
 
+	_ "gohub/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
@@ -39,6 +44,8 @@ func (s Server) Run() error {
 	if err := s.MapRoutes(); err != nil {
 		log.Fatalf("MapRoutes Error: %v", err)
 	}
+
+	s.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	s.engine.GET("/", func(c *gin.Context) {
 		response.JSON(c, http.StatusOK, gin.H{"message": "Welcome to GoHub API"})
