@@ -22,8 +22,8 @@ type IUserService interface {
 
 
 type UserService struct {
-	validator validation.Validation
-	repo 	repository.IUserRepository
+	validator 	validation.Validation
+	repo 		repository.IUserRepository
 }
 
 func NewUserService(validator validation.Validation, repo repository.IUserRepository) *UserService {

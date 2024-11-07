@@ -378,6 +378,99 @@ paths:
       summary: Validate user credentials
       tags:
       - Auth
+  /api/v1/conversations/{conversationId}/messages:
+    get:
+      description: Fetches a paginated list of messages created by the conversation,
+        based on the provided pagination filter.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of messages
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Event with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieves a list of messages by the conversation
+      tags:
+      - Conversations
+  /api/v1/conversations/get-by-event/{eventId}:
+    get:
+      description: Fetches a paginated list of conversations created by the event,
+        based on the provided pagination filter.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of conversations
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Event with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieves a list of conversations by the event
+      tags:
+      - Conversations
+  /api/v1/conversations/get-by-user/{userId}:
+    get:
+      description: Fetches a paginated list of conversations created by the user,
+        based on the provided pagination filter.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of conversations
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Event with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieves a list of conversations by the user
+      tags:
+      - Conversations
   /api/v1/reviews:
     get:
       description: Fetches a paginated list of reviews based on the provided filter

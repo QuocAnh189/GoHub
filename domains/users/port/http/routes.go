@@ -11,8 +11,8 @@ import (
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {
 	userRepository := repository.NewUserRepository(sqlDB)
-	UserService := service.NewUserService(validator, userRepository)
-	userHandler := NewUserHandler(UserService)
+	userService := service.NewUserService(validator, userRepository)
+	userHandler := NewUserHandler(userService)
 
 	userRoute := r.Group("/users")
 	{
