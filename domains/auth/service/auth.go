@@ -26,9 +26,7 @@ type AuthService struct {
 	repo      repository.IUserRepository
 }
 
-func NewAuthService(
-	validator validation.Validation,
-	repo repository.IUserRepository) *AuthService {
+func NewAuthService(validator validation.Validation, repo repository.IUserRepository) *AuthService {
 	return &AuthService{
 		validator: validator,
 		repo:      repo,

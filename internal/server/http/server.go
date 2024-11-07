@@ -11,6 +11,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	authHttp "gohub/domains/auth/port/http"
+	userHttp "gohub/domains/users/port/http"
 
 	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/QuocAnh189/GoBin/validation"
@@ -69,5 +70,6 @@ func (s Server) GetEngine() *gin.Engine {
 func (s Server) MapRoutes() error {
 	routes_v1 := s.engine.Group("/api/v1")
 	authHttp.Routes(routes_v1, s.db, s.validator)
+	userHttp.Routes(routes_v1, s.db, s.validator)
 	return nil
 }
