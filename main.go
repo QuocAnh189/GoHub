@@ -8,6 +8,7 @@ import (
 
 	"gohub/configs"
 	"gohub/database"
+	"gohub/database/migrations"
 )
 
 func main() {
@@ -18,6 +19,12 @@ func main() {
     db, err := database.NewDatabase(cfg.DatabaseURI)
     if err != nil {
         logger.Fatal("Cannot connect to database", err)
+    }
+
+
+    err = migrations.AutoMigrate(db)
+    if err != nil {
+        logger.Fatal("Cannot migrate database", err)
     }
 
     validator := validation.New()

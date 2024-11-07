@@ -14,7 +14,7 @@ type Event struct {
 	CoverImageUrl 			string 					`json:"coverImageUrl"`
 	CoverImageFileName 		string 					`json:"coverImageFileName"`
 	EventSubImages          []*EventSubImage 		`json:"eventSubImages"`
-	Categories              []*EventCategory			`json:"categories"`
+	Categories              []*EventCategory		`json:"categories"`
 	Reasons 				[]*Reason 				`json:"reasons"`
 	TicketTypes 			[]*TicketType 			`json:"ticketTypes"`
 	StartDate 				string 					`json:"startDate" gorm:"not null"`

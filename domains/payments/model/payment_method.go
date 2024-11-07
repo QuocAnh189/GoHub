@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,11 @@ type PaymentMethod struct {
 	// UpdatedAt          time.Time  		`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
+func (pm *PaymentMethod) BeforeCreate(tx *gorm.DB) error {
+	pm.ID = uuid.New().String()
+
+	return nil
+}
 
 func (PaymentMethod) TableName() string {
 	return "payment_methods"

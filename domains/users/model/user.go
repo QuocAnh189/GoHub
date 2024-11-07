@@ -21,8 +21,8 @@ type User struct {
 	Password  		string     				`json:"password"`
 	Gender    		int 	   				`json:"gender" gorm:"default:0"`
 	Status 			int 	   				`json:"status" gorm:"default:1"`
-	UserFollower	[]*UserFollower			`json:"userFollower"`
-	UserFollowing	[]*UserFollower			`json:"userFollowing"`
+	UserFollower	[]*UserFollower			`json:"userFollowers" gorm:"foreignKey:FollowerId;references:ID"`
+	UserFollowing	[]*UserFollower			`json:"userFollowing" gorm:"foreignKey:FollowedId;references:ID"`
 	IsDeleted     	bool       				`json:"isDeleted" gorm:"default:0"`
 	// DeletedAt     	gorm.DeletedAt  		`json:"deletedAt" gorm:"index"`
 	// CreatedAt     	time.Time  				`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
