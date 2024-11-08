@@ -6,12 +6,16 @@ import (
 	"github.com/QuocAnh189/GoBin/logger"
 
 	categoryModel "gohub/domains/categories/model"
+	commandModel "gohub/domains/commands/model"
 	conversationModel "gohub/domains/conversations/model"
 	eventModel "gohub/domains/events/model"
+	functionModel "gohub/domains/functions/model"
 	labelsModel "gohub/domains/labels/model"
 	paymentModel "gohub/domains/payments/model"
 	permissionModel "gohub/domains/permissions/model"
 	reviewModel "gohub/domains/reviews/model"
+	roleModel "gohub/domains/roles/model"
+	relationModel "gohub/domains/shares/model"
 	ticketModel "gohub/domains/tickets/model"
 	userModel "gohub/domains/users/model"
 )
@@ -20,21 +24,15 @@ import (
 func AutoMigrate(db *database.Database) error {
 	err := db.AutoMigrate(
 		&permissionModel.Permission{},
-		&permissionModel.Command{},
-		&permissionModel.Function{},
-		&permissionModel.CommandInFunction{},
+		&commandModel.Command{},
+		&functionModel.Function{},
 		&categoryModel.Category{},
 		&userModel.User{},
-		&userModel.Role{},
-        &userModel.UserRole{},
+		&roleModel.Role{},
 		&userModel.UserFollower{},
-		&userModel.Invitation{},
-		&userModel.UserPayment{},
 		&conversationModel.Conversation{},
 		&conversationModel.Message{},
 		&eventModel.Event{},
-		&eventModel.EventCategory{},
-		&eventModel.EventFavourite{},
 		&eventModel.EventSubImage{},
 		&eventModel.Reason{},
 		&eventModel.TicketType{},
@@ -46,6 +44,12 @@ func AutoMigrate(db *database.Database) error {
 		&paymentModel.Payment{},
 		&paymentModel.PaymentItem{},
 		&paymentModel.PaymentMethod{},
+		&relationModel.CommandInFunction{},
+		&relationModel.EventCategory{},
+		&relationModel.EventFavourite{},
+		&relationModel.Invitation{},
+		&relationModel.UserPayment{},
+		&relationModel.UserRole{},
 	)
 
 	if err != nil {
