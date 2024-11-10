@@ -16,7 +16,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 
 	roleRoute := r.Group("/roles")
 	{
-		roleRoute.POST("/:{id}/add-function/{functionId}", roleHandler.AddFunction)
-		roleRoute.POST("/:{id}/remove-function/{functionId}", roleHandler.RemoveFunction)
+		roleRoute.POST("/:id/add-function/:functionId", roleHandler.AddFunction)
+		roleRoute.POST("/:id/remove-function/:functionId", roleHandler.RemoveFunction)
 	}
 }
