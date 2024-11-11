@@ -634,6 +634,82 @@
                 }
             }
         },
+        "/api/v1/commands/get-in-function/{functionId}": {
+            "get": {
+                "description": "Fetches a list of commands that are associated with the specified function ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Retrieve commands associated with specific function",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the list of commands",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/commands/get-not-in-function/{functionId}": {
+            "get": {
+                "description": "Fetches a list of commands that are not associated with the specified function ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Retrieve commands not associated with a specific function",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the list of commands",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/conversations/get-by-event/{eventId}": {
             "get": {
                 "description": "Fetches a paginated list of conversations created by the event, based on the provided pagination filter.",
