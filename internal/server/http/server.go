@@ -16,6 +16,7 @@ import (
 	conversationHttp "gohub/domains/conversations/port/http"
 	eventHttp "gohub/domains/events/port/http"
 	functionHttp "gohub/domains/functions/port/http"
+	permissionHttp "gohub/domains/permissions/port/http"
 	reviewHttp "gohub/domains/reviews/port/http"
 	routeHttp "gohub/domains/roles/port/http"
 	userHttp "gohub/domains/users/port/http"
@@ -85,5 +86,6 @@ func (s Server) MapRoutes() error {
 	routeHttp.Routes(routes_v1, s.db, s.validator)
 	functionHttp.Routes(routes_v1, s.db, s.validator)
 	commandHttp.Routes(routes_v1, s.db, s.validator)
+	permissionHttp.Routes(routes_v1, s.db, s.validator)
 	return nil
 }
