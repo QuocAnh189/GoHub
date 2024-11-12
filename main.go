@@ -27,26 +27,25 @@ import (
 //	@name						Authorization
 
 func main() {
-    cfg := configs.LoadConfig()
+	cfg := configs.LoadConfig()
 
-    logger.Initialize(cfg.Environment)
+	logger.Initialize(cfg.Environment)
 
-    db, err := database.NewDatabase(cfg.DatabaseURI)
-    if err != nil {
-        logger.Fatal("Cannot connect to database", err)
-    }
+	db, err := database.NewDatabase(cfg.DatabaseURI)
+	if err != nil {
+		logger.Fatal("Cannot connect to database", err)
+	}
 
+	err = migrations.AutoMigrate(db)
+	if err != nil {
+		logger.Fatal("Cannot migrate database", err)
+	}
 
-    err = migrations.AutoMigrate(db)
-    if err != nil {
-        logger.Fatal("Cannot migrate database", err)
-    }
+	validator := validation.New()
 
-    validator := validation.New()
+	httpServer := httpServer.NewServer(validator, db)
 
-    httpServer := httpServer.NewServer(validator, db)
-
-    if err := httpServer.Run(); err != nil {
-        logger.Fatal("HTTP server failed to start", err)
-    }
+	if err := httpServer.Run(); err != nil {
+		logger.Fatal("HTTP server failed to start", err)
+	}
 }

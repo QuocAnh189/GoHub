@@ -9,7 +9,9 @@ import (
 	gormLogger "gorm.io/gorm/logger"
 )
 
-const DatabaseTimeout = time.Second * 5
+const (
+	DatabaseTimeout = time.Second * 5
+)
 
 type IDatabase interface {
 	GetDB() *gorm.DB

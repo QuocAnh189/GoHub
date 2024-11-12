@@ -76,16 +76,16 @@ func (s Server) GetEngine() *gin.Engine {
 }
 
 func (s Server) MapRoutes() error {
-	routes_v1 := s.engine.Group("/api/v1")
-	authHttp.Routes(routes_v1, s.db, s.validator)
-	userHttp.Routes(routes_v1, s.db, s.validator)
-	reviewHttp.Routes(routes_v1, s.db, s.validator)
-	conversationHttp.Routes(routes_v1, s.db, s.validator)
-	categoryHttp.Routes(routes_v1, s.db, s.validator)
-	eventHttp.Routes(routes_v1, s.db, s.validator)
-	routeHttp.Routes(routes_v1, s.db, s.validator)
-	functionHttp.Routes(routes_v1, s.db, s.validator)
-	commandHttp.Routes(routes_v1, s.db, s.validator)
-	permissionHttp.Routes(routes_v1, s.db, s.validator)
+	routesV1 := s.engine.Group("/api/v1")
+	authHttp.Routes(routesV1, s.db, s.validator)
+	userHttp.Routes(routesV1, s.db, s.validator)
+	reviewHttp.Routes(routesV1, s.db, s.validator)
+	conversationHttp.Routes(routesV1, s.db, s.validator)
+	categoryHttp.Routes(routesV1, s.db, s.validator)
+	eventHttp.Routes(routesV1, s.db, s.validator)
+	routeHttp.Routes(routesV1, s.db, s.validator)
+	functionHttp.Routes(routesV1, s.db, s.validator)
+	commandHttp.Routes(routesV1, s.db, s.validator)
+	permissionHttp.Routes(routesV1, s.db, s.validator)
 	return nil
 }
