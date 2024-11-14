@@ -15,10 +15,6 @@ type Category struct {
 	IconImageFileName 	string 						`json:"iconImageFileName"`
 	Color 				string 						`json:"color"`
 	Event               []*relation.EventCategory 	`json:"events" gorm:"many2many:event_categories;"`
-	IsDeleted 			bool       					`json:"isDeleted" gorm:"default:0"`
-	// DeletedAt 			gorm.DeletedAt 			`json:"deletedAt" gorm:"index"`
-	// CreatedAt 			time.Time  				`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt 			time.Time  				`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (c *Category) BeforeCreate(tx *gorm.DB) error {

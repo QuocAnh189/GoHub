@@ -13,10 +13,6 @@ type TicketType struct {
 	Quantity            int        			`json:"quantity"`
 	Price               float64    			`json:"price"`
 	NumberOfSoldTickets int        			`json:"numberOfSoldTickets"`
-	IsDeleted           bool       			`json:"isDeleted" gorm:"default:0"`
-	// DeletedAt           gorm.DeletedAt 		`json:"deletedAt" gorm:"index"`
-	// CreatedAt           time.Time  			`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt           time.Time  			`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (t *TicketType) BeforeCreate(tx *gorm.DB) error {

@@ -13,11 +13,7 @@ type Function struct {
 	Url       		string     							`json:"url"`
 	SortOrder 		string     							`json:"sortOrder"`
 	ParentId  		string     							`json:"parentId"`
-	IsDeleted     	bool       							`json:"isDeleted" gorm:"default:0"`
 	Commands	  	[]*relation.CommandInFunction 		`json:"commands"  gorm:"many2many:command_functions;"`
-	// DeletedAt     	gorm.DeletedAt  				`json:"deletedAt" gorm:"index"`
-	// CreatedAt     	time.Time  						`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt     	time.Time  						`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (Function) TableName() string {

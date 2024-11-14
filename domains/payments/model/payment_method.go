@@ -13,7 +13,6 @@ type PaymentMethod struct {
 	MethodName         	string     					`json:"methodName" gorm:"not null"`
 	MethodLogoFileName 	string     					`json:"methodLogoFileName" gorm:"not null"`
 	MethodLogoUrl      	string     					`json:"methodLogoUrl" gorm:"not null"`
-	IsDeleted    	   	bool       					`json:"isDeleted" gorm:"default:0"`
 	Users               []*relation.UserPayment		`json:"users" gorm:"many2many:user_payments;"`
 }
 

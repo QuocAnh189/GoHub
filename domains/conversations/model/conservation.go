@@ -15,14 +15,10 @@ type Conversation struct {
 	Event         *modelEvent.Event `json:"event"`
 	UserId        string     		`json:"userId" gorm:"not null"`
 	User          *modelUser.User  	`json:"user"`
-	HostId        string     		`json:"hostId" gorm:"not null"`
-	Host          *modelUser.User  	`json:"host"`
+	OrganizerId   string     		`json:"organizerId" gorm:"not null"`
+	Organizer     *modelUser.User  	`json:"organizer"`
 	LastMessageId string     		`json:"lastMessageId"`
 	LastMessage   *Message			`json:"lastMessage"`   		
-	IsDeleted     bool       		`json:"isDeleted" gorm:"default:0"`
-	// DeletedAt     gorm.DeletedAt 	`json:"deletedAt" gorm:"index"`
-	// CreatedAt     time.Time  		`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt     time.Time  		`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (c *Conversation) BeforeCreate(tx *gorm.DB) error {

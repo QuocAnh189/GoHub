@@ -25,11 +25,7 @@ type Ticket struct {
 	User          		*modelUser.User        	`json:"user"`
 	PaymentId     		string     				`json:"paymentId" gorm:"not null"`
 	Payment       		*modelPayment.Payment 	`json:"payment"`
-	Status 		  		int 	 	 			`json:"status" gorm:"default:1"`
-	IsDeleted     		bool       				`json:"isDeleted" gorm:"default:0"`
-	// DeletedAt     gorm.DeletedAt  			`json:"deletedAt" gorm:"index"`
-	// CreatedAt     time.Time  				`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt     time.Time  				`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
+	Status 		  		string 	 	 			`json:"status"`
 }
 
 func (t *Ticket) BeforeCreate(tx *gorm.DB) error {

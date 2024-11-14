@@ -2,6 +2,7 @@ package model
 
 import (
 	relation "gohub/domains/shares/model"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -19,8 +20,8 @@ type Event struct {
 	Categories              []*relation.EventCategory		`json:"categories" gorm:"many2many:event_categories;"`
 	Reasons 				[]*Reason 						`json:"reasons"`
 	TicketTypes 			[]*TicketType 					`json:"ticketTypes"`
-	StartDate 				string 							`json:"startDate" gorm:"not null"`
-	EndDate 				string 							`json:"endDate" gorm:"not null"`
+	StartTime 				*time.Time						`json:"startDate" gorm:"not null"`
+	EndTime					*time.Time						`json:"endDate" gorm:"not null"`
 	Location 				string 							`json:"location" gorm:"not null"`
 	Promotion 				float64 						`json:"promotion"`
 	NumberOfFavourites 		int 							`json:"numberOfFavourites" gorm:"default:0"`
@@ -30,7 +31,6 @@ type Event struct {
 	EventCycleType			int								`json:"eventCycleType" gorm:"default:0"`
 	EventPaymentType		int								`json:"eventPaymentType" gorm:"default:0"`
 	IsPrivate 				bool 							`json:"isPrivate" gorm:"default:0"`
-	IsDeleted 				bool       						`json:"isDeleted" gorm:"default:0"`
 	UserFavourite           []*relation.EventFavourite		`json:"userFavourite" gorm:"many2many:event_favourites;"`
 	UserInviter			 	[]*relation.Invitation			`json:"userInviter" gorm:"many2many:invitations;"`
 }

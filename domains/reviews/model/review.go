@@ -17,10 +17,6 @@ type Review struct {
 	Event         	*modelEvent.Event   `json:"event"`
 	Content   		string     			`json:"content"`
 	Rate      		float32    			`json:"rate" gorm:"default:0"`
-	IsDeleted     	bool       			`json:"isDeleted" gorm:"default:0"`
-	// DeletedAt     	gorm.DeletedAt  	`json:"deletedAt" gorm:"index"`
-	// CreatedAt     	time.Time  			`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt     	time.Time  			`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (r *Review) BeforeCreate(tx *gorm.DB) error {

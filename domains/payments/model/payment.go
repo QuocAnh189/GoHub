@@ -17,7 +17,7 @@ type Payment struct {
 	CustomerEmail       string     			`json:"customerEmail" gorm:"not null"`
 	TotalPrice          float64    			`json:"totalPrice" gorm:"not null"`
 	DiscountPrice       float64    			`json:"discountPrice" gorm:"not null"`
-	Status              string     			`json:"status" gorm:"default:'pending'"`
+	Status              string     			`json:"status" gorm:"default:'PENDING'"`
 	UserPaymentMethodID string     			`json:"userPaymentMethodId" gorm:"not null"`
 	UserPaymentMethod   *PaymentMethod		`json:"userPaymentMethod"`
 	PaymentSessionID    string     			`json:"paymentSessionId" gorm:"not null"`
@@ -25,10 +25,6 @@ type Payment struct {
 	Event               *modelEvent.Event	`json:"event"`
 	UserId            	string     			`json:"userId" gorm:"not null"`
 	User                *modelUser.User		`json:"user"`
-	IsDeleted     		bool       			`json:"isDeleted" gorm:"default:0"`
-	// DeletedAt     		gorm.DeletedAt  	`json:"deletedAt" gorm:"index"`
-	// CreatedAt     		time.Time  			`json:"createdAt" gorm:"default:CURRENT_TIMESTAMP"`
-	// UpdatedAt     		time.Time  			`json:"updatedAt" gorm:"default:CURRENT_TIMESTAMP"`
 }
 
 func (p *Payment) BeforeCreate(tx *gorm.DB) error {

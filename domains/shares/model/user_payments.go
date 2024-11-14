@@ -13,7 +13,6 @@ type UserPayment struct {
 	PaymentAccountNumber    string    			`json:"paymentAccountNumber"`
 	PaymentAccountQrCodeUrl string    			`json:"paymentAccountQrCodeUrl"`
 	CheckoutContent         string    			`json:"checkoutContent"`
-	IsDeleted     			bool       			`json:"isDeleted" gorm:"default:0"`
 }
 
 func (up *UserPayment) BeforeCreate(tx * gorm.DB) error {
