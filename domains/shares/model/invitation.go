@@ -9,7 +9,7 @@ type Invitation struct {
 	gorm.Model
 	ID        		string      		`json:"id" gorm:"unique;not null;index;primary_key"`
 	InviterId 		string      		`json:"inviterId" gorm:"not null"`
-	InvitedId 		string      		`json:"invitedId" gorm:"not null"`
+	InviteeId 		string      		`json:"inviteeId" gorm:"not null"`
 	EventId   		string      		`json:"eventId"`
 }
 

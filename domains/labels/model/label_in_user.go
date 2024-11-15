@@ -10,7 +10,6 @@ type LabelInUser struct {
 	ID        string     		`json:"id" gorm:"unique;not null;index;primary_key"`
 	LabelID   string     		`json:"labelId" gorm:"not null"`
 	UserID    string     		`json:"userId" gorm:"not null"`
-	IsDeleted bool       		`json:"isDeleted" gorm:"default:0"`
 }
 
 func (l *LabelInUser) BeforeCreate(tx *gorm.DB) error {

@@ -10,7 +10,6 @@ type LabelInEvent struct {
 	ID        	string     		`json:"id" gorm:"unique;not null;index;primary_key"`
 	LabelId    	string     		`json:"labelId" gorm:"not null"`
 	EventId    	string     		`json:"eventId" gorm:"not null"`
-	IsDeleted 	bool       		`json:"isDeleted" gorm:"default:0"`
 }
 
 func (l *LabelInEvent) BeforeCreate(tx *gorm.DB) error {

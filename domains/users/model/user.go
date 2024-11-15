@@ -20,10 +20,10 @@ type User struct {
 	PhoneNumber      string     						`json:"phoneNumber"`
 	Dob	   	  		 time.Time  						`json:"dob"`
 	Password  		 string     						`json:"password"`
-	Gender    		 int 	   							`json:"gender" gorm:"default:0"`
+	Gender    		 string 	   						`json:"gender"`
 	Bio				 string								`json:"bio"`	
 	UserFollower	 []*UserFollower					`json:"userFollowers" gorm:"foreignKey:FollowerId;references:ID"`
-	UserFollowing	 []*UserFollower					`json:"userFollowing" gorm:"foreignKey:FollowedId;references:ID"`
+	UserFollowing	 []*UserFollower					`json:"userFollowing" gorm:"foreignKey:FolloweeId;references:ID"`
 	Role			 []*relation.UserRole				`json:"roles" gorm:"many2many:user_roles;"`	
 	EventFavourites  []*relation.EventFavourite			`json:"eventFavourites" gorm:"many2many:event_favourites;"`
 	Payments		 []*relation.UserPayment			`json:"payments" gorm:"many2many:user_payments;"`

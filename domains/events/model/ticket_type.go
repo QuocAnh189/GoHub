@@ -12,7 +12,6 @@ type TicketType struct {
 	Name                string     			`json:"name"`
 	Quantity            int        			`json:"quantity"`
 	Price               float64    			`json:"price"`
-	NumberOfSoldTickets int        			`json:"numberOfSoldTickets"`
 }
 
 func (t *TicketType) BeforeCreate(tx *gorm.DB) error {

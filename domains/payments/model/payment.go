@@ -11,20 +11,20 @@ import (
 type Payment struct {
 	gorm.Model
 	ID                  string     			`json:"id" gorm:"unique;not null;index;primary_key"`
-	TicketQuantity      int        			`json:"ticketQuantity" gorm:"not null"`
+	EventID             string     			`json:"eventId" gorm:"not null"`
+	Event               *modelEvent.Event	`json:"event"`
 	CustomerName        string     			`json:"customerName" gorm:"not null"`
-	CustomerPhone       string     			`json:"customerPhone" gorm:"not null"`
 	CustomerEmail       string     			`json:"customerEmail" gorm:"not null"`
+	CustomerPhone       string     			`json:"customerPhone" gorm:"not null"`
+	UserId            	string     			`json:"userId" gorm:"not null"`
+	User                *modelUser.User		`json:"user"`
+	PaymentSessionID    string     			`json:"paymentSessionId" gorm:"not null"`
+	UserPaymentMethodID string     			`json:"userPaymentMethodId" gorm:"not null"`
+	UserPaymentMethod   *PaymentMethod		`json:"userPaymentMethod"`
+	TicketQuantity      int        			`json:"ticketQuantity" gorm:"not null"`
 	TotalPrice          float64    			`json:"totalPrice" gorm:"not null"`
 	DiscountPrice       float64    			`json:"discountPrice" gorm:"not null"`
 	Status              string     			`json:"status" gorm:"default:'PENDING'"`
-	UserPaymentMethodID string     			`json:"userPaymentMethodId" gorm:"not null"`
-	UserPaymentMethod   *PaymentMethod		`json:"userPaymentMethod"`
-	PaymentSessionID    string     			`json:"paymentSessionId" gorm:"not null"`
-	EventID             string     			`json:"eventId" gorm:"not null"`
-	Event               *modelEvent.Event	`json:"event"`
-	UserId            	string     			`json:"userId" gorm:"not null"`
-	User                *modelUser.User		`json:"user"`
 }
 
 func (p *Payment) BeforeCreate(tx *gorm.DB) error {

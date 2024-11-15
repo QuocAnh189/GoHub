@@ -25,7 +25,7 @@ type Ticket struct {
 	User          		*modelUser.User        	`json:"user"`
 	PaymentId     		string     				`json:"paymentId" gorm:"not null"`
 	Payment       		*modelPayment.Payment 	`json:"payment"`
-	Status 		  		string 	 	 			`json:"status"`
+	Status 		  		string 	 	 			`json:"status" gorm:"default:'ACTIVE'"`
 }
 
 func (t *Ticket) BeforeCreate(tx *gorm.DB) error {

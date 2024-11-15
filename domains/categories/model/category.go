@@ -11,9 +11,9 @@ type Category struct {
 	gorm.Model	
 	ID        			string     					`json:"id" gorm:"unique;not null;index;primary_key"`
 	Name      			string     					`json:"name" gorm:"not null"`
-	IconImageUrl 		string 						`json:"iconImageUrl"`
-	IconImageFileName 	string 						`json:"iconImageFileName"`
-	Color 				string 						`json:"color"`
+	IconImageUrl 		string 						`json:"iconImageUrl" gorm:"not null"`
+	IconImageFileName 	string 						`json:"iconImageFileName" gorm:"not null"`
+	Color 				string 						`json:"color" gorm:"not null"`
 	Event               []*relation.EventCategory 	`json:"events" gorm:"many2many:event_categories;"`
 }
 
