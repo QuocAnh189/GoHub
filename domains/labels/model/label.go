@@ -8,7 +8,7 @@ import (
 type Label struct {
 	gorm.Model
 	ID        string     		`json:"id" gorm:"unique;not null;index;primary_key"`
-	Name      string     		`json:"name"`
+	Name      string     		`json:"name" gorm:"not null"`
 }
 
 func (l *Label) BeforeCreate(tx *gorm.DB) error {

@@ -10,7 +10,7 @@ type Invitation struct {
 	ID        		string      		`json:"id" gorm:"unique;not null;index;primary_key"`
 	InviterId 		string      		`json:"inviterId" gorm:"not null"`
 	InviteeId 		string      		`json:"inviteeId" gorm:"not null"`
-	EventId   		string      		`json:"eventId"`
+	EventId   		string      		`json:"eventId" gorm:"not null"`
 }
 
 func (i *Invitation) BeforeCreate(tx * gorm.DB) error {

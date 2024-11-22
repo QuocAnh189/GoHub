@@ -16,10 +16,10 @@ type User struct {
 	AvatarUrl 		 string     						`json:"avatarUrl"`
 	AvatarFileName   string 	   						`json:"avatarFileName"`
 	FullName  		 string     						`json:"fullName"`
-	UserName 		 string 	   						`json:"userName"`
-	PhoneNumber      string     						`json:"phoneNumber"`
+	UserName 		 string 	   						`json:"userName" gorm:"unique;not null;index:idx_user_username"`
+	PhoneNumber      string     						`json:"phoneNumber" gorm:"unique"`
 	Dob	   	  		 time.Time  						`json:"dob"`
-	Password  		 string     						`json:"password"`
+	Password  		 string     						`json:"password" gorm:"not null"`
 	Gender    		 string 	   						`json:"gender"`
 	Bio				 string								`json:"bio"`	
 	UserFollower	 []*UserFollower					`json:"userFollowers" gorm:"foreignKey:FollowerId;references:ID"`

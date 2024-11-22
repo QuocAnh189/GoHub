@@ -8,8 +8,8 @@ import (
 type CommandInFunction struct {
 	gorm.Model
 	ID         string `json:"id" gorm:"unique;not null;index;primary_key"`
-	CommandID  string `json:"command_id"`
-	FunctionID string `json:"function_id"`
+	CommandID  string `json:"command_id" gorm:"not null"`
+	FunctionID string `json:"function_id" gorm:"not null"`
 }
 
 func (cf *CommandInFunction) BeforeCreate(tx *gorm.DB) error {

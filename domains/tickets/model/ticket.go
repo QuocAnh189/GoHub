@@ -13,18 +13,18 @@ import (
 type Ticket struct {
 	gorm.Model
 	ID            		string     				`json:"id" gorm:"unique;not null;index;primary_key"`
-	TicketNo      		string     				`json:"ticketNo"`
-	CustomerName  		string     				`json:"customerName"`
-	CustomerPhone 		string     				`json:"customerPhone"`
-	CustomerEmail 		string     				`json:"customerEmail"`
+	TicketNo      		string     				`json:"ticketNo" gorm:"not null"`
+	CustomerName  		string     				`json:"customerName" gorm:"not null"`
+	CustomerPhone 		string     				`json:"customerPhone" gorm:"not null"`
+	CustomerEmail 		string     				`json:"customerEmail" gorm:"not null"`
 	TicketTypeId  		string     				`json:"ticketTypeId" gorm:"not null"`
-	TicketType    		*modelEvent.TicketType  `json:"ticketType"`
+	TicketType    		*modelEvent.TicketType  `json:"ticketType" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	EventId       		string     				`json:"eventId" gorm:"not null"`
-	Event         		*modelEvent.Event      	`json:"event"`
+	Event         		*modelEvent.Event      	`json:"event" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	UserId        		string     				`json:"userId" gorm:"not null"`
-	User          		*modelUser.User        	`json:"user"`
+	User          		*modelUser.User        	`json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	PaymentId     		string     				`json:"paymentId" gorm:"not null"`
-	Payment       		*modelPayment.Payment 	`json:"payment"`
+	Payment       		*modelPayment.Payment 	`json:"payment" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Status 		  		string 	 	 			`json:"status" gorm:"default:'ACTIVE'"`
 }
 

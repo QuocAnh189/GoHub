@@ -10,9 +10,9 @@ type UserPayment struct {
 	ID                      string    			`json:"id" gorm:"unique;not null;index;primary_key"`
 	UserId                	string    			`json:"userId" gorm:"not null"`
 	PaymentMethodId         string    			`json:"paymentMethodId" gorm:"not null"`
-	PaymentAccountNumber    string    			`json:"paymentAccountNumber"`
-	PaymentAccountQrCodeUrl string    			`json:"paymentAccountQrCodeUrl"`
-	CheckoutContent         string    			`json:"checkoutContent"`
+	PaymentAccountNumber    string    			`json:"paymentAccountNumber" gorm:"not null"`
+	PaymentAccountQrCodeUrl string    			`json:"paymentAccountQrCodeUrl" gorm:"not null"`
+	CheckoutContent         string    			`json:"checkoutContent" gorm:"not null"`
 }
 
 func (up *UserPayment) BeforeCreate(tx * gorm.DB) error {

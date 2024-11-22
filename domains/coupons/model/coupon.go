@@ -16,7 +16,7 @@ type Coupon struct {
 	Name         string  							`json:"name" gorm:"not null"`
 	Description  string  							`json:"description" gorm:"not null"`
 	UserId       string  							`json:"userId" gorm:"not null"`
-	User         *modelUser.User 					`json:"user" gorm:"not null"`
+	User         *modelUser.User 					`json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	MinQuantity  int     							`json:"minQuantity"`
 	MinValue     float64     						`json:"minValue"`
 	PercentValue float64     						`json:"percentValue"`

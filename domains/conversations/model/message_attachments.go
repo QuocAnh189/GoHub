@@ -8,7 +8,8 @@ import (
 type MessageAttachment struct {
 	gorm.Model
 	ID 						string 		`json:"id" gorm:"unique;not null;index;primary_key"`
-	MessageID               string         `json:"messageId" gorm:"not null"`
+	MessageID               string      `json:"messageId" gorm:"not null"`
+	Message                 *Message    `json:"message" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	MessageType 			string 		`json:"type" gorm:"not null"`
 	MessageUrl 				string 		`json:"messageUrl" gorm:"not null"`
 	MessageFileName 		string 		`json:"messageFileName" gorm:"not null"`

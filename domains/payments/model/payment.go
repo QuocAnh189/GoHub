@@ -17,10 +17,10 @@ type Payment struct {
 	CustomerEmail       string     			`json:"customerEmail" gorm:"not null"`
 	CustomerPhone       string     			`json:"customerPhone" gorm:"not null"`
 	UserId            	string     			`json:"userId" gorm:"not null"`
-	User                *modelUser.User		`json:"user"`
+	User                *modelUser.User		`json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	PaymentSessionID    string     			`json:"paymentSessionId" gorm:"not null"`
 	UserPaymentMethodID string     			`json:"userPaymentMethodId" gorm:"not null"`
-	UserPaymentMethod   *PaymentMethod		`json:"userPaymentMethod"`
+	UserPaymentMethod   *PaymentMethod		`json:"userPaymentMethod" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	TicketQuantity      int        			`json:"ticketQuantity" gorm:"not null"`
 	TotalPrice          float64    			`json:"totalPrice" gorm:"not null"`
 	DiscountPrice       float64    			`json:"discountPrice" gorm:"not null"`

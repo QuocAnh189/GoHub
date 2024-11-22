@@ -12,12 +12,12 @@ import (
 type Permission struct {
 	gorm.Model	
 	ID         		string     						`json:"id" gorm:"unique;not null;index;primary_key"`
-	FunctionId 		string     						`json:"functionId" gorm:"not null"`
-	Function        *functionModel.Function 		`json:"function"`
-	RoleId     		string     						`json:"roleId" gorm:"not null"`
-	Role 	  		*roleModel.Role 				`json:"role"`
-	CommandId  		string     						`json:"commandId" gorm:"not null"`
-	Command         *commandModel.Command 			`json:"command"`
+	FunctionId 		string     						`json:"functionId"`
+	Function        *functionModel.Function 		`json:"function" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	RoleId     		string     						`json:"roleId"`
+	Role 	  		*roleModel.Role 				`json:"role" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	CommandId  		string     						`json:"commandId"`
+	Command         *commandModel.Command 			`json:"command" gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func (p *Permission) BeforeCreate(tx *gorm.DB) error {

@@ -12,11 +12,11 @@ type Review struct {
 	gorm.Model
 	ID        		string     			`json:"id" gorm:"unique;not null;index;primary_key"`
 	UserId  		string     			`json:"userId" gorm:"not null"`
-	User          	*modelUser.User     `json:"user"`
+	User          	*modelUser.User     `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	EventId   		string     			`json:"eventId" gorm:"not null"`
-	Event         	*modelEvent.Event   `json:"event"`
-	Content   		string     			`json:"content"`
-	Rate      		float32    			`json:"rate" gorm:"default:0"`
+	Event         	*modelEvent.Event   `json:"event" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Content   		string     			`json:"content" gorm:"not null"`
+	Rate      		float32    			`json:"rate" gorm:"not null"`
 }
 
 func (r *Review) BeforeCreate(tx *gorm.DB) error {

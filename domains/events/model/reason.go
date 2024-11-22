@@ -9,6 +9,7 @@ type Reason struct {
 	gorm.Model
 	ID        string     		`json:"id" gorm:"unique;not null;index;primary_key"`
 	EventId   string     		`json:"eventId" gorm:"not null"`
+	Event     *Event     		`json:"event" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Name      string     		`json:"name" gorm:"not null"`
 }
 

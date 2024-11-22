@@ -13,19 +13,19 @@ type Event struct {
 	gorm.Model
 	ID 						string 							`json:"id" gorm:"unique;not null;index;primary_key"`
 	UserId 					string 							`json:"userId" gorm:"not null"`
-	User                    *modelUser.User                 `json:"user"`
+	User                    *modelUser.User                 `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Name 					string 							`json:"name" gorm:"not null"`
 	Description 			string 							`json:"description"`
-	CoverImageUrl 			string 							`json:"coverImageUrl"`
-	CoverImageFileName 		string 							`json:"coverImageFileName"`
+	CoverImageUrl 			string 							`json:"coverImageUrl" gorm:"not null"`
+	CoverImageFileName 		string 							`json:"coverImageFileName" gorm:"not null"`
 	StartTime 				*time.Time						`json:"startDate" gorm:"not null"`
 	EndTime					*time.Time						`json:"endDate" gorm:"not null"`
 	Location 				string 							`json:"location" gorm:"not null"`
 	LocationPath 			string 							`json:"locationPath" gorm:"not null"`
-	EventCycleType			string							`json:"eventCycleType"`
-	EventPaymentType		string							`json:"eventPaymentType"`
+	EventCycleType			string							`json:"eventCycleType" gorm:"not null"`
+	EventPaymentType		string							`json:"eventPaymentType" gorm:"not null"`
 	IsPrivate 				bool 							`json:"isPrivate" gorm:"default:0"`
-	Status                  string		 					`json:"status"`
+	Status                  string		 					`json:"status" gorm:"not null"`
 	EventSubImages          []*EventSubImage 				`json:"eventSubImages"`
 	Categories              []*relation.EventCategory		`json:"categories" gorm:"many2many:event_categories;"`
 	Reasons 				[]*Reason 						`json:"reasons"`

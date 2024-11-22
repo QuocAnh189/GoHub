@@ -10,7 +10,7 @@ import (
 type Role struct {
 	gorm.Model
 	ID        string               `json:"id" gorm:"unique;not null;index;primary_key"`
-	Name      string               `json:"name"`
+	Name      string               `json:"name" gorm:"unique;not null"`
 	User      []*relation.UserRole `json:"users" gorm:"many2many:user_roles;"`
 }
 

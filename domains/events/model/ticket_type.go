@@ -9,9 +9,10 @@ type TicketType struct {
 	gorm.Model
 	ID                  string     			`json:"id" gorm:"unique;not null;index;primary_key"`
 	EventId             string     			`json:"eventId" gorm:"not null"`
-	Name                string     			`json:"name"`
-	Quantity            int        			`json:"quantity"`
-	Price               float64    			`json:"price"`
+	Event               *Event     			`json:"event" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Name                string     			`json:"name" gorm:"not null"`
+	Quantity            int        			`json:"quantity" gorm:"not null"`
+	Price               float64    			`json:"price" gorm:"not null"`
 }
 
 func (t *TicketType) BeforeCreate(tx *gorm.DB) error {
