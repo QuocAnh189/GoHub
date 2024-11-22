@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gohub/database/migrations"
 	httpServer "gohub/internal/server/http"
 
 	"github.com/QuocAnh189/GoBin/logger"
@@ -8,7 +9,7 @@ import (
 
 	"gohub/configs"
 	"gohub/database"
-	"gohub/database/migrations"
+	// "gohub/database/migrations"
 )
 
 //	@title          EventHub (GoHub) Swagger API

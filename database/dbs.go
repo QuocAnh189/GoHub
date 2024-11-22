@@ -2,6 +2,8 @@ package database
 
 import (
 	"context"
+	"fmt"
+	"reflect"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -66,6 +68,13 @@ func NewDatabase(uri string) (*Database, error) {
 
 func (d *Database) AutoMigrate(models ...any) error {
 	return d.db.AutoMigrate(models...)
+}
+
+func (d *Database) HasTable(model any) (string, bool) {
+	struct_name := reflect.TypeOf(model).Name()
+	tableName := d.db.NamingStrategy.TableName(struct_name)
+	fmt.Println("Table name: ", tableName)
+	return tableName, d.db.Migrator().HasTable(model)
 }
 
 func (d *Database) WithTransaction(function func() error) error {
