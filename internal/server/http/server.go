@@ -32,7 +32,7 @@ import (
 
 type Server struct {
 	engine    *gin.Engine
-	cfg       *configs.Schema
+	cfg       *configs.Config
 	validator validation.Validation
 	db        database.IDatabase
 }

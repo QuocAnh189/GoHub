@@ -1,13 +1,10 @@
 package configs
 
 import (
-	"log"
-	"path/filepath"
-	"runtime"
 	"time"
 
-	"github.com/caarlos0/env/v11"
-	"github.com/joho/godotenv"
+	"github.com/QuocAnh189/GoBin/logger"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -22,37 +19,41 @@ var AuthIgnoreMethods = []string{
 	"/user.UserService/Register",
 }
 
-type Schema struct {
-	Environment   string `env:"environment"`
-	HttpPort      int    `env:"http_port"`
-	GrpcPort      int    `env:"grpc_port"`
-	AuthSecret    string `env:"auth_secret"`
-	DatabaseURI   string `env:"database_uri"`
-	RedisURI      string `env:"redis_uri"`
-	RedisPassword string `env:"redis_password"`
-	RedisDB       int    `env:"redis_db"`
+type Config struct {
+	Environment   	string 		`mapstructure:"ENVIRONMENT"`
+	HttpPort      	int    		`mapstructure:"HTTP_PORT"`
+	GrpcPort      	int    		`mapstructure:"GRPC_PORT"`
+	AuthSecret    	string 		`mapstructure:"AUTH_SECRET"`
+	DatabaseURI   	string 		`mapstructure:"DATABASE_URI"`
+	RedisURI      	string 		`mapstructure:"REDIS_URI"`
+	RedisPassword 	string 		`mapstructure:"REDIS_PASSWORD"`
+	RedisDB       	int    		`mapstructure:"REDIS_DB"`
 }
 
 var (
-	cfg Schema
+	cfg Config
 )
 
-func LoadConfig() *Schema {
-	_, filename, _, _ := runtime.Caller(0)
-	currentDir := filepath.Dir(filename)
+func LoadConfig(path string) *Config {
+	viper.AddConfigPath(path)
+	viper.SetConfigName("app")
+	viper.SetConfigType("env")
 
-	err := godotenv.Load(filepath.Join(currentDir, "config.yaml"))
+	viper.AutomaticEnv()
+
+	err := viper.ReadInConfig()
 	if err != nil {
-		log.Printf("Error on load configuration file, error: %v", err)
+		logger.Fatal("Error on load configuration file, error: %v", err)
 	}
-
-	if err := env.Parse(&cfg); err != nil {
-		log.Fatalf("Error on parsing configuration file, error: %v", err)
+	
+	err = viper.Unmarshal(&cfg)
+	if err != nil {
+		logger.Fatalf("Error on parsing configuration file, error: %v", err)
 	}
-
+	
 	return &cfg
 }
 
-func GetConfig() *Schema {
+func GetConfig() *Config {
 	return &cfg
 }
