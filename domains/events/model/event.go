@@ -30,6 +30,7 @@ type Event struct {
 	Categories              []*relation.EventCategory		`json:"categories" gorm:"many2many:event_categories;"`
 	Reasons 				[]*Reason 						`json:"reasons"`
 	Coupons                 []*relation.EventCoupons		`json:"coupons" gorm:"many2many:event_coupons;"` 
+	Expenses 				[]*EventExpense 				`json:"expenses"`
 	TicketTypes 			[]*TicketType 					`json:"ticketTypes"`
 	UserFavourite           []*relation.EventFavourite		`json:"userFavourite" gorm:"many2many:event_favourites;"`
 	UserInviter			 	[]*relation.Invitation			`json:"userInviter" gorm:"many2many:invitations;"`

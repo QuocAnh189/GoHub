@@ -12,7 +12,6 @@ import (
 	couponModel "gohub/domains/coupons/model"
 	eventModel "gohub/domains/events/model"
 	functionModel "gohub/domains/functions/model"
-	labelsModel "gohub/domains/labels/model"
 	paymentModel "gohub/domains/payments/model"
 	permissionModel "gohub/domains/permissions/model"
 	reviewModel "gohub/domains/reviews/model"
@@ -42,9 +41,6 @@ func AutoMigrateOptimize(db *database.Database) error {
 		&reviewModel.Review{},
 		&couponModel.Coupon{},
 		&ticketModel.Ticket{},
-		&labelsModel.Label{},
-		&labelsModel.LabelInEvent{},
-		&labelsModel.LabelInUser{},
 		&paymentModel.Payment{},
 		&paymentModel.PaymentLine{},
 		&paymentModel.PaymentMethod{},
