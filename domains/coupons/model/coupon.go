@@ -11,18 +11,18 @@ import (
 )
 
 type Coupon struct {
-	gorm.Model   
-	ID           string  							`json:"id" gorm:"unique;not null;index;primary_key"`
-	Name         string  							`json:"name" gorm:"not null"`
-	Description  string  							`json:"description" gorm:"not null"`
-	UserId       string  							`json:"userId" gorm:"not null"`
-	User         *modelUser.User 					`json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	MinQuantity  int     							`json:"minQuantity"`
-	MinValue     float64     						`json:"minValue"`
-	PercentValue float64     						`json:"percentValue"`
-	RealValue    float64 							`json:"realValue"`
-	ExpireDate   time.Time 							`json:"expireDate" gorm:"not null"`
-	Events       []*relation.EventCoupons			`json:"events" gorm:"many2many:event_coupons;"` 
+	gorm.Model
+	ID              string                   `json:"id" gorm:"unique;not null;index;primary_key"`
+	Name            string                   `json:"name" gorm:"not null"`
+	Description     string                   `json:"description" gorm:"not null"`
+	UserId          string                   `json:"userId" gorm:"not null"`
+	User            *modelUser.User          `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	MinQuantity     int                      `json:"minQuantity"`
+	MinValue        float64                  `json:"minValue"`
+	PercentageValue float64                  `json:"percentValue"`
+	RealValue       float64                  `json:"realValue"`
+	ExpireDate      time.Time                `json:"expireDate" gorm:"not null"`
+	Events          []*relation.EventCoupons `json:"events" gorm:"many2many:event_coupons;"`
 }
 
 func (c *Coupon) BeforeCreate(tx *gorm.DB) error {
@@ -32,5 +32,5 @@ func (c *Coupon) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (Coupon) TableName() string {
-    return "coupons"
+	return "coupons"
 }

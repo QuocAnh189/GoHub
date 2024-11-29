@@ -2,10 +2,10 @@ package server
 
 import (
 	"fmt"
+	"github.com/gin-contrib/cors"
+	_ "gohub/docs"
 	"log"
 	"net/http"
-
-	_ "gohub/docs"
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -51,6 +51,8 @@ func (s Server) Run() error {
 	if s.cfg.Environment == configs.ProductionEnv {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
+	s.engine.Use(cors.Default())
 
 	if err := s.MapRoutes(); err != nil {
 		log.Fatalf("MapRoutes Error: %v", err)

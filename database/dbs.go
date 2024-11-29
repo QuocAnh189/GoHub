@@ -192,8 +192,12 @@ func (d *Database) applyOptions(opts ...FindOption) *gorm.DB {
 	}
 
 	if opt.query != nil {
-		for _, q := range opt.query {
-			query = query.Where(q.Query, q.Args)
+		for i, q := range opt.query {
+			if i == 0 {
+				query = query.Where(q.Query, q.Args...)
+			} else {
+				query = query.Or(q.Query, q.Args...)
+			}
 		}
 	}
 

@@ -20,14 +20,16 @@ var AuthIgnoreMethods = []string{
 }
 
 type Config struct {
-	Environment   	string 		`mapstructure:"ENVIRONMENT"`
-	HttpPort      	int    		`mapstructure:"HTTP_PORT"`
-	GrpcPort      	int    		`mapstructure:"GRPC_PORT"`
-	AuthSecret    	string 		`mapstructure:"AUTH_SECRET"`
-	DatabaseURI   	string 		`mapstructure:"DATABASE_URI"`
-	RedisURI      	string 		`mapstructure:"REDIS_URI"`
-	RedisPassword 	string 		`mapstructure:"REDIS_PASSWORD"`
-	RedisDB       	int    		`mapstructure:"REDIS_DB"`
+	Environment        string `mapstructure:"ENVIRONMENT"`
+	HttpPort           int    `mapstructure:"HTTP_PORT"`
+	GrpcPort           int    `mapstructure:"GRPC_PORT"`
+	AuthSecret         string `mapstructure:"AUTH_SECRET"`
+	DatabaseURI        string `mapstructure:"DATABASE_URI"`
+	RedisURI           string `mapstructure:"REDIS_URI"`
+	RedisPassword      string `mapstructure:"REDIS_PASSWORD"`
+	RedisDB            int    `mapstructure:"REDIS_DB"`
+	GoogleClientID     string `mapstructure:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret string `mapstructure:"GOOGLE_CLIENT_SECRET"`
 }
 
 var (
@@ -45,12 +47,12 @@ func LoadConfig(path string) *Config {
 	if err != nil {
 		logger.Fatal("Error on load configuration file, error: %v", err)
 	}
-	
+
 	err = viper.Unmarshal(&cfg)
 	if err != nil {
 		logger.Fatalf("Error on parsing configuration file, error: %v", err)
 	}
-	
+
 	return &cfg
 }
 
