@@ -2,18 +2,24 @@ package service
 
 import (
 	"context"
+	"github.com/QuocAnh189/GoBin/logger"
+	"gohub/domains/categories/dto"
 	"gohub/domains/categories/model"
 	"gohub/domains/categories/repository"
+	"gohub/pkg/paging"
+	"gohub/pkg/utils"
 
 	"github.com/QuocAnh189/GoBin/validation"
 )
 
 type ICategoryService interface {
-	CreateCategory(ctx context.Context)	error
-	GetCategory(ctx context.Context) (*model.Category, error)
-	GetCategories(ctx context.Context)	([]*model.Category, error)
-	UpdateCategory(ctx context.Context) error
-	DeleteCategory(ctx context.Context) error
+	CreateCategory(ctx context.Context, req *dto.CreateCategoryReq) (*model.Category, error)
+	GetCategoryById(ctx context.Context, id string) (*model.Category, error)
+	GetCategories(ctx context.Context, req *dto.ListCategoryReq) ([]*model.Category, *paging.Pagination, error)
+	UpdateCategory(ctx context.Context, id string, req *dto.UpdateCategoryReq) (*model.Category, error)
+	DeleteCategory(ctx context.Context, id string) error
+	DeleteCategories(ctx context.Context, ids *dto.DeleteRequest) error
+	RestoreCategories(ctx context.Context, ids *dto.RestoreRequest) error
 }
 
 type CategoryService struct {
@@ -28,69 +34,93 @@ func NewCategoryService(validator validation.Validation, repo repository.ICatego
 	}
 }
 
-//	@Summary	 Create a new category
-//  @Description Creates a new category based on the provided details. The request must include multipart form data.
-//	@Tags		 Categories
-//	@Produce	 json
-//	@Success	 201	{object}	response.Response	"Category created successfully"
-//	@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
-//	@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
-//	@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//	@Router		 /api/v1/categories [post]
-func (s *CategoryService) CreateCategory(ctx context.Context) error {
-	panic("unimplemented")
+func (s *CategoryService) CreateCategory(ctx context.Context, req *dto.CreateCategoryReq) (*model.Category, error) {
+	if err := s.validator.ValidateStruct(req); err != nil {
+		return nil, err
+	}
+
+	var category model.Category
+	utils.MapStruct(&category, req)
+
+	err := s.repo.Create(ctx, &category)
+	if err != nil {
+		logger.Errorf("Create fail, error: %s", err)
+		return nil, err
+	}
+
+	return &category, nil
 }
 
-//	@Summary	 Retrieve a list of categories
-//  @Description Fetches a paginated list of categories based on the provided filter parameters.
-//	@Tags		 Categories
-//	@Produce	 json
-//	@Success	 200	{object}	response.Response	"Category created successfully"
-//	@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//	@Router		 /api/v1/categories [get]
-func (s *CategoryService) GetCategories(ctx context.Context) ([]*model.Category, error) {
-	panic("unimplemented")
+func (s *CategoryService) GetCategories(ctx context.Context, req *dto.ListCategoryReq) ([]*model.Category, *paging.Pagination, error) {
+	categories, pagination, err := s.repo.ListCategories(ctx, req)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return categories, pagination, nil
 }
 
-//	@Summary	 Retrieve a category by its ID
-//  @Description Fetches the details of a specific category based on the provided category ID.
-//	@Tags		 Categories
-//	@Produce	 json
-//	@Success	 200	{object}	response.Response	"Category created successfully"
-//	@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
-//	@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
-//	@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
-//	@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//	@Router		 /api/v1/categories/{categoryId} [get]
-func (s *CategoryService) GetCategory(ctx context.Context) (*model.Category, error) {
-	panic("unimplemented")
+func (s *CategoryService) GetCategoryById(ctx context.Context, id string) (*model.Category, error) {
+	category, err := s.repo.GetCategoryById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return category, nil
 }
 
-//	@Summary	 Update an existing category
-//  @Description Updates the details of an existing category based on the provided category ID and update information.
-//	@Tags		 Categories
-//	@Produce	 json
-//	@Success	 200	{object}	response.Response	"Category updated successfully"
-//	@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
-//	@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
-//	@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
-//	@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//	@Router		 /api/v1/categories/{categoryId} [put]
-func (s *CategoryService) UpdateCategory(ctx context.Context) error {
-	panic("unimplemented")
+func (s *CategoryService) UpdateCategory(ctx context.Context, id string, req *dto.UpdateCategoryReq) (*model.Category, error) {
+	if err := s.validator.ValidateStruct(req); err != nil {
+		return nil, err
+	}
+
+	category, err := s.repo.GetCategoryById(ctx, id)
+	if err != nil {
+		logger.Errorf("Update.GetCategoryByID fail, id: %s, error: %s", id, err)
+		return nil, err
+	}
+
+	utils.MapStruct(category, req)
+	err = s.repo.Update(ctx, category)
+	if err != nil {
+		logger.Errorf("Update fail, id: %s, error: %s", id, err)
+		return nil, err
+	}
+
+	return category, nil
 }
 
+func (s *CategoryService) DeleteCategory(ctx context.Context, id string) error {
+	err := s.repo.Delete(ctx, id)
 
-//	@Summary	 Delete a category
-//  @Description Deletes the category with the specified ID.
-//	@Tags		 Categories
-//	@Produce	 json
-//	@Success	 200	{object}	response.Response	"Category updated successfully"
-//	@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
-//	@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
-//	@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
-//	@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//	@Router		 /api/v1/categories/{categoryId} [delete]
-func (s *CategoryService) DeleteCategory(ctx context.Context) error {
-	panic("unimplemented")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CategoryService) DeleteCategories(ctx context.Context, ids *dto.DeleteRequest) error {
+	var err error
+	if len(ids.Ids) == 1 {
+		err = s.repo.Delete(ctx, ids.Ids[0])
+	} else {
+		err = s.repo.DeleteByIds(ctx, ids.Ids)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *CategoryService) RestoreCategories(ctx context.Context, ids *dto.RestoreRequest) error {
+	err := s.repo.RestoreByIds(ctx, ids.Ids)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

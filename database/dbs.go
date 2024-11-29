@@ -23,6 +23,8 @@ type IDatabase interface {
 	CreateInBatches(ctx context.Context, docs any, batchSize int) error
 	Update(ctx context.Context, doc any) error
 	Delete(ctx context.Context, value any, opts ...FindOption) error
+	DeleteByIds(ctx context.Context, doc any, ids []string) error
+	RestoreByIds(ctx context.Context, doc any, ids []string) error
 	FindById(ctx context.Context, id string, result any) error
 	FindOne(ctx context.Context, result any, opts ...FindOption) error
 	Find(ctx context.Context, result any, opts ...FindOption) error
@@ -127,6 +129,20 @@ func (d *Database) Delete(ctx context.Context, value any, opts ...FindOption) er
 
 	query := d.applyOptions(opts...)
 	return query.Delete(value).Error
+}
+
+func (d *Database) DeleteByIds(ctx context.Context, doc any, ids []string) error {
+	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
+	defer cancel()
+
+	return d.db.Where("id IN ?", ids).Delete(doc).Error
+}
+
+func (d *Database) RestoreByIds(ctx context.Context, doc any, ids []string) error {
+	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
+	defer cancel()
+
+	return d.db.Model(doc).Unscoped().Where("id IN ?", ids).Update("deleted_at", nil).Error
 }
 
 func (d *Database) FindById(ctx context.Context, id string, result any) error {

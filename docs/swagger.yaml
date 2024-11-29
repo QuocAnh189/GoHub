@@ -8,17 +8,20 @@ definitions:
     type: object
   dto.RefreshTokenReq:
     properties:
-      refresh_token:
+      refreshToken:
         type: string
     required:
-    - refresh_token
+    - refreshToken
     type: object
   dto.ResetPasswordReq:
     properties:
-      refresh_token:
+      new_password:
+        type: string
+      password:
         type: string
     required:
-    - refresh_token
+    - new_password
+    - password
     type: object
   dto.SignInReq:
     properties:
@@ -34,8 +37,6 @@ definitions:
     properties:
       email:
         type: string
-      fullName:
-        type: string
       password:
         type: string
       phoneNumber:
@@ -44,7 +45,6 @@ definitions:
         type: string
     required:
     - email
-    - fullName
     - password
     - phoneNumber
     - userName
@@ -53,14 +53,14 @@ definitions:
     properties:
       email:
         type: string
-      fullName:
+      phoneNumber:
         type: string
-      phone_number:
+      userName:
         type: string
     required:
     - email
-    - fullName
-    - phone_number
+    - phoneNumber
+    - userName
     type: object
   response.Response:
     properties:
@@ -379,6 +379,35 @@ paths:
       tags:
       - Auth
   /api/v1/categories:
+    delete:
+      description: Deletes the category with the specified ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Delete a categories
+      tags:
+      - Categories
     get:
       description: Fetches a paginated list of categories based on the provided filter
         parameters.
@@ -511,6 +540,36 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Update an existing category
+      tags:
+      - Categories
+  /api/v1/categories/restore:
+    patch:
+      description: Deletes the category with the specified ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Restore a categories
       tags:
       - Categories
   /api/v1/commands/get-in-function/{functionId}:

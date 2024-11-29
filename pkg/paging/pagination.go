@@ -12,6 +12,8 @@ type Pagination struct {
 	Skip        int64 `json:"skip"`
 	TotalCount  int64 `json:"totalCount"`
 	TotalPages  int64 `json:"totalPages"`
+	HasPrevious bool  `json:"hasPrevious"`
+	HasNext     bool  `json:"hasNext"`
 }
 
 func NewPagination(page int64, pageSize int64, total int64) *Pagination {
@@ -32,6 +34,21 @@ func NewPagination(page int64, pageSize int64, total int64) *Pagination {
 
 	pageInfo.CurrentPage = page
 	pageInfo.Skip = (page - 1) * pageInfo.PageSize
+
+	if page == 1 {
+		pageInfo.HasPrevious = false
+		pageInfo.HasNext = true
+	}
+
+	if page > 1 && page < totalPage {
+		pageInfo.HasPrevious = true
+		pageInfo.HasNext = true
+	}
+
+	if page == totalPage {
+		pageInfo.HasPrevious = true
+		pageInfo.HasNext = false
+	}
 
 	return &pageInfo
 }

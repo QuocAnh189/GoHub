@@ -512,6 +512,92 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Deletes the category with the specified ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete a categories",
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/categories/restore": {
+            "patch": {
+                "description": "Deletes the category with the specified ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Restore a categories",
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
             }
         },
         "/api/v1/categories/{categoryId}": {
@@ -2644,10 +2730,10 @@ const docTemplate = `{
         "dto.RefreshTokenReq": {
             "type": "object",
             "required": [
-                "refresh_token"
+                "refreshToken"
             ],
             "properties": {
-                "refresh_token": {
+                "refreshToken": {
                     "type": "string"
                 }
             }
@@ -2655,10 +2741,14 @@ const docTemplate = `{
         "dto.ResetPasswordReq": {
             "type": "object",
             "required": [
-                "refresh_token"
+                "new_password",
+                "password"
             ],
             "properties": {
-                "refresh_token": {
+                "new_password": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }
@@ -2682,16 +2772,12 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "fullName",
                 "password",
                 "phoneNumber",
                 "userName"
             ],
             "properties": {
                 "email": {
-                    "type": "string"
-                },
-                "fullName": {
                     "type": "string"
                 },
                 "password": {
@@ -2709,17 +2795,17 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "email",
-                "fullName",
-                "phone_number"
+                "phoneNumber",
+                "userName"
             ],
             "properties": {
                 "email": {
                     "type": "string"
                 },
-                "fullName": {
+                "phoneNumber": {
                     "type": "string"
                 },
-                "phone_number": {
+                "userName": {
                     "type": "string"
                 }
             }
