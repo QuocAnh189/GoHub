@@ -3,12 +3,13 @@ package paging
 import "math"
 
 const (
-	DefaultPageSize int64 = 10
+	DefaultPageSize int64 = 20
 )
 
 type Pagination struct {
 	CurrentPage int64 `json:"currentPage"`
 	PageSize    int64 `json:"pageSize"`
+	TakeAll     bool  `json:"takeAll"`
 	Skip        int64 `json:"skip"`
 	TotalCount  int64 `json:"totalCount"`
 	TotalPages  int64 `json:"totalPages"`

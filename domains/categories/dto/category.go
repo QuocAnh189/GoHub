@@ -16,6 +16,7 @@ type ListCategoryReq struct {
 	Limit     int64  `json:"-" form:"limit"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
+	TakeAll   bool   `json:"-" form:"take_all"`
 }
 
 type ListCategoryRes struct {

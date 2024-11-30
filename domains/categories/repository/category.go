@@ -51,6 +51,10 @@ func (c *CategoryRepository) ListCategories(ctx context.Context, req *dto.ListCa
 
 	pagination := paging.NewPagination(req.Page, req.Limit, total)
 
+	if req.TakeAll {
+		pagination.PageSize = total
+	}
+
 	var categories []*model.Category
 	if err := c.db.Find(
 		ctx,
