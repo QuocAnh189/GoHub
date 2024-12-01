@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/categories/dto"
 	"gohub/domains/categories/model"
 	"gohub/domains/categories/repository"
+	"gohub/pkg/messages"
 	"gohub/pkg/paging"
 	"gohub/pkg/utils"
 
@@ -39,10 +41,15 @@ func (s *CategoryService) CreateCategory(ctx context.Context, req *dto.CreateCat
 		return nil, err
 	}
 
+	_, err := s.repo.GetCategoryByName(ctx, req.Name)
+	if err == nil {
+		return nil, errors.New(messages.CategoryNameExists)
+	}
+
 	var category model.Category
 	utils.MapStruct(&category, req)
 
-	err := s.repo.Create(ctx, &category)
+	err = s.repo.Create(ctx, &category)
 	if err != nil {
 		logger.Errorf("Create fail, error: %s", err)
 		return nil, err
@@ -77,7 +84,12 @@ func (s *CategoryService) UpdateCategory(ctx context.Context, id string, req *dt
 	category, err := s.repo.GetCategoryById(ctx, id)
 	if err != nil {
 		logger.Errorf("Update.GetCategoryByID fail, id: %s, error: %s", id, err)
-		return nil, err
+		return nil, errors.New(messages.CategoryNotFound)
+	}
+
+	categoryExistsName, err := s.repo.GetCategoryByName(ctx, req.Name)
+	if err == nil && categoryExistsName.Name != category.Name {
+		return nil, errors.New(messages.CategoryNameExists)
 	}
 
 	utils.MapStruct(category, req)

@@ -4,7 +4,6 @@ import (
 	"context"
 	"gohub/database"
 	"gohub/domains/commands/model"
-	relation "gohub/domains/shares/model"
 )
 
 type ICommandRepository interface {
@@ -24,7 +23,7 @@ func (c *CommandRepo) GetCommandInFunction(ctx context.Context, functionId strin
 	var commands []*model.Command
 
 	var commandIds []string
-	err := c.db.GetDB().Model(&relation.CommandInFunction{}).
+	err := c.db.GetDB().Model(&model.CommandInFunction{}).
 		Select("command_id").
 		Where("function_id = ?", functionId).
 		Find(&commandIds).Error
@@ -45,7 +44,7 @@ func (c *CommandRepo) GetCommandNotInFunction(ctx context.Context, functionId st
 	var commands []*model.Command
 
 	var commandIds []string
-	err := c.db.GetDB().Model(&relation.CommandInFunction{}).
+	err := c.db.GetDB().Model(&model.CommandInFunction{}).
 		Select("command_id").
 		Where("function_id = ?", functionId).
 		Find(&commandIds).Error

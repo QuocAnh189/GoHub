@@ -43,18 +43,16 @@ func (auth *AuthHandler) ValidateUser(c *gin.Context) {
 		return
 	}
 
-	fmt.Print(req)
-
 	err := auth.service.ValidateUser(c, &req)
 	if err != nil {
 		logger.Error(err.Error())
 		switch err.Error() {
-		case messages.RegisterEmailExists:
-			response.Error(c, http.StatusUnprocessableEntity, err, messages.RegisterEmailExists)
-		case messages.RegisterUserNameExists:
-			response.Error(c, http.StatusUnprocessableEntity, err, messages.RegisterUserNameExists)
-		case messages.RegisterPhoneNumberExists:
-			response.Error(c, http.StatusUnprocessableEntity, err, messages.RegisterPhoneNumberExists)
+		case messages.EmailAlreadyExists:
+			response.Error(c, http.StatusUnprocessableEntity, err, messages.EmailAlreadyExists)
+		case messages.UserNameAlreadyExists:
+			response.Error(c, http.StatusUnprocessableEntity, err, messages.UserNameAlreadyExists)
+		case messages.PhoneNumberAlreadyExists:
+			response.Error(c, http.StatusUnprocessableEntity, err, messages.PhoneNumberAlreadyExists)
 		default:
 			response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
 		}
@@ -82,14 +80,14 @@ func (auth *AuthHandler) SignUp(c *gin.Context) {
 		return
 	}
 
-	user, accessToken, refreshToken, err := auth.service.SignUp(c, &req)
+	accessToken, refreshToken, err := auth.service.SignUp(c, &req)
 	if err != nil {
 		logger.Error(err.Error())
 		switch err.Error() {
-		case messages.RegisterEmailExists:
-			response.Error(c, http.StatusUnprocessableEntity, err, messages.RegisterEmailExists)
-		case messages.RegisterUserNameExists:
-			response.Error(c, http.StatusUnprocessableEntity, err, messages.RegisterUserNameExists)
+		case messages.EmailAlreadyExists:
+			response.Error(c, http.StatusUnprocessableEntity, err, messages.EmailAlreadyExists)
+		case messages.UserNameAlreadyExists:
+			response.Error(c, http.StatusUnprocessableEntity, err, messages.UserNameAlreadyExists)
 		default:
 			response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
 		}
@@ -97,7 +95,6 @@ func (auth *AuthHandler) SignUp(c *gin.Context) {
 	}
 
 	var res dto.SignUpRes
-	utils.MapStruct(&res.User, user)
 	res.AccessToken = accessToken
 	res.RefreshToken = refreshToken
 
@@ -122,7 +119,7 @@ func (auth *AuthHandler) SignIn(c *gin.Context) {
 		return
 	}
 
-	user, accessToken, refreshToken, err := auth.service.SignIn(c, &req)
+	accessToken, refreshToken, err := auth.service.SignIn(c, &req)
 	if err != nil {
 		logger.Error("Failed to login ", err.Error())
 		switch err.Error() {
@@ -135,7 +132,6 @@ func (auth *AuthHandler) SignIn(c *gin.Context) {
 	}
 
 	var res dto.SignInRes
-	utils.MapStruct(&res.User, &user)
 	res.AccessToken = accessToken
 	res.RefreshToken = refreshToken
 
@@ -296,14 +292,16 @@ func (auth *AuthHandler) GetProfile(c *gin.Context) {
 		return
 	}
 
-	user, err := auth.service.GetProfile(c, userID)
+	user, calculation, err := auth.service.GetProfile(c, userID)
 	if err != nil {
 		logger.Error(err.Error())
 		response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
 		return
 	}
 
-	var res dto.ProfileResponse
+	var res dto.ProfileRes
 	utils.MapStruct(&res, &user)
+	res.TotalFollower = calculation.TotalFollower
+	res.TotalFollowing = calculation.TotalFollowing
 	response.JSON(c, http.StatusOK, res)
 }

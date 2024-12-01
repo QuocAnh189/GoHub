@@ -51,5 +51,10 @@ func NewPagination(page int64, pageSize int64, total int64) *Pagination {
 		pageInfo.HasNext = false
 	}
 
+	if totalPage == 1 {
+		pageInfo.HasPrevious = false
+		pageInfo.HasNext = false
+	}
+
 	return &pageInfo
 }

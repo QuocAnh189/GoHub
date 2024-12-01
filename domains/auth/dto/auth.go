@@ -1,8 +1,7 @@
 package dto
 
 import (
-	"gohub/domains/users/model"
-	"time"
+	"gohub/domains/users/dto"
 )
 
 type ValidateUserReq struct {
@@ -19,9 +18,8 @@ type SignUpReq struct {
 }
 
 type SignUpRes struct {
-	User         model.User `json:"user"`
-	AccessToken  string     `json:"accessToken" validate:"required"`
-	RefreshToken string     `json:"refreshToken" validate:"required"`
+	AccessToken  string `json:"accessToken" validate:"required"`
+	RefreshToken string `json:"refreshToken" validate:"required"`
 }
 
 type SignInReq struct {
@@ -30,9 +28,8 @@ type SignInReq struct {
 }
 
 type SignInRes struct {
-	User         model.User `json:"user"`
-	AccessToken  string     `json:"accessToken" validate:"required"`
-	RefreshToken string     `json:"refreshToken" validate:"required"`
+	AccessToken  string `json:"accessToken" validate:"required"`
+	RefreshToken string `json:"refreshToken" validate:"required"`
 }
 
 type SignOutRes struct {
@@ -63,19 +60,18 @@ type ResetPasswordRes struct {
 	Message string `json:"message"`
 }
 
-type ProfileResponse struct {
-	ID              string     `json:"id"`
-	Email           string     `json:"email"`
-	AvatarUrl       string     `json:"avatarUrl"`
-	AvatarFileName  string     `json:"avatarFileName"`
-	FullName        string     `json:"fullName"`
-	UserName        string     `json:"userName"`
-	PhoneNumber     string     `json:"phoneNumber"`
-	Dob             *time.Time `json:"dob"`
-	Gender          string     `json:"gender"`
-	Bio             string     `json:"bio"`
-	UserFollower    int32      `json:"userFollowers"`
-	UserFollowing   int32      `json:"userFollowing"`
-	Role            string     `json:"roles"`
-	EventFavourites int32      `json:"eventFavourites"`
+type ProfileRes struct {
+	ID             string      `json:"id"`
+	Email          string      `json:"email"`
+	AvatarUrl      string      `json:"avatarUrl"`
+	AvatarFileName string      `json:"avatarFileName"`
+	FullName       string      `json:"fullName"`
+	UserName       string      `json:"userName"`
+	PhoneNumber    string      `json:"phoneNumber"`
+	Dob            string      `json:"dob"`
+	Gender         string      `json:"gender"`
+	Bio            string      `json:"bio"`
+	TotalFollower  int64       `json:"totalFollower"`
+	TotalFollowing int64       `json:"totalFollowing"`
+	Roles          []*dto.Role `json:"roles"`
 }

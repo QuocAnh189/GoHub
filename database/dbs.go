@@ -24,6 +24,7 @@ type IDatabase interface {
 	Update(ctx context.Context, doc any) error
 	Delete(ctx context.Context, value any, opts ...FindOption) error
 	DeleteByIds(ctx context.Context, doc any, ids []string) error
+	ForceDelete(ctx context.Context, value any, opts ...FindOption) error
 	RestoreByIds(ctx context.Context, doc any, ids []string) error
 	FindById(ctx context.Context, id string, result any) error
 	FindOne(ctx context.Context, result any, opts ...FindOption) error
@@ -136,6 +137,14 @@ func (d *Database) DeleteByIds(ctx context.Context, doc any, ids []string) error
 	defer cancel()
 
 	return d.db.Where("id IN ?", ids).Delete(doc).Error
+}
+
+func (d *Database) ForceDelete(ctx context.Context, value any, opts ...FindOption) error {
+	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
+	defer cancel()
+
+	query := d.applyOptions(opts...)
+	return query.Unscoped().Delete(value).Error
 }
 
 func (d *Database) RestoreByIds(ctx context.Context, doc any, ids []string) error {

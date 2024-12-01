@@ -3,6 +3,7 @@ package http
 import (
 	"gohub/database"
 	"gohub/domains/auth/service"
+	roleRepository "gohub/domains/roles/repository"
 	"gohub/domains/users/repository"
 	middleware "gohub/pkg/middlewares"
 
@@ -12,7 +13,8 @@ import (
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {
 	userRepository := repository.NewUserRepository(sqlDB)
-	AuthService := service.NewAuthService(validator, userRepository)
+	roleRepository := roleRepository.NewRoleRepository(sqlDB)
+	AuthService := service.NewAuthService(validator, userRepository, roleRepository)
 	authHandler := NewAuthHandler(AuthService)
 
 	authMiddleware := middleware.JWTAuth()

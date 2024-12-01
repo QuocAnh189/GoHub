@@ -9,6 +9,9 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"gohub/domains/auth/dto"
+	roleModel "gohub/domains/roles/model"
+	roleRepository "gohub/domains/roles/repository"
+	dtoUser "gohub/domains/users/dto"
 	"gohub/domains/users/model"
 	"gohub/domains/users/repository"
 	"gohub/pkg/jwt"
@@ -21,26 +24,31 @@ import (
 
 type IAuthService interface {
 	ValidateUser(ctx context.Context, req *dto.ValidateUserReq) error
-	SignUp(ctx context.Context, req *dto.SignUpReq) (*model.User, string, string, error)
-	SignIn(ctx context.Context, req *dto.SignInReq) (*model.User, string, string, error)
+	SignUp(ctx context.Context, req *dto.SignUpReq) (string, string, error)
+	SignIn(ctx context.Context, req *dto.SignInReq) (string, string, error)
 	SignOut(ctx context.Context, token string) error
 	ExternalSignIn(w http.ResponseWriter, r *http.Request)
 	ExternalCallback(w http.ResponseWriter, r *http.Request) (goth.User, error)
 	RefreshToken(ctx context.Context, userId string) (string, error)
 	ForgotPassword(ctx context.Context, email string) error
 	ResetPassword(ctx context.Context, id string, req *dto.ResetPasswordReq) error
-	GetProfile(ctx context.Context, id string) (*model.User, error)
+	GetProfile(ctx context.Context, id string) (*model.User, *dtoUser.Calculation, error)
 }
 
 type AuthService struct {
 	validator validation.Validation
-	repo      repository.IUserRepository
+	authRepo  repository.IUserRepository
+	roleRepo  roleRepository.IRoleRepository
 }
 
-func NewAuthService(validator validation.Validation, repo repository.IUserRepository) *AuthService {
+func NewAuthService(
+	validator validation.Validation,
+	authRepo repository.IUserRepository,
+	roleRepo roleRepository.IRoleRepository) *AuthService {
 	return &AuthService{
 		validator: validator,
-		repo:      repo,
+		authRepo:  authRepo,
+		roleRepo:  roleRepo,
 	}
 }
 
@@ -49,88 +57,99 @@ func (a *AuthService) ValidateUser(ctx context.Context, req *dto.ValidateUserReq
 		return err
 	}
 
-	existingEmail, err := a.repo.GetUserByEmail(ctx, req.Email)
+	existingEmail, err := a.authRepo.GetUserByEmail(ctx, req.Email)
 	if err == nil && existingEmail != nil {
-		return errors.New(messages.RegisterEmailExists)
+		return errors.New(messages.EmailAlreadyExists)
 	}
 
-	existingUserName, err := a.repo.GetUserByUserName(ctx, req.UserName)
+	existingUserName, err := a.authRepo.GetUserByUserName(ctx, req.UserName)
 	if err == nil && existingUserName != nil {
-		return errors.New(messages.RegisterUserNameExists)
+		return errors.New(messages.UserNameAlreadyExists)
 	}
 
-	existingPhoneNumber, err := a.repo.GetUserByPhoneNumber(ctx, req.PhoneNumber)
+	existingPhoneNumber, err := a.authRepo.GetUserByPhoneNumber(ctx, req.PhoneNumber)
 	if err == nil && existingPhoneNumber != nil {
-		return errors.New(messages.RegisterPhoneNumberExists)
+		return errors.New(messages.PhoneNumberAlreadyExists)
 	}
 
 	return nil
 }
 
-func (a *AuthService) SignUp(ctx context.Context, req *dto.SignUpReq) (*model.User, string, string, error) {
+func (a *AuthService) SignUp(ctx context.Context, req *dto.SignUpReq) (string, string, error) {
 	if err := a.validator.ValidateStruct(req); err != nil {
-		return nil, "", "", err
+		return "", "", err
 	}
 
-	existingEmail, err := a.repo.GetUserByEmail(ctx, req.Email)
+	existingEmail, err := a.authRepo.GetUserByEmail(ctx, req.Email)
 	if err == nil && existingEmail != nil {
-		return nil, "", "", errors.New(messages.RegisterEmailExists)
+		return "", "", errors.New(messages.EmailAlreadyExists)
 	}
 
-	existingUserName, err := a.repo.GetUserByUserName(ctx, req.UserName)
+	existingUserName, err := a.authRepo.GetUserByUserName(ctx, req.UserName)
 	if err == nil && existingUserName != nil {
-		return nil, "", "", errors.New(messages.RegisterUserNameExists)
+		return "", "", errors.New(messages.UserNameAlreadyExists)
 	}
+
+	existingPhoneNumber, err := a.authRepo.GetUserByPhoneNumber(ctx, req.PhoneNumber)
+	if err == nil && existingPhoneNumber != nil {
+		return "", "", errors.New(messages.PhoneNumberAlreadyExists)
+	}
+
+	var userRoles []*model.UserRole
+	var role *roleModel.Role
+	role, err = a.roleRepo.GetRoleByName(ctx, "Organizer")
+	if err != nil {
+		return "", "", err
+	}
+	userRoles = append(userRoles, &model.UserRole{RoleId: role.ID})
 
 	var user *model.User
 	utils.MapStruct(&user, &req)
-	err = a.repo.Create(ctx, user)
+	err = a.authRepo.CreateUser(ctx, user, userRoles)
 	if err != nil {
 		logger.Errorf("Register.Create fail, email: %s, error: %s", req.Email, err)
-		return nil, "", "", err
+		return "", "", err
 	}
 
 	tokenData := map[string]interface{}{
 		"id":    user.ID,
 		"email": user.Email,
-		"role":  user.Role,
 	}
 
 	accessToken := jwt.GenerateAccessToken(tokenData)
 	refreshToken := jwt.GenerateRefreshToken(tokenData)
 
-	return user, accessToken, refreshToken, nil
+	return accessToken, refreshToken, nil
 }
 
-func (a *AuthService) SignIn(ctx context.Context, req *dto.SignInReq) (*model.User, string, string, error) {
+func (a *AuthService) SignIn(ctx context.Context, req *dto.SignInReq) (string, string, error) {
 	if err := a.validator.ValidateStruct(req); err != nil {
-		return nil, "", "", err
+		return "", "", err
 	}
 
-	user, err := a.repo.GetUserByEmailOrUsername(ctx, req.Identity)
+	user, err := a.authRepo.GetUserByEmailOrUsername(ctx, req.Identity)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, "", "", errors.New(messages.AccountOrPasswordWrong)
+			return "", "", errors.New(messages.AccountOrPasswordWrong)
 		}
 		logger.Errorf("Login.GetUserByEmail fail, email: %s, error: %s", req.Identity, err)
-		return nil, "", "", err
+		return "", "", err
 	}
 
 	fmt.Print()
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		return nil, "", "", errors.New(messages.AccountOrPasswordWrong)
+		return "", "", errors.New(messages.AccountOrPasswordWrong)
 	}
 
 	tokenData := map[string]interface{}{
 		"id":    user.ID,
 		"email": user.Email,
-		"role":  user.Role,
 	}
 
 	accessToken := jwt.GenerateAccessToken(tokenData)
 	refreshToken := jwt.GenerateRefreshToken(tokenData)
 
-	return user, accessToken, refreshToken, nil
+	return accessToken, refreshToken, nil
 }
 
 func (a *AuthService) SignOut(ctx context.Context, token string) error {
@@ -151,7 +170,7 @@ func (a *AuthService) ExternalCallback(w http.ResponseWriter, r *http.Request) (
 }
 
 func (a *AuthService) RefreshToken(ctx context.Context, userId string) (string, error) {
-	user, err := a.repo.GetUserByID(ctx, userId)
+	user, _, err := a.authRepo.GetUserByID(ctx, userId, false)
 	if err != nil {
 		logger.Errorf("RefreshToken.GetUserByID fail, id: %s, error: %s", userId, err)
 		return "", err
@@ -160,7 +179,6 @@ func (a *AuthService) RefreshToken(ctx context.Context, userId string) (string, 
 	tokenData := map[string]interface{}{
 		"id":    user.ID,
 		"email": user.Email,
-		"role":  user.Role,
 	}
 	accessToken := jwt.GenerateAccessToken(tokenData)
 	return accessToken, nil
@@ -174,7 +192,7 @@ func (a *AuthService) ResetPassword(ctx context.Context, id string, req *dto.Res
 	if err := a.validator.ValidateStruct(req); err != nil {
 		return err
 	}
-	user, err := a.repo.GetUserByID(ctx, id)
+	user, _, err := a.authRepo.GetUserByID(ctx, id, false)
 	if err != nil {
 		logger.Errorf("ChangePassword.GetUserByID fail, id: %s, error: %s", id, err)
 		return err
@@ -185,7 +203,7 @@ func (a *AuthService) ResetPassword(ctx context.Context, id string, req *dto.Res
 	}
 
 	user.Password = utils.HashAndSalt([]byte(req.NewPassword))
-	err = a.repo.Update(ctx, user)
+	err = a.authRepo.UpdateUser(ctx, user)
 	if err != nil {
 		logger.Errorf("ChangePassword.Update fail, id: %s, error: %s", id, err)
 		return err
@@ -194,12 +212,12 @@ func (a *AuthService) ResetPassword(ctx context.Context, id string, req *dto.Res
 	return nil
 }
 
-func (a *AuthService) GetProfile(ctx context.Context, id string) (*model.User, error) {
-	user, err := a.repo.GetUserByID(ctx, id)
+func (a *AuthService) GetProfile(ctx context.Context, id string) (*model.User, *dtoUser.Calculation, error) {
+	user, calculation, err := a.authRepo.GetUserByID(ctx, id, true)
 	if err != nil {
 		logger.Errorf("GetUserByID fail, id: %s, error: %s", id, err)
-		return nil, err
+		return nil, nil, err
 	}
 
-	return user, nil
+	return user, calculation, nil
 }

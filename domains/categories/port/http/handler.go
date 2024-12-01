@@ -4,6 +4,7 @@ import (
 	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/categories/dto"
 	"gohub/domains/categories/service"
+	"gohub/pkg/messages"
 	"gohub/pkg/response"
 	"gohub/pkg/utils"
 	"net/http"
@@ -40,8 +41,13 @@ func (h *CategoryHandler) CreateCategory(c *gin.Context) {
 
 	category, err := h.service.CreateCategory(c, &req)
 	if err != nil {
-		logger.Error("Failed to get body", err.Error())
-		response.Error(c, http.StatusInternalServerError, err, "Failed to create category")
+		logger.Error("Failed to create category ", err.Error())
+		switch err.Error() {
+		case messages.CategoryNameExists:
+			response.Error(c, http.StatusConflict, err, messages.CategoryNameExists)
+		default:
+			response.Error(c, http.StatusInternalServerError, err, "Failed to create category")
+		}
 		return
 	}
 
@@ -115,7 +121,7 @@ func (h *CategoryHandler) GetCategoryById(c *gin.Context) {
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
 //		@Router		 /api/v1/categories/{categoryId} [put]
 func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
-	productId := c.Param("id")
+	categoryId := c.Param("id")
 	var req dto.UpdateCategoryReq
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error("Failed to get body", err)
@@ -123,10 +129,15 @@ func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	category, err := h.service.UpdateCategory(c, productId, &req)
+	category, err := h.service.UpdateCategory(c, categoryId, &req)
 	if err != nil {
-		logger.Error("Failed to get body", err.Error())
-		response.Error(c, http.StatusInternalServerError, err, "Failed to create category")
+		logger.Error("Failed to create category ", err.Error())
+		switch err.Error() {
+		case messages.CategoryNameExists:
+			response.Error(c, http.StatusConflict, err, messages.CategoryNameExists)
+		default:
+			response.Error(c, http.StatusInternalServerError, err, "Failed to update category")
+		}
 		return
 	}
 

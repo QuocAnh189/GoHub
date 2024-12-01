@@ -1,17 +1,18 @@
 package model
 
 import (
-	relation "gohub/domains/shares/model"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Role struct {
-	gorm.Model
-	ID        string               `json:"id" gorm:"unique;not null;index;primary_key"`
-	Name      string               `json:"name" gorm:"unique;not null"`
-	User      []*relation.UserRole `json:"users" gorm:"many2many:user_roles;"`
+	ID        string         `json:"id" gorm:"unique;not null;index;primary_key"`
+	Name      string         `json:"name" gorm:"unique;not null"`
+	CreatedAt time.Time      `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt time.Time      `json:"updatedAt" gorm:"autoUpdateTime"`
+	DeletedAt gorm.DeletedAt `json:"deletedAt" gorm:"index"`
 }
 
 func (r *Role) BeforeCreate(tx *gorm.DB) error {

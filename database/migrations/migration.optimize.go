@@ -16,11 +16,9 @@ import (
 	permissionModel "gohub/domains/permissions/model"
 	reviewModel "gohub/domains/reviews/model"
 	roleModel "gohub/domains/roles/model"
-	relationModel "gohub/domains/shares/model"
 	ticketModel "gohub/domains/tickets/model"
 	userModel "gohub/domains/users/model"
 )
-
 
 func AutoMigrateOptimize(db *database.Database) error {
 	tables := []interface{}{
@@ -44,13 +42,13 @@ func AutoMigrateOptimize(db *database.Database) error {
 		&paymentModel.Payment{},
 		&paymentModel.PaymentLine{},
 		&paymentModel.PaymentMethod{},
-		&relationModel.CommandInFunction{},
-		&relationModel.EventCategory{},
-		&relationModel.EventCoupons{},
-		&relationModel.EventFavourite{},
-		&relationModel.Invitation{},
-		&relationModel.UserPayment{},
-		&relationModel.UserRole{},
+		&commandModel.CommandInFunction{},
+		&eventModel.EventCategory{},
+		&eventModel.EventCoupons{},
+		&eventModel.EventFavourite{},
+		&eventModel.Invitation{},
+		&userModel.UserPayment{},
+		&userModel.UserRole{},
 	}
 
 	for _, table := range tables {

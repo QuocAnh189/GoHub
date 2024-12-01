@@ -17,6 +17,7 @@ type ICategoryRepository interface {
 	RestoreByIds(ctx context.Context, ids []string) error
 	ListCategories(ctx context.Context, req *dto.ListCategoryReq) ([]*model.Category, *paging.Pagination, error)
 	GetCategoryById(ctx context.Context, id string) (*model.Category, error)
+	GetCategoryByName(ctx context.Context, name string) (*model.Category, error)
 }
 
 type CategoryRepository struct {
@@ -73,6 +74,16 @@ func (c *CategoryRepository) ListCategories(ctx context.Context, req *dto.ListCa
 func (c *CategoryRepository) GetCategoryById(ctx context.Context, id string) (*model.Category, error) {
 	var category model.Category
 	if err := c.db.FindById(ctx, id, &category); err != nil {
+		return nil, err
+	}
+
+	return &category, nil
+}
+
+func (c *CategoryRepository) GetCategoryByName(ctx context.Context, name string) (*model.Category, error) {
+	var category model.Category
+	query := database.NewQuery("name = ?", name)
+	if err := c.db.FindOne(ctx, &category, database.WithQuery(query)); err != nil {
 		return nil, err
 	}
 
