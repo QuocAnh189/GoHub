@@ -568,9 +568,9 @@ const docTemplate = `{
                 "summary": "Restore a categories",
                 "responses": {
                     "200": {
-                        "description": "Category updated successfully",
+                        "description": "Restore category successfully",
                         "schema": {
-                            "$ref": "#/definitions/response.Response"
+                            "type": "string"
                         }
                     },
                     "401": {
@@ -991,50 +991,6 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden - User does not have the required permissions",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error - An error occurred while processing the request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/events/delete-permanently/{eventId}": {
-            "delete": {
-                "description": "Permanently deletes an existing event based on the provided event ID.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Permanently delete an event",
-                "responses": {
-                    "200": {
-                        "description": "Event permanently deleted successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - User not authenticated",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - User does not have the required permissions",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found - Event with the specified ID not found",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1481,10 +1437,10 @@ const docTemplate = `{
                 "tags": [
                     "Events"
                 ],
-                "summary": "Delete an existing event",
+                "summary": "Delete an existing multiple event",
                 "responses": {
                     "200": {
-                        "description": "Event deleted successfully",
+                        "description": "Events deleted successfully",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }

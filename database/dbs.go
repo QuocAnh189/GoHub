@@ -29,7 +29,9 @@ type IDatabase interface {
 	FindById(ctx context.Context, id string, result any) error
 	FindOne(ctx context.Context, result any, opts ...FindOption) error
 	Find(ctx context.Context, result any, opts ...FindOption) error
+	FindUnscoped(ctx context.Context, result any, opts ...FindOption) error
 	Count(ctx context.Context, model any, total *int64, opts ...FindOption) error
+	CountUnscoped(ctx context.Context, model any, total *int64, opts ...FindOption) error
 }
 
 type Query struct {
@@ -189,12 +191,36 @@ func (d *Database) Find(ctx context.Context, result any, opts ...FindOption) err
 	return nil
 }
 
+func (d *Database) FindUnscoped(ctx context.Context, result any, opts ...FindOption) error {
+	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
+	defer cancel()
+
+	query := d.applyOptions(opts...)
+	if err := query.Unscoped().Where("deleted_at IS NOT NULL").Find(result).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (d *Database) Count(ctx context.Context, model any, total *int64, opts ...FindOption) error {
 	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
 	defer cancel()
 
 	query := d.applyOptions(opts...)
 	if err := query.Model(model).Count(total).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Database) CountUnscoped(ctx context.Context, model any, total *int64, opts ...FindOption) error {
+	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
+	defer cancel()
+
+	query := d.applyOptions(opts...)
+	if err := query.Unscoped().Where("deleted_at IS NOT NULL").Model(model).Count(total).Error; err != nil {
 		return err
 	}
 

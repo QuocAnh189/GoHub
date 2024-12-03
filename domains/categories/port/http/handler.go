@@ -131,7 +131,7 @@ func (h *CategoryHandler) UpdateCategory(c *gin.Context) {
 
 	category, err := h.service.UpdateCategory(c, categoryId, &req)
 	if err != nil {
-		logger.Error("Failed to create category ", err.Error())
+		logger.Error("Failed to update category ", err.Error())
 		switch err.Error() {
 		case messages.CategoryNameExists:
 			response.Error(c, http.StatusConflict, err, messages.CategoryNameExists)
@@ -180,7 +180,7 @@ func (h *CategoryHandler) DeleteCategory(c *gin.Context) {
 //		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
 //		@Router		 /api/v1/categories [delete]
-func (h *CategoryHandler) DeleteCategories(c *gin.Context) {
+func (h *CategoryHandler) DeleteMultipleCategory(c *gin.Context) {
 	var req dto.DeleteRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {

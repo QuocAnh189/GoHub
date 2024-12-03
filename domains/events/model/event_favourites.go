@@ -10,6 +10,7 @@ type EventFavourite struct {
 	ID        string         `json:"id" gorm:"unique;not null;index;primary_key"`
 	UserId    string         `json:"userId" gorm:"not null"`
 	EventId   string         `json:"eventId" gorm:"not null"`
+	Event     *Event         `json:"event"`
 	CreatedAt time.Time      `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt time.Time      `json:"updatedAt" gorm:"autoUpdateTime"`
 	DeletedAt gorm.DeletedAt `json:"deletedAt" gorm:"index"`
