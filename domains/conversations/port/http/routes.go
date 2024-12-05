@@ -4,6 +4,7 @@ import (
 	"gohub/database"
 	"gohub/domains/conversations/repository"
 	"gohub/domains/conversations/service"
+	middleware "gohub/pkg/middlewares"
 
 	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
@@ -14,11 +15,14 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 	conversationService := service.NewConversationService(validator, conversationRepository)
 	conversationHandler := NewConversationHandler(conversationService)
 
-	conversationRoute := r.Group("/conversations")
+	authMiddleware := middleware.JWTAuth()
+	conversationRoute := r.Group("/conversations").Use(authMiddleware)
 	{
-		conversationRoute.GET("/get-by-event/:eventId", conversationHandler.GetConversationsByEvent)
+		conversationRoute.GET("/get-by-organizer/:organizerId", conversationHandler.GetConversationsByOrganizer)
 		conversationRoute.GET("/get-by-user/:userId", conversationHandler.GetConversationsByUser)
-		conversationRoute.GET("/:id/messages", conversationHandler.GetConversationsByEvent)
+		conversationRoute.GET("/:id/messages", conversationHandler.GetMessagesByConversation)
+		conversationRoute.POST("/:id/messages", conversationHandler.CreateMessage)
+		conversationRoute.PATCH("/:id/messages/:messageId", conversationHandler.UpdateMessage)
+		conversationRoute.DELETE("/:id/messages/:messageId", conversationHandler.DeleteMessage)
 	}
-
 }

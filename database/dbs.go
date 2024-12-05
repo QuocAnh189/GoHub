@@ -27,6 +27,7 @@ type IDatabase interface {
 	ForceDelete(ctx context.Context, value any, opts ...FindOption) error
 	RestoreByIds(ctx context.Context, doc any, ids []string) error
 	FindById(ctx context.Context, id string, result any) error
+	FindDeleteById(ctx context.Context, id string, result any) error
 	FindOne(ctx context.Context, result any, opts ...FindOption) error
 	Find(ctx context.Context, result any, opts ...FindOption) error
 	FindUnscoped(ctx context.Context, result any, opts ...FindOption) error
@@ -161,6 +162,17 @@ func (d *Database) FindById(ctx context.Context, id string, result any) error {
 	defer cancel()
 
 	if err := d.db.Where("id = ? ", id).First(result).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Database) FindDeleteById(ctx context.Context, id string, result any) error {
+	ctx, cancel := context.WithTimeout(ctx, DatabaseTimeout)
+	defer cancel()
+
+	if err := d.db.Unscoped().Where("id = ? ", id).First(result).Error; err != nil {
 		return err
 	}
 
