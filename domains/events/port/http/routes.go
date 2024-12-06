@@ -32,5 +32,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		eventRoute.GET("/get-favourite-events", eventHandler.GetFavouriteEvent)
 		eventRoute.PATCH("/make-events-private", eventHandler.MakeEventPrivate)
 		eventRoute.PATCH("/make-events-public", eventHandler.MakeEventPublic)
+		eventRoute.PATCH("/apply-coupons/:id", eventHandler.ApplyCoupons)
+		eventRoute.PATCH("/remove-coupons/:id", eventHandler.RemoveCoupons)
 	}
 }

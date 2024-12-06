@@ -113,3 +113,11 @@ type MakeEventPublicOrPrivateReq struct {
 	UserId string   `json:"userId"`
 	Ids    []string `json:"ids" binding:"required"`
 }
+
+type ApplyCouponReq struct {
+	Ids []string `json:"ids" binding:"required"`
+}
+
+type RemoveCouponReq struct {
+	Ids []string `json:"ids" binding:"required"`
+}

@@ -26,6 +26,8 @@ type IEventRepository interface {
 	DeleteEventFavourite(ctx context.Context, ids []string) error
 	RestoreEventFavourite(ctx context.Context, ids []string) error
 	MakeEventPublicOrPrivate(ctx context.Context, req *dto.MakeEventPublicOrPrivateReq, isPrivate bool) error
+	ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error
+	RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error
 }
 
 type EventRepo struct {
@@ -50,11 +52,12 @@ func (e *EventRepo) CreateEvent(ctx context.Context, event *model.Event, req *dt
 			return err
 		}
 
+		var reasons []*model.Reason
 		for _, reason := range req.ReasonItems {
-			err := e.db.Create(ctx, &model.Reason{EventId: event.ID, Content: reason})
-			if err != nil {
-				return err
-			}
+			reasons = append(reasons, &model.Reason{EventId: event.ID, Content: reason})
+		}
+		if err := e.db.CreateInBatches(ctx, &reasons, len(reasons)); err != nil {
+			return err
 		}
 
 		return nil
@@ -348,4 +351,35 @@ func (e *EventRepo) MakeEventPublicOrPrivate(ctx context.Context, req *dto.MakeE
 	defer cancel()
 
 	return e.db.GetDB().Model(&model.Event{}).Where("id IN ? AND user_id = ?", req.Ids, req.UserId).Update("is_private", isPrivate).Error
+}
+
+func (e *EventRepo) ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error {
+	var eventCoupons []*model.EventCoupons
+	for _, id := range req.Ids {
+		eventCoupons = append(eventCoupons, &model.EventCoupons{EventId: eventId, CouponId: id})
+	}
+
+	return e.db.CreateInBatches(ctx, &eventCoupons, len(eventCoupons))
+}
+
+func (e *EventRepo) RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error {
+	handler := func() error {
+		for _, id := range req.Ids {
+			eventCoupon := model.EventCoupons{EventId: eventId, CouponId: id}
+			query := database.NewQuery("event_id = ? AND coupon_id = ?", eventCoupon.EventId, eventCoupon.CouponId)
+
+			err := e.db.ForceDelete(ctx, eventCoupon, database.WithQuery(query))
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	}
+	err := e.db.WithTransaction(handler)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

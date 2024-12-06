@@ -109,7 +109,7 @@ func (h *CategoryHandler) GetCategoryById(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
-//		@Summary	 Update an existing category
+//		@Summary	  Update an existing coupon
 //	 @Description Updates the details of an existing category based on the provided category ID and update information.
 //		@Tags		 Categories
 //		@Produce	 json

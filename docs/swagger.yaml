@@ -79,6 +79,36 @@ info:
   title: EventHub (GoHub) Swagger API
   version: OAS 3.0
 paths:
+  //api/v1/conversations/{conversationId}/messages/{messageId}:
+    patch:
+      description: Deletes the category with the specified ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Delete a message
+      tags:
+      - Categories
   /api/v1/auth/external-auth-callback:
     get:
       description: Handles the callback from an external authentication provider and
@@ -539,7 +569,7 @@ paths:
             the request
           schema:
             $ref: '#/definitions/response.Response'
-      summary: Update an existing category
+      summary: Update an existing coupon
       tags:
       - Categories
   /api/v1/categories/restore:
@@ -657,7 +687,68 @@ paths:
       summary: Retrieves a list of messages by the conversation
       tags:
       - Conversations
-  /api/v1/conversations/get-by-event/{eventId}:
+    post:
+      description: Fetches a paginated list of messages created by the conversation,
+        based on the provided pagination filter.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the list of messages
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Event with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create message in conversation
+      tags:
+      - Conversations
+  /api/v1/conversations/{conversationId}/messages/{messageId}:
+    patch:
+      description: Updates the details of an existing category based on the provided
+        category ID and update information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category updated successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update an existing message
+      tags:
+      - Categories
+  /api/v1/conversations/get-by-organizer/{organizerId}:
     get:
       description: Fetches a paginated list of conversations created by the event,
         based on the provided pagination filter.
@@ -719,6 +810,189 @@ paths:
       summary: Retrieves a list of conversations by the user
       tags:
       - Conversations
+  /api/v1/coupons:
+    get:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a coupons
+      tags:
+      - Coupons
+    post:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Create a new coupon
+      tags:
+      - Coupons
+  /api/v1/coupons/{couponId}:
+    delete:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Delete coupon
+      tags:
+      - Coupons
+    get:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a coupon by its ID
+      tags:
+      - Coupons
+    patch:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Update coupon
+      tags:
+      - Coupons
+  /api/v1/coupons/get-created-coupons:
+    get:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a coupons by created
+      tags:
+      - Categories
   /api/v1/events:
     get:
       description: Fetches a paginated list of events based on the provided filter
@@ -855,6 +1129,33 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Update an existing event
+      tags:
+      - Events
+  /api/v1/events/apply-coupons/{eventId}:
+    patch:
+      description: Changes the visibility of specified events to public based on the
+        provided event IDs.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Events marked as public successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Apply Coupons for event
       tags:
       - Events
   /api/v1/events/favourite/{eventId}:
@@ -1033,6 +1334,33 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Make events public
+      tags:
+      - Events
+  /api/v1/events/remove-coupons/{eventId}:
+    patch:
+      description: Changes the visibility of specified events to public based on the
+        provided event IDs.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Events marked as public successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Remove Coupons from event
       tags:
       - Events
   /api/v1/events/restore:

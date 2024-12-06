@@ -21,6 +21,16 @@ func NewCouponHandler(service service.ICouponService) *CouponHandler {
 	}
 }
 
+//		@Summary	 Retrieve a coupons
+//	 @Description Fetches the details of a specific category based on the provided category ID.
+//		@Tags		 Coupons
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Category created successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/coupons [get]
 func (h *CouponHandler) GetCoupons(c *gin.Context) {
 	var req dto.ListCouponReq
 	if err := c.ShouldBind(&req); err != nil {
@@ -42,6 +52,16 @@ func (h *CouponHandler) GetCoupons(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Retrieve a coupons by created
+//	 @Description Fetches the details of a specific category based on the provided category ID.
+//		@Tags		 Categories
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Category created successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/coupons/get-created-coupons [get]
 func (h *CouponHandler) GetCreatedCoupons(c *gin.Context) {
 	var req dto.ListCouponReq
 	if err := c.ShouldBind(&req); err != nil {
@@ -64,6 +84,16 @@ func (h *CouponHandler) GetCreatedCoupons(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Retrieve a coupon by its ID
+//	 @Description Fetches the details of a specific category based on the provided category ID.
+//		@Tags		 Coupons
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Category created successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/coupons/{couponId} [get]
 func (h *CouponHandler) GetCouponById(c *gin.Context) {
 	var res dto.Coupon
 
@@ -79,6 +109,16 @@ func (h *CouponHandler) GetCouponById(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Create a new coupon
+//	 @Description Fetches the details of a specific category based on the provided category ID.
+//		@Tags		 Coupons
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Category created successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/coupons [post]
 func (h *CouponHandler) CreateCoupon(c *gin.Context) {
 	var req dto.CreateCouponReq
 	if err := c.ShouldBind(&req); err != nil {
@@ -105,6 +145,16 @@ func (h *CouponHandler) CreateCoupon(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Update coupon
+//	 @Description Fetches the details of a specific category based on the provided category ID.
+//		@Tags		 Coupons
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Category created successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/coupons/{couponId} [patch]
 func (h *CouponHandler) UpdateCoupon(c *gin.Context) {
 	couponId := c.Param("id")
 	var req dto.UpdateCouponReq
@@ -131,6 +181,16 @@ func (h *CouponHandler) UpdateCoupon(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Delete coupon
+//	 @Description Fetches the details of a specific category based on the provided category ID.
+//		@Tags		 Coupons
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Category created successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/coupons/{couponId} [delete]
 func (h *CouponHandler) DeleteCoupon(c *gin.Context) {
 	couponId := c.Param("id")
 

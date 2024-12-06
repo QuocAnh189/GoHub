@@ -29,6 +29,8 @@ type IEventService interface {
 	GetFavouriteEvent(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	MakeEventPrivate(ctx context.Context, req *dto.MakeEventPublicOrPrivateReq) error
 	MakeEventPublic(ctx context.Context, req *dto.MakeEventPublicOrPrivateReq) error
+	ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error
+	RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error
 }
 
 type EventService struct {
@@ -273,6 +275,35 @@ func (e *EventService) MakeEventPublic(ctx context.Context, req *dto.MakeEventPu
 
 	err := e.eventRepo.MakeEventPublicOrPrivate(ctx, req, false)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (e *EventService) ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error {
+	if err := e.validator.ValidateStruct(req); err != nil {
+		return err
+	}
+
+	if err := e.eventRepo.ApplyCoupons(ctx, eventId, req); err != nil {
+		logger.Errorf("Create fail, error: %s", err)
+		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
+			return errors.New(messages.ApplyCouponAlreadyExists)
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+func (e *EventService) RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error {
+	if err := e.validator.ValidateStruct(req); err != nil {
+		return err
+	}
+
+	if err := e.eventRepo.RemoveCoupons(ctx, eventId, req); err != nil {
 		return err
 	}
 

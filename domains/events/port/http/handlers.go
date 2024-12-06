@@ -437,3 +437,61 @@ func (h *EventHandler) MakeEventPublic(c *gin.Context) {
 
 	response.JSON(c, http.StatusOK, "Make events public successfully")
 }
+
+//		@Summary	 Apply Coupons for event
+//	 @Description Changes the visibility of specified events to public based on the provided event IDs.
+//		@Tags		 Events
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Events marked as public successfully"
+//		@Success	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Success	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/events/apply-coupons/{eventId} [patch]
+func (h *EventHandler) ApplyCoupons(c *gin.Context) {
+	var req dto.ApplyCouponReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+	}
+
+	eventId := c.Param("id")
+	err := h.service.ApplyCoupons(c, eventId, &req)
+	if err != nil {
+		switch err.Error() {
+		default:
+			response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
+			return
+		}
+	}
+
+	response.JSON(c, http.StatusOK, "Apply coupons successfully")
+}
+
+//		@Summary	 Remove Coupons from event
+//	 @Description Changes the visibility of specified events to public based on the provided event IDs.
+//		@Tags		 Events
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Events marked as public successfully"
+//		@Success	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Success	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/events/remove-coupons/{eventId} [patch]
+func (h *EventHandler) RemoveCoupons(c *gin.Context) {
+	var req dto.RemoveCouponReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+	}
+
+	eventId := c.Param("id")
+	err := h.service.RemoveCoupons(c, eventId, &req)
+	if err != nil {
+		switch err.Error() {
+		default:
+			response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
+			return
+		}
+	}
+
+	response.JSON(c, http.StatusOK, "Remove coupons successfully")
+}
