@@ -11,15 +11,16 @@ import (
 
 type Coupon struct {
 	ID              string          `json:"id" gorm:"unique;not null;index;primary_key"`
-	Name            string          `json:"name" gorm:"not null"`
-	Description     string          `json:"description" gorm:"not null"`
 	UserId          string          `json:"userId" gorm:"not null"`
 	User            *modelUser.User `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	CoverImageUrl   string          `json:"coverImageUrl" gorm:"not null"`
+	Name            string          `json:"name" gorm:"not null"`
+	Description     string          `json:"description" gorm:"not null"`
 	MinQuantity     int             `json:"minQuantity"`
 	MinValue        float64         `json:"minValue"`
 	PercentageValue float64         `json:"percentValue"`
 	RealValue       float64         `json:"realValue"`
-	ExpireDate      time.Time       `json:"expireDate" gorm:"not null"`
+	ExpireDate      string          `json:"expireDate" gorm:"not null"`
 	CreatedAt       time.Time       `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt       time.Time       `json:"updatedAt" gorm:"autoUpdateTime"`
 	DeletedAt       gorm.DeletedAt  `json:"deletedAt" gorm:"index"`

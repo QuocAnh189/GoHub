@@ -82,7 +82,6 @@ func (h *CategoryHandler) GetCategories(c *gin.Context) {
 	utils.MapStruct(&res.Category, &categories)
 	res.Pagination = pagination
 	response.JSON(c, http.StatusOK, res)
-
 }
 
 //		@Summary	 Retrieve a category by its ID
