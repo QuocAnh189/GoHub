@@ -57,12 +57,12 @@ type ListConversationReq struct {
 }
 
 type ListConversationByOrganizerRes struct {
-	Conversation []*ConversationByOrganizer `json:"conversations"`
+	Conversation []*ConversationByOrganizer `json:"items"`
 	Pagination   *paging.Pagination         `json:"metadata"`
 }
 
 type ListConversationByUserRes struct {
-	Conversation []*ConversationByUser `json:"conversations"`
+	Conversation []*ConversationByUser `json:"items"`
 	Pagination   *paging.Pagination    `json:"metadata"`
 }
 
@@ -75,7 +75,7 @@ type ListMessageReq struct {
 }
 
 type ListMessageRes struct {
-	Messages   []*Message         `json:"messages"`
+	Messages   []*Message         `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

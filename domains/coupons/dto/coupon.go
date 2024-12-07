@@ -24,7 +24,7 @@ type ListCouponReq struct {
 }
 
 type ListCouponRes struct {
-	Coupon     []*Coupon          `json:"coupons"`
+	Coupon     []*Coupon          `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

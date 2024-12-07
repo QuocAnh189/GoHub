@@ -86,7 +86,7 @@ type ListUserReq struct {
 }
 
 type ListUserRes struct {
-	User       []*UserList        `json:"users"`
+	User       []*UserList        `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

@@ -3,10 +3,10 @@ package dto
 import "gohub/pkg/paging"
 
 type Category struct {
-	ID                string `json:"id" `
-	Name              string `json:"name" `
-	IconImageUrl      string `json:"iconImageUrl" `
-	IconImageFileName string `json:"iconImageFileName" `
+	ID                string `json:"id"`
+	Name              string `json:"name"`
+	IconImageUrl      string `json:"iconImageUrl"`
+	IconImageFileName string `json:"iconImageFileName"`
 	Color             string `json:"color" `
 }
 
@@ -20,7 +20,7 @@ type ListCategoryReq struct {
 }
 
 type ListCategoryRes struct {
-	Category   []*Category        `json:"categories"`
+	Category   []*Category        `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

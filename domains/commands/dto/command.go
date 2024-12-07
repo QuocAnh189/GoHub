@@ -6,9 +6,9 @@ type Command struct {
 }
 
 type CommandInFunctionRes struct {
-	Commands []Command `json:"commands"`
+	Commands []Command `json:"items"`
 }
 
 type CommandNotInFunctionRes struct {
-	Commands []Command `json:"commands"`
+	Commands []Command `json:"items"`
 }

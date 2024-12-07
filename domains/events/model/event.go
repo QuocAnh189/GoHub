@@ -3,6 +3,7 @@ package model
 import (
 	modelCategory "gohub/domains/categories/model"
 	modelCoupon "gohub/domains/coupons/model"
+	modelExpense "gohub/domains/expense/model"
 	modelReview "gohub/domains/reviews/model"
 	modelUser "gohub/domains/users/model"
 	"time"
@@ -30,7 +31,7 @@ type Event struct {
 	Categories         []*modelCategory.Category `json:"categories" gorm:"many2many:event_categories;"`
 	Reasons            []*Reason                 `json:"reasons"`
 	Coupons            []*modelCoupon.Coupon     `json:"coupons" gorm:"many2many:event_coupons;"`
-	Expenses           []*EventExpense           `json:"expenses"`
+	Expenses           []*modelExpense.Expense   `json:"expenses"`
 	TicketTypes        []*TicketType             `json:"ticketTypes"`
 	Reviews            []*modelReview.Review     `json:"reviews"`
 	AvgRate            float32                   `json:"avgRate" gorm:"-"`

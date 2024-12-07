@@ -53,17 +53,17 @@ type ListReviewReq struct {
 }
 
 type ListReviewRes struct {
-	Reviews    []*Review          `json:"reviews"`
+	Reviews    []*Review          `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 
 type ListReviewByUserRes struct {
-	Reviews    []*ReviewByUser    `json:"reviews"`
+	Reviews    []*ReviewByUser    `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 
 type ListReviewByEventRes struct {
-	Reviews    []*ReviewByEvent   `json:"reviews"`
+	Reviews    []*ReviewByEvent   `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

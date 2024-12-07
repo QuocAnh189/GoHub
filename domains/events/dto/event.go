@@ -87,7 +87,7 @@ type ListEventReq struct {
 }
 
 type ListEventRes struct {
-	Events     []*Events          `json:"events"`
+	Events     []*Events          `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

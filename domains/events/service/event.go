@@ -77,7 +77,7 @@ func (e *EventService) CreateEvent(ctx context.Context, req *dto.CreateEventReq)
 	if err != nil {
 		logger.Errorf("Create fail, error: %s", err)
 		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
-			return nil, errors.New(messages.EventNameAlreadyExists)
+			return nil, errors.New(messages.TitleExpenseAlreadyExists)
 		}
 		return nil, err
 	}

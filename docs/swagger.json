@@ -1928,6 +1928,280 @@
                 }
             }
         },
+        "/api/v1/expenses": {
+            "post": {
+                "description": "Creates a new expense based on the provided details.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Create a new expense",
+                "responses": {
+                    "201": {
+                        "description": "Expense created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/expenses/get-by-event/{eventId}": {
+            "get": {
+                "description": "Fetches the details of a specific expense based on the provided expense ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Retrieve list expenses",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/expenses/{expenseId}": {
+            "get": {
+                "description": "Fetches the details of a specific expense based on the provided expense ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Retrieve an expense by its ID",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new expense based on the provided details",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Delete an expense",
+                "responses": {
+                    "201": {
+                        "description": "Expense created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/expenses/{expensesId}/sub-expense": {
+            "post": {
+                "description": "Creates a new expense based on the provided detail.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Create a new subExpense",
+                "responses": {
+                    "201": {
+                        "description": "SubExpense created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/expenses/{expensesId}/sub-expense/{subExpenseId}": {
+            "put": {
+                "description": "Creates a new expense based on the provided details.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Update an exists subExpense",
+                "responses": {
+                    "201": {
+                        "description": "SubExpense created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Creates a new expense based on the provided details.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Create a new expense",
+                "responses": {
+                    "201": {
+                        "description": "SubExpense created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/functions": {
             "get": {
                 "description": "Fetches a list of all available functions.",
