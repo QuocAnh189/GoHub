@@ -6,7 +6,7 @@ import (
 
 type Event struct {
 	ID                 string      `json:"id"`
-	User               *User       `json:"user"`
+	User               *User       `json:"creator"`
 	Name               string      `json:"name"`
 	Description        string      `json:"description"`
 	CoverImageUrl      string      `json:"coverImageUrl"`
@@ -26,19 +26,20 @@ type Event struct {
 }
 
 type Events struct {
-	ID                 string  `json:"id"`
-	Name               string  `json:"name"`
-	Description        string  `json:"description"`
-	CoverImageUrl      string  `json:"coverImageUrl"`
-	CoverImageFileName string  `json:"coverImageFileName"`
-	StartTime          string  `json:"startTime"`
-	EndTime            string  `json:"endTime"`
-	Location           string  `json:"location"`
-	PathLocation       string  `json:"pathLocation"`
-	EventCycleType     string  `json:"eventCycleType"`
-	EventPaymentType   string  `json:"eventPaymentType"`
-	IsPrivate          bool    `json:"isPrivate"`
-	AvgRate            float32 `json:"avgRate"`
+	ID                 string      `json:"id"`
+	Name               string      `json:"name"`
+	Description        string      `json:"description"`
+	CoverImageUrl      string      `json:"coverImageUrl"`
+	CoverImageFileName string      `json:"coverImageFileName"`
+	StartTime          string      `json:"startTime"`
+	EndTime            string      `json:"endTime"`
+	Location           string      `json:"location"`
+	PathLocation       string      `json:"pathLocation"`
+	EventCycleType     string      `json:"eventCycleType"`
+	EventPaymentType   string      `json:"eventPaymentType"`
+	IsPrivate          bool        `json:"isPrivate"`
+	AvgRate            float32     `json:"avgRate"`
+	Categories         []*Category `json:"categories"`
 }
 
 type CreateEventReq struct {
@@ -77,9 +78,9 @@ type UpdateEventReq struct {
 }
 
 type ListEventReq struct {
-	Name      string `json:"name,omitempty" form:"name"`
+	Name      string `json:"name,omitempty" form:"search"`
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"limit"`
+	Limit     int64  `json:"-" form:"size"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`

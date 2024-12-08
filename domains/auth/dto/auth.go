@@ -71,6 +71,7 @@ type ProfileRes struct {
 	Dob            string      `json:"dob"`
 	Gender         string      `json:"gender"`
 	Bio            string      `json:"bio"`
+	TotalEvent     int64       `json:"totalEvent"`
 	TotalFollower  int64       `json:"totalFollower"`
 	TotalFollowing int64       `json:"totalFollowing"`
 	Roles          []*dto.Role `json:"roles"`

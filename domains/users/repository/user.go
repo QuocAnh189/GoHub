@@ -4,6 +4,7 @@ import (
 	"context"
 	"gohub/configs"
 	"gohub/database"
+	modelEvent "gohub/domains/events/model"
 	roleModel "gohub/domains/roles/model"
 	"gohub/domains/users/dto"
 	"gohub/domains/users/model"
@@ -135,6 +136,11 @@ func (u *UserRepository) GetUserByID(ctx context.Context, id string, preload boo
 		opts = append(opts, database.WithPreload([]string{"Roles"}))
 	}
 
+	var totalEvent int64
+	if err := u.db.Count(ctx, &modelEvent.Event{}, &totalEvent, database.WithQuery(database.NewQuery("user_id = ?", id))); err != nil {
+		return nil, nil, err
+	}
+
 	var totalFollower int64
 	if err := u.db.Count(ctx, &model.UserFollower{}, &totalFollower, database.WithQuery(database.NewQuery("followee_id = ?", id))); err != nil {
 		return nil, nil, err
@@ -149,6 +155,7 @@ func (u *UserRepository) GetUserByID(ctx context.Context, id string, preload boo
 		return nil, nil, err
 	}
 
+	calculation.TotalEvent = totalEvent
 	calculation.TotalFollower = totalFollower
 	calculation.TotalFollowing = totalFollowing
 

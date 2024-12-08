@@ -3,12 +3,12 @@ package server
 import (
 	"fmt"
 	"github.com/gin-contrib/cors"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "gohub/docs"
 	"log"
 	"net/http"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
+	"time"
 
 	authHttp "gohub/domains/auth/port/http"
 	categoryHttp "gohub/domains/categories/port/http"
@@ -54,7 +54,14 @@ func (s Server) Run() error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	s.engine.Use(cors.Default())
+	s.engine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization", "access-control-allow-origin", "access-control-allow-headers"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	if err := s.MapRoutes(); err != nil {
 		log.Fatalf("MapRoutes Error: %v", err)

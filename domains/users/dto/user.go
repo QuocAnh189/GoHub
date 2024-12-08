@@ -66,6 +66,7 @@ type UserList struct {
 }
 
 type Calculation struct {
+	TotalEvent     int64 `json:"totalEvent"`
 	TotalFollower  int64 `json:"totalFollower"`
 	TotalFollowing int64 `json:"totalFollowing"`
 }

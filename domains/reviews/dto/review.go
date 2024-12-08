@@ -46,7 +46,7 @@ type User struct {
 type ListReviewReq struct {
 	Content   string `json:"content,omitempty" form:"content"`
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"limit"`
+	Limit     int64  `json:"-" form:"size"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`

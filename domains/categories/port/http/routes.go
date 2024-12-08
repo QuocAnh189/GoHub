@@ -1,13 +1,12 @@
 package http
 
 import (
+	"github.com/QuocAnh189/GoBin/validation"
+	"github.com/gin-gonic/gin"
 	"gohub/database"
 	"gohub/domains/categories/repository"
 	"gohub/domains/categories/service"
 	middleware "gohub/pkg/middlewares"
-
-	"github.com/QuocAnh189/GoBin/validation"
-	"github.com/gin-gonic/gin"
 )
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {

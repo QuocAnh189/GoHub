@@ -301,6 +301,7 @@ func (auth *AuthHandler) GetProfile(c *gin.Context) {
 
 	var res dto.ProfileRes
 	utils.MapStruct(&res, &user)
+	res.TotalEvent = calculation.TotalEvent
 	res.TotalFollower = calculation.TotalFollower
 	res.TotalFollowing = calculation.TotalFollowing
 	response.JSON(c, http.StatusOK, res)

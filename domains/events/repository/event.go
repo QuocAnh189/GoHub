@@ -137,7 +137,7 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
-		database.WithPreload([]string{"Reviews"}),
+		database.WithPreload([]string{"Reviews", "Categories"}),
 	); err != nil {
 		return nil, nil, err
 	}

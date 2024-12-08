@@ -15,7 +15,7 @@ import (
 type Event struct {
 	ID                 string                    `json:"id" gorm:"unique;not null;index;primary_key"`
 	UserId             string                    `json:"userId" gorm:"not null"`
-	User               *modelUser.User           `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	User               *modelUser.User           `json:"creator" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Name               string                    `json:"name" gorm:"not null"`
 	Description        string                    `json:"description"`
 	CoverImageUrl      string                    `json:"coverImageUrl" gorm:"not null"`
