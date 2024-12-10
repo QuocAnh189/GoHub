@@ -17,6 +17,7 @@ type IReviewRepository interface {
 	GetReviewByID(ctx context.Context, id string, preload bool) (*model.Review, error)
 	GetReviewByEventID(ctx context.Context, eventID string, req *dto.ListReviewReq) ([]*model.Review, *paging.Pagination, error)
 	GetReviewByUserID(ctx context.Context, userID string, req *dto.ListReviewReq) ([]*model.Review, *paging.Pagination, error)
+	GetReviewByCreatedEvents(ctx context.Context, userID string, req *dto.ListReviewReq, statistic *dto.StatisticReviewCreatedEvent) ([]*model.Review, *paging.Pagination, error)
 }
 
 type ReviewRepo struct {
@@ -179,6 +180,110 @@ func (r *ReviewRepo) GetReviewByUserID(ctx context.Context, userID string, req *
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
+	); err != nil {
+		return nil, nil, err
+	}
+
+	return reviews, pagination, nil
+}
+
+func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string, req *dto.ListReviewReq, statistic *dto.StatisticReviewCreatedEvent) ([]*model.Review, *paging.Pagination, error) {
+	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
+	defer cancel()
+
+	query := make([]database.Query, 0)
+	if req.Content != "" {
+		query = append(query, database.NewQuery("events.user_id = ? AND content LIKE ?", userID, "%"+req.Content+"%"))
+	} else {
+		query = append(query, database.NewQuery("events.user_id = ?", userID))
+	}
+
+	order := "created_at"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
+	}
+
+	var avgRate float64
+	err := r.db.GetDB().Raw(
+		`SELECT COALESCE(AVG(reviews.rate), 0) AS average_rate
+		FROM reviews
+		INNER JOIN events ON reviews.event_id = events.id
+		WHERE events.user_id = ?`,
+		userID,
+	).Scan(&avgRate).Error
+	if err != nil {
+		return nil, nil, err
+	}
+	statistic.AverageRate = avgRate
+
+	var totalPositive float64
+	if err := r.db.GetDB().Raw(
+		`SELECT count(*) AS total_positive
+		FROM reviews
+		INNER JOIN events ON reviews.event_id = events.id
+		WHERE events.user_id = ? AND reviews.is_positive = ?`,
+		userID, true,
+	).Scan(&totalPositive).Error; err != nil {
+		return nil, nil, err
+	}
+	statistic.TotalPositive = totalPositive
+
+	var totalNegative float64
+	if err := r.db.GetDB().Raw(
+		`SELECT count(*) AS total_negative
+		FROM reviews
+		INNER JOIN events ON reviews.event_id = events.id
+		WHERE events.user_id = ? AND reviews.is_positive = ?`,
+		userID, false,
+	).Scan(&totalNegative).Error; err != nil {
+		return nil, nil, err
+	}
+	statistic.TotalNegative = totalNegative
+
+	var rateCounts []dto.RateCount
+	if err := r.db.GetDB().Raw(
+		`SELECT reviews.rate, COUNT(*) AS total
+		FROM reviews
+		INNER JOIN events ON reviews.event_id = events.id
+		WHERE events.user_id = ?
+		GROUP BY reviews.rate ORDER BY reviews.rate ASC`,
+		userID,
+	).Scan(&rateCounts).Error; err != nil {
+		return nil, nil, err
+	}
+
+	statistic.TotalPerNumberRate = rateCounts
+
+	var total int64
+	if err := r.db.Count(
+		ctx,
+		&model.Review{},
+		&total,
+		database.WithJoin("INNER JOIN events ON reviews.event_id = events.id"),
+		database.WithQuery(query...),
+	); err != nil {
+		return nil, nil, err
+	}
+
+	pagination := paging.NewPagination(req.Page, req.Limit, total)
+
+	if req.TakeAll {
+		pagination.PageSize = total
+	}
+
+	var reviews []*model.Review
+	if err := r.db.Find(
+		ctx,
+		&reviews,
+		database.WithQuery(query...),
+		database.WithLimit(int(pagination.PageSize)),
+		database.WithOffset(int(pagination.Skip)),
+		database.WithOrder(order),
+		database.WithJoin("INNER JOIN events ON reviews.event_id = events.id"),
+		database.WithPreload([]string{"User", "Event"}),
 	); err != nil {
 		return nil, nil, err
 	}

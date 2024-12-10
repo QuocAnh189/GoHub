@@ -18,6 +18,7 @@ type IReviewService interface {
 	GetReviewById(ctx context.Context, id string) (*model.Review, error)
 	GetReviewsByEvent(ctx context.Context, eventId string, req *dto.ListReviewReq) ([]*model.Review, *paging.Pagination, error)
 	GetReviewsByUser(ctx context.Context, userId string, req *dto.ListReviewReq) ([]*model.Review, *paging.Pagination, error)
+	GetReviewByCreatedEvents(ctx context.Context, userId string, req *dto.ListReviewReq, statistic *dto.StatisticReviewCreatedEvent) ([]*model.Review, *paging.Pagination, error)
 	UpdateReview(ctx context.Context, id string, req *dto.UpdateReviewReq) (*model.Review, error)
 	DeleteReview(ctx context.Context, id string) error
 }
@@ -77,6 +78,14 @@ func (r *ReviewService) GetReviewsByEvent(ctx context.Context, eventId string, r
 
 func (r *ReviewService) GetReviewsByUser(ctx context.Context, userId string, req *dto.ListReviewReq) ([]*model.Review, *paging.Pagination, error) {
 	reviews, pagination, err := r.repoReview.GetReviewByUserID(ctx, userId, req)
+	if err != nil {
+		return nil, nil, err
+	}
+	return reviews, pagination, nil
+}
+
+func (r *ReviewService) GetReviewByCreatedEvents(ctx context.Context, userId string, req *dto.ListReviewReq, statistic *dto.StatisticReviewCreatedEvent) ([]*model.Review, *paging.Pagination, error) {
+	reviews, pagination, err := r.repoReview.GetReviewByCreatedEvents(ctx, userId, req, statistic)
 	if err != nil {
 		return nil, nil, err
 	}

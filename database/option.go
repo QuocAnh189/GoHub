@@ -5,11 +5,16 @@ type FindOption interface {
 }
 
 type option struct {
-	query    []Query
-	order    any
-	offset   int
-	limit    int
-	preloads []string
+	query        []Query
+	order        any
+	offset       int
+	limit        int
+	preloads     []string
+	joins        []string
+	selectFields string
+	groupBy      string
+	having       string
+	havingArgs   []interface{}
 }
 
 type optionFn func(*option)
@@ -45,6 +50,31 @@ func WithOrder(order interface{}) FindOption {
 func WithPreload(preloads []string) FindOption {
 	return optionFn(func(opt *option) {
 		opt.preloads = preloads
+	})
+}
+
+func WithJoin(joins ...string) FindOption {
+	return optionFn(func(opt *option) {
+		opt.joins = append(opt.joins, joins...)
+	})
+}
+
+func WithSelect(selectFields string) FindOption {
+	return optionFn(func(opt *option) {
+		opt.selectFields = selectFields
+	})
+}
+
+func WithGroupBy(groupBy string) FindOption {
+	return optionFn(func(opt *option) {
+		opt.groupBy = groupBy
+	})
+}
+
+func WithHaving(having string, args ...interface{}) FindOption {
+	return optionFn(func(opt *option) {
+		opt.having = having
+		opt.havingArgs = args
 	})
 }
 

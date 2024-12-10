@@ -35,6 +35,23 @@ type ReviewByEvent struct {
 	UpdatedAt  string  `json:"updatedAt"`
 }
 
+type ReviewByCreatedEvent struct {
+	ID         string  `json:"id"`
+	User       User    `json:"user"`
+	Event      Event   `json:"event"`
+	Content    string  `json:"content"`
+	Rate       float32 `json:"rate"`
+	IsPositive bool    `json:"isPositive"`
+	CreatedAt  string  `json:"createdAt"`
+	UpdatedAt  string  `json:"updatedAt"`
+}
+
+type Event struct {
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	CoverImageUrl string `json:"coverImageUrl"`
+}
+
 type User struct {
 	ID        string `json:"id"`
 	UserName  string `json:"userName"`
@@ -46,7 +63,7 @@ type User struct {
 type ListReviewReq struct {
 	Content   string `json:"content,omitempty" form:"content"`
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"size"`
+	Limit     int64  `json:"-" form:"pageSize"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`
@@ -65,6 +82,24 @@ type ListReviewByUserRes struct {
 type ListReviewByEventRes struct {
 	Reviews    []*ReviewByEvent   `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
+}
+
+type ListReviewByCreatedEventsRes struct {
+	Reviews    []*ReviewByCreatedEvent     `json:"items"`
+	Pagination *paging.Pagination          `json:"metadata"`
+	Statistic  StatisticReviewCreatedEvent `json:"statistic"`
+}
+
+type StatisticReviewCreatedEvent struct {
+	AverageRate        float64     `json:"averageRate"`
+	TotalPositive      float64     `json:"totalPositive"`
+	TotalNegative      float64     `json:"totalNegative"`
+	TotalPerNumberRate []RateCount `json:"totalPerNumberRate"`
+}
+
+type RateCount struct {
+	Rate  int `json:"rate"`
+	Total int `json:"value"`
 }
 
 type CreateReviewReq struct {

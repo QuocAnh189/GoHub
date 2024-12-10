@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	AccessTokenExpiredTime  = 5 * 60 * 60 // 5 hours
+	AccessTokenExpiredTime  = 2 * 24 * 3600 // 5 hours
 	RefreshTokenExpiredTime = 30 * 24 * 3600
 	AccessTokenType         = "x-access"  // 5 minutes
 	RefreshTokenType        = "x-refresh" // 30 days

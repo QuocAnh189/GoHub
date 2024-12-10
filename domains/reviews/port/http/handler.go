@@ -139,6 +139,38 @@ func (h *ReviewHandler) GetReviewsByUser(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Retrieve a list of reviews by created events
+//	 @Description Fetches a paginated list of reviews created by the user, based on the provided pagination filter.
+//		@Tags		 Reviews
+//		@Produce	 json
+//		@Success	 202	{object}	response.Response	"Successfully retrieved the list of reviews"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - Event with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/reviews/get-by-created-event [get]
+func (h *ReviewHandler) GetReviewsByCreatedEvents(c *gin.Context) {
+	var req *dto.ListReviewReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+		return
+	}
+
+	var res dto.ListReviewByCreatedEventsRes
+	userId := c.GetString("userId")
+	reviews, pagination, err := h.service.GetReviewByCreatedEvents(c, userId, req, &res.Statistic)
+	if err != nil {
+		logger.Error("Failed to get reviews: ", err)
+		response.Error(c, http.StatusNotFound, err, "Not found")
+		return
+	}
+
+	utils.MapStruct(&res.Reviews, reviews)
+	res.Pagination = pagination
+	response.JSON(c, http.StatusOK, res)
+}
+
 //		@Summary	 Retrieve a reviews by its ID
 //	 @Description Fetches the details of a specific review based on the provided review ID.
 //		@Tags		 Reviews

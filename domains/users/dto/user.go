@@ -77,10 +77,9 @@ type Role struct {
 }
 
 type ListUserReq struct {
-	Name      string `json:"name,omitempty" form:"name"`
-	Email     string `json:"email,omitempty" form:"email"`
+	Search    string `json:"name,omitempty" form:"search"`
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"limit"`
+	Limit     int64  `json:"-" form:"pageSize"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`

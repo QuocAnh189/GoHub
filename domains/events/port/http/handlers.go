@@ -39,6 +39,7 @@ func (h *EventHandler) GetEvents(c *gin.Context) {
 	if err != nil {
 		logger.Error("Failed to get events: ", err)
 		response.Error(c, http.StatusInternalServerError, err, "Failed to get events")
+		return
 	}
 
 	var res dto.ListEventRes
@@ -374,7 +375,7 @@ func (h *EventHandler) GetFavouriteEvent(c *gin.Context) {
 		return
 	}
 
-	var res dto.ListEventRes
+	var res dto.ListEventFavouriteRes
 	utils.MapStruct(&res.Events, &events)
 	res.Pagination = pagination
 	response.JSON(c, http.StatusOK, res)

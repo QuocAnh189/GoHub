@@ -4,7 +4,6 @@ import (
 	modelCategory "gohub/domains/categories/model"
 	modelCoupon "gohub/domains/coupons/model"
 	modelExpense "gohub/domains/expense/model"
-	modelReview "gohub/domains/reviews/model"
 	modelUser "gohub/domains/users/model"
 	"time"
 
@@ -33,12 +32,24 @@ type Event struct {
 	Coupons            []*modelCoupon.Coupon     `json:"coupons" gorm:"many2many:event_coupons;"`
 	Expenses           []*modelExpense.Expense   `json:"expenses"`
 	TicketTypes        []*TicketType             `json:"ticketTypes"`
-	Reviews            []*modelReview.Review     `json:"reviews"`
-	AvgRate            float32                   `json:"avgRate" gorm:"-"`
+	Reviews            []*Review                 `json:"reviews"`
+	AverageRate        float64                   `json:"averageRate"`
 	UserFavourite      []*modelUser.User         `json:"userFavourite" gorm:"many2many:event_favourites;"`
 	CreatedAt          time.Time                 `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt          time.Time                 `json:"updatedAt" gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt            `json:"deletedAt" gorm:"index"`
+}
+
+type Review struct {
+	ID         string         `json:"id" gorm:"unique;not null;index;primary_key"`
+	UserId     string         `json:"userId" gorm:"not null"`
+	EventId    string         `json:"eventId" gorm:"not null"`
+	Content    string         `json:"content" gorm:"not null"`
+	Rate       float32        `json:"rate" gorm:"not null"`
+	IsPositive bool           `json:"isPositive" gorm:"not null"`
+	CreatedAt  time.Time      `json:"createdAt" gorm:"autoCreateTime"`
+	UpdatedAt  time.Time      `json:"updatedAt" gorm:"autoUpdateTime"`
+	DeletedAt  gorm.DeletedAt `json:"deletedAt" gorm:"index"`
 }
 
 func (e *Event) BeforeCreate(db *gorm.DB) (err error) {

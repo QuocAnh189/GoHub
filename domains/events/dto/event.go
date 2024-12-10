@@ -38,8 +38,17 @@ type Events struct {
 	EventCycleType     string      `json:"eventCycleType"`
 	EventPaymentType   string      `json:"eventPaymentType"`
 	IsPrivate          bool        `json:"isPrivate"`
-	AvgRate            float32     `json:"avgRate"`
+	AverageRate        float32     `json:"averageRate"`
 	Categories         []*Category `json:"categories"`
+}
+
+type EventFavourite struct {
+	ID            string      `json:"id"`
+	Name          string      `json:"name"`
+	CoverImageUrl string      `json:"coverImageUrl"`
+	StartTime     string      `json:"startTime"`
+	AverageRate   float32     `json:"averageRate"`
+	Categories    []*Category `json:"categories"`
 }
 
 type CreateEventReq struct {
@@ -78,17 +87,25 @@ type UpdateEventReq struct {
 }
 
 type ListEventReq struct {
-	Name      string `json:"name,omitempty" form:"search"`
-	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"size"`
-	OrderBy   string `json:"-" form:"order_by"`
-	OrderDesc bool   `json:"-" form:"order_desc"`
-	TakeAll   bool   `json:"-" form:"take_all"`
-	IsPrivate bool   `json:"-" form:"is_private"`
+	Search      string   `json:"name,omitempty" form:"search"`
+	CategoryIds []string `json:"category,omitempty" form:"categoryIds"`
+	Status      string   `json:"status,omitempty" form:"status"`
+	MinRate     int      `json:"minRate" form:"minRate"`
+	Page        int64    `json:"-" form:"page"`
+	Limit       int64    `json:"-" form:"pageSize"`
+	OrderBy     string   `json:"-" form:"order_by"`
+	OrderDesc   bool     `json:"-" form:"orderDesc"`
+	TakeAll     bool     `json:"-" form:"take_all"`
+	IsPrivate   bool     `json:"-" form:"is_private"`
 }
 
 type ListEventRes struct {
 	Events     []*Events          `json:"items"`
+	Pagination *paging.Pagination `json:"metadata"`
+}
+
+type ListEventFavouriteRes struct {
+	Events     []*EventFavourite  `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
 

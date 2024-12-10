@@ -9,7 +9,6 @@ import (
 	"gohub/domains/users/dto"
 	"gohub/domains/users/model"
 	"gohub/pkg/paging"
-	"strings"
 )
 
 type IUserRepository interface {
@@ -41,11 +40,8 @@ func (u *UserRepository) ListUsers(ctx context.Context, req *dto.ListUserReq) ([
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	if req.Name != "" {
-		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Name+"%"))
-	}
-	if req.Email != "" {
-		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Name+"%"))
+	if req.Search != "" {
+		query = append(query, database.NewQuery("name LIKE ? OR email LIKE ?", "%"+req.Search+"%", "%"+req.Search+"%"))
 	}
 
 	order := "created_at"
@@ -208,7 +204,13 @@ func (u *UserRepository) GetUserFollowers(ctx context.Context, req *dto.ListUser
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	query = append(query, database.NewQuery("followee_id = ?", id))
+
+	if req.Search != "" {
+		query = append(query, database.NewQuery("followee_id = ? AND users.user_name LIKE ?", id, "%"+req.Search+"%"))
+		query = append(query, database.NewQuery("followee_id = ? AND users.email LIKE ?", id, "%"+req.Search+"%"))
+	} else {
+		query = append(query, database.NewQuery("followee_id = ?", id))
+	}
 
 	order := "created_at"
 	if req.OrderBy != "" {
@@ -219,7 +221,13 @@ func (u *UserRepository) GetUserFollowers(ctx context.Context, req *dto.ListUser
 	}
 
 	var total int64
-	if err := u.db.Count(ctx, &model.UserFollower{}, &total, database.WithQuery(query...)); err != nil {
+	if err := u.db.Count(
+		ctx,
+		&model.UserFollower{},
+		&total,
+		database.WithJoin("INNER JOIN users ON user_followers.follower_id = users.id"),
+		database.WithQuery(query...),
+	); err != nil {
 		return nil, nil, err
 	}
 
@@ -237,6 +245,7 @@ func (u *UserRepository) GetUserFollowers(ctx context.Context, req *dto.ListUser
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
+		database.WithJoin("INNER JOIN users ON user_followers.follower_id = users.id"),
 		database.WithPreload([]string{"Follower", "Follower.Roles"}),
 	); err != nil {
 		return nil, nil, err
@@ -247,20 +256,6 @@ func (u *UserRepository) GetUserFollowers(ctx context.Context, req *dto.ListUser
 		results = append(results, user.Follower)
 	}
 
-	if req.Name != "" || req.Email != "" {
-		var results []*model.User
-		for _, user := range users {
-			if (req.Name != "" && strings.Contains(user.Follower.UserName, req.Name)) ||
-				(req.Email != "" && strings.Contains(user.Follower.Email, req.Email)) {
-				results = append(results, user.Follower)
-			}
-		}
-
-		pagination := paging.NewPagination(req.Page, req.Limit, int64(len(results)))
-
-		return results, pagination, nil
-	}
-
 	return results, pagination, nil
 }
 
@@ -269,7 +264,13 @@ func (u *UserRepository) GetUserFollowings(ctx context.Context, req *dto.ListUse
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	query = append(query, database.NewQuery("follower_id = ?", id))
+
+	if req.Search != "" {
+		query = append(query, database.NewQuery("follower_id = ? AND users.user_name LIKE ?", id, "%"+req.Search+"%"))
+		query = append(query, database.NewQuery("follower_id = ? AND users.email LIKE ?", id, "%"+req.Search+"%"))
+	} else {
+		query = append(query, database.NewQuery("follower_id = ?", id))
+	}
 
 	order := "created_at"
 	if req.OrderBy != "" {
@@ -280,7 +281,13 @@ func (u *UserRepository) GetUserFollowings(ctx context.Context, req *dto.ListUse
 	}
 
 	var total int64
-	if err := u.db.Count(ctx, &model.UserFollower{}, &total, database.WithQuery(query...)); err != nil {
+	if err := u.db.Count(
+		ctx,
+		&model.UserFollower{},
+		&total,
+		database.WithJoin("INNER JOIN users ON user_followers.followee_id = users.id"),
+		database.WithQuery(query...),
+	); err != nil {
 		return nil, nil, err
 	}
 
@@ -298,6 +305,7 @@ func (u *UserRepository) GetUserFollowings(ctx context.Context, req *dto.ListUse
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
+		database.WithJoin("INNER JOIN users ON user_followers.followee_id = users.id"),
 		database.WithPreload([]string{"Followee", "Followee.Roles"}),
 	); err != nil {
 		return nil, nil, err
@@ -308,19 +316,19 @@ func (u *UserRepository) GetUserFollowings(ctx context.Context, req *dto.ListUse
 		results = append(results, user.Followee)
 	}
 
-	if req.Name != "" || req.Email != "" {
-		var results []*model.User
-		for _, user := range users {
-			if (req.Name != "" && strings.Contains(user.Followee.UserName, req.Name)) ||
-				(req.Email != "" && strings.Contains(user.Followee.Email, req.Email)) {
-				results = append(results, user.Followee)
-			}
-		}
-
-		pagination := paging.NewPagination(req.Page, req.Limit, int64(len(results)))
-
-		return results, pagination, nil
-	}
+	//if req.Search != "" {
+	//	var results []*model.User
+	//	for _, user := range users {
+	//		if (req.Search != "" && strings.Contains(user.Follower.UserName, req.Search)) ||
+	//			(req.Search != "" && strings.Contains(user.Follower.Email, req.Search)) {
+	//			results = append(results, user.Follower)
+	//		}
+	//	}
+	//
+	//	pagination := paging.NewPagination(req.Page, req.Limit, int64(len(results)))
+	//
+	//	return results, pagination, nil
+	//}
 
 	return results, pagination, nil
 }

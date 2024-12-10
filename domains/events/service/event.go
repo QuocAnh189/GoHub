@@ -54,17 +54,7 @@ func (e *EventService) GetEvents(ctx context.Context, req *dto.ListEventReq) ([]
 		return nil, nil, err
 	}
 
-	for i := range events {
-		var totalRate float32
-		for _, review := range events[i].Reviews {
-			totalRate += review.Rate
-		}
-		if len(events[i].Reviews) > 0 {
-			events[i].AvgRate = totalRate / float32(len(events[i].Reviews))
-		} else {
-			events[i].AvgRate = 0
-		}
-	}
+	//AvgRate(events)
 
 	return events, pagination, nil
 }
@@ -91,15 +81,15 @@ func (e *EventService) GetEventById(ctx context.Context, id string) (*model.Even
 		return nil, err
 	}
 
-	var totalRate float32
-	for _, review := range event.Reviews {
-		totalRate += review.Rate
-	}
-	if len(event.Reviews) > 0 {
-		event.AvgRate = totalRate / float32(len(event.Reviews))
-	} else {
-		event.AvgRate = 0
-	}
+	//var totalRate float32
+	//for _, review := range event.Reviews {
+	//	totalRate += review.Rate
+	//}
+	//if len(event.Reviews) > 0 {
+	//	event.AvgRate = totalRate / float32(len(event.Reviews))
+	//} else {
+	//	event.AvgRate = 0
+	//}
 
 	return event, nil
 }
@@ -155,17 +145,7 @@ func (e *EventService) GetCreatedEvent(ctx context.Context, userId string, req *
 		return nil, nil, err
 	}
 
-	for i := range events {
-		var totalRate float32
-		for _, review := range events[i].Reviews {
-			totalRate += review.Rate
-		}
-		if len(events[i].Reviews) > 0 {
-			events[i].AvgRate = totalRate / float32(len(events[i].Reviews))
-		} else {
-			events[i].AvgRate = 0
-		}
-	}
+	//AvgRate(events)
 
 	return events, pagination, nil
 }
@@ -186,17 +166,7 @@ func (e *EventService) GetTrashedEvent(ctx context.Context, userId string, req *
 		return nil, nil, err
 	}
 
-	for i := range events {
-		var totalRate float32
-		for _, review := range events[i].Reviews {
-			totalRate += review.Rate
-		}
-		if len(events[i].Reviews) > 0 {
-			events[i].AvgRate = totalRate / float32(len(events[i].Reviews))
-		} else {
-			events[i].AvgRate = 0
-		}
-	}
+	//AvgRate(events)
 
 	return events, pagination, nil
 }
@@ -240,18 +210,7 @@ func (e *EventService) GetFavouriteEvent(ctx context.Context, userId string, req
 		return nil, nil, err
 	}
 
-	for i := range events {
-		var totalRate float32
-		for _, review := range events[i].Reviews {
-			totalRate += review.Rate
-		}
-		if len(events[i].Reviews) > 0 {
-			events[i].AvgRate = totalRate / float32(len(events[i].Reviews))
-		} else {
-			events[i].AvgRate = 0
-		}
-	}
-
+	//AvgRate(events)
 	return events, pagination, nil
 }
 
@@ -309,3 +268,17 @@ func (e *EventService) RemoveCoupons(ctx context.Context, eventId string, req *d
 
 	return nil
 }
+
+//func AvgRate(events []*model.Event) {
+//	for i := range events {
+//		var totalRate float32
+//		for _, review := range events[i].Reviews {
+//			totalRate += review.Rate
+//		}
+//		if len(events[i].Reviews) > 0 {
+//			events[i].AvgRate = totalRate / float32(len(events[i].Reviews))
+//		} else {
+//			events[i].AvgRate = 0
+//		}
+//	}
+//}

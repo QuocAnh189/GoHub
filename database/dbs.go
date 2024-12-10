@@ -248,9 +248,19 @@ func (d *Database) applyOptions(opts ...FindOption) *gorm.DB {
 
 	opt := getOption(opts...)
 
+	if opt.selectFields != "" {
+		query = query.Select(opt.selectFields)
+	}
+
 	if len(opt.preloads) != 0 {
 		for _, preload := range opt.preloads {
 			query = query.Preload(preload)
+		}
+	}
+
+	if len(opt.joins) != 0 {
+		for _, join := range opt.joins {
+			query = query.Joins(join)
 		}
 	}
 
@@ -274,6 +284,14 @@ func (d *Database) applyOptions(opts ...FindOption) *gorm.DB {
 
 	if opt.limit != 0 {
 		query = query.Limit(opt.limit)
+	}
+
+	if opt.groupBy != "" {
+		query = query.Group(opt.groupBy)
+	}
+
+	if opt.having != "" {
+		query = query.Having(opt.having, opt.havingArgs...)
 	}
 
 	return query

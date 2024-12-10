@@ -99,27 +99,67 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 	defer cancel()
 
 	query := make([]database.Query, 0)
+	args := make([]interface{}, 0)
 
-	if req.IsPrivate {
-		query = append(query, database.NewQuery("is_private = ?", true))
-	} else {
-		query = append(query, database.NewQuery("is_private = ?", false))
+	queryString := "is_private = ?"
+	args = append(args, false)
+
+	if req.Search != "" {
+		queryString += " AND name LIKE ?"
+		args = append(args, "%"+req.Search+"%")
 	}
 
-	if req.Name != "" {
-		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Name+"%"))
+	if len(req.CategoryIds) > 0 {
+		queryString += " AND event_categories.category_id IN (?)"
+		args = append(args, req.CategoryIds)
 	}
+
+	if req.Status != "All" {
+		switch req.Status {
+		case "Upcoming":
+			queryString += " AND start_time::date > NOW()::date"
+		case "Opening":
+			queryString += " AND NOW()::date BETWEEN start_time::date AND end_time::date"
+		case "Close":
+			queryString += " AND end_time::date < NOW()::date"
+		default:
+			queryString += ""
+		}
+	}
+
+	havingClause := ""
+	if req.MinRate > 0 && req.MinRate <= 5 {
+		havingClause = "COALESCE(AVG(reviews.rate), 0) >= ?"
+	}
+
+	query = append(query, database.NewQuery(queryString, args...))
 
 	order := "created_at"
 	if req.OrderBy != "" {
 		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
-		}
+	}
+	if req.OrderDesc {
+		order += " DESC"
 	}
 
 	var total int64
-	if err := e.db.Count(ctx, &model.Event{}, &total, database.WithQuery(query...)); err != nil {
+	if err := e.db.Count(
+		ctx,
+		&model.Event{},
+		&total,
+		database.WithQuery(query...),
+		database.WithJoin(`
+			INNER JOIN event_categories ON event_categories.event_id = events.id
+			LEFT JOIN reviews ON reviews.event_id = events.id
+    	`),
+		database.WithSelect(`
+			events.*,
+			COALESCE(AVG(reviews.rate), 0) AS average_rate
+		`),
+		database.WithGroupBy("events.id"),
+		database.WithOrder("events.id"),
+		database.WithHaving(havingClause, req.MinRate),
+	); err != nil {
 		return nil, nil, err
 	}
 
@@ -137,6 +177,16 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
+		database.WithJoin(`
+			INNER JOIN event_categories ON event_categories.event_id = events.id
+			LEFT JOIN reviews ON reviews.event_id = events.id
+    	`),
+		database.WithSelect(`
+			events.*, 
+			COALESCE(AVG(reviews.rate), 0) AS average_rate
+    	`),
+		database.WithGroupBy("events.id"),
+		database.WithHaving(havingClause, req.MinRate),
 		database.WithPreload([]string{"Reviews", "Categories"}),
 	); err != nil {
 		return nil, nil, err
@@ -157,8 +207,8 @@ func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *d
 		query = append(query, database.NewQuery("user_id = ? AND is_private = ?", userId, false))
 	}
 
-	if req.Name != "" {
-		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Name+"%"))
+	if req.Search != "" {
+		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Search+"%"))
 	}
 
 	order := "created_at"
@@ -202,8 +252,8 @@ func (e *EventRepo) ListTrashedEvents(ctx context.Context, userId string, req *d
 
 	query := make([]database.Query, 0)
 
-	if req.Name != "" {
-		query = append(query, database.NewQuery("user_id = ? AND name LIKE ?", userId, "%"+req.Name+"%"))
+	if req.Search != "" {
+		query = append(query, database.NewQuery("user_id = ? AND name LIKE ?", userId, "%"+req.Search+"%"))
 	} else {
 		query = append(query, database.NewQuery("user_id = ?", userId))
 	}
@@ -248,8 +298,17 @@ func (e *EventRepo) ListFavouriteEvents(ctx context.Context, userId string, req 
 	defer cancel()
 
 	query := make([]database.Query, 0)
+	args := make([]interface{}, 0)
 
-	query = append(query, database.NewQuery("user_id = ?", userId))
+	queryString := "event_favourites.user_id = ?"
+	args = append(args, userId)
+
+	if req.Search != "" {
+		queryString += " AND name LIKE ?"
+		args = append(args, "%"+req.Search+"%")
+	}
+
+	query = append(query, database.NewQuery(queryString, args...))
 
 	order := "created_at"
 	if req.OrderBy != "" {
@@ -260,7 +319,22 @@ func (e *EventRepo) ListFavouriteEvents(ctx context.Context, userId string, req 
 	}
 
 	var total int64
-	if err := e.db.Count(ctx, &model.EventFavourite{}, &total, database.WithQuery(query...)); err != nil {
+	if err := e.db.Count(
+		ctx,
+		&model.Event{},
+		&total,
+		database.WithQuery(query...),
+		database.WithJoin(`
+			INNER JOIN event_favourites ON event_favourites.event_id = events.id
+			LEFT JOIN reviews ON reviews.event_id = events.id
+		`),
+		database.WithSelect(`
+			events.*,
+			COALESCE(AVG(reviews.rate), 0) AS average_rate
+		`),
+		database.WithGroupBy("events.id"),
+		database.WithOrder("events.id"),
+	); err != nil {
 		return nil, nil, err
 	}
 
@@ -270,22 +344,26 @@ func (e *EventRepo) ListFavouriteEvents(ctx context.Context, userId string, req 
 		pagination.PageSize = total
 	}
 
-	var eventFavourites []*model.EventFavourite
+	var events []*model.Event
 	if err := e.db.Find(
 		ctx,
-		&eventFavourites,
+		&events,
 		database.WithQuery(query...),
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
-		database.WithPreload([]string{"Event", "Event.Reviews"}),
+		database.WithJoin(`
+			INNER JOIN event_favourites ON event_favourites.event_id = events.id
+			LEFT JOIN reviews ON reviews.event_id = events.id
+		`),
+		database.WithSelect(`
+			events.*,
+			COALESCE(AVG(reviews.rate), 0) AS average_rate
+		`),
+		database.WithGroupBy("events.id"),
+		database.WithPreload([]string{"Categories"}),
 	); err != nil {
 		return nil, nil, err
-	}
-
-	var events []*model.Event
-	for _, eventFavourite := range eventFavourites {
-		events = append(events, eventFavourite.Event)
 	}
 
 	return events, pagination, nil
