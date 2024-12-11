@@ -33,8 +33,8 @@ type Event struct {
 	Expenses           []*modelExpense.Expense   `json:"expenses"`
 	TicketTypes        []*TicketType             `json:"ticketTypes"`
 	Reviews            []*Review                 `json:"reviews"`
-	AverageRate        float64                   `json:"averageRate"`
 	UserFavourite      []*modelUser.User         `json:"userFavourite" gorm:"many2many:event_favourites;"`
+	AverageRate        float64                   `json:"averageRate" sql:"average_rate"`
 	CreatedAt          time.Time                 `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt          time.Time                 `json:"updatedAt" gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt            `json:"deletedAt" gorm:"index"`

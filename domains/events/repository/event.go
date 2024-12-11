@@ -15,7 +15,7 @@ type IEventRepository interface {
 	CreateEvent(ctx context.Context, event *model.Event, req *dto.CreateEventReq) error
 	UpdateEvent(ctx context.Context, event *model.Event) error
 	ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
-	ListCreatedEvents(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
+	ListCreatedEvents(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error)
 	ListTrashedEvents(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	ListFavouriteEvents(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	Delete(ctx context.Context, id string) error
@@ -195,32 +195,79 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 	return events, pagination, nil
 }
 
-func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error) {
+func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error) {
 	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
 	defer cancel()
 
 	query := make([]database.Query, 0)
+	args := make([]interface{}, 0)
 
-	if req.IsPrivate {
-		query = append(query, database.NewQuery("user_id = ? AND is_private = ?", userId, true))
-	} else {
-		query = append(query, database.NewQuery("user_id = ? AND is_private = ?", userId, false))
-	}
+	queryString := "user_id = ?"
+	args = append(args, userId)
 
-	if req.Search != "" {
-		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Search+"%"))
-	}
+	if len(req.CategoryIds) > 0 {
+		valid := true
+		for _, id := range req.CategoryIds {
+			if id == "" {
+				valid = false
+			}
+		}
 
-	order := "created_at"
-	if req.OrderBy != "" {
-		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
+		if valid {
+			queryString += " AND event_categories.category_id IN (?)"
+			args = append(args, req.CategoryIds)
 		}
 	}
 
+	switch req.Visibility {
+	case "Public":
+		queryString += " AND is_private = ?"
+		args = append(args, false)
+	case "Private":
+		queryString += " AND is_private = ?"
+		args = append(args, true)
+	default:
+		break
+	}
+
+	switch req.Status {
+	case "Upcoming":
+		queryString += " AND start_time::date > NOW()::date"
+	case "Opening":
+		queryString += " AND NOW()::date BETWEEN start_time::date AND end_time::date"
+	case "Close":
+		queryString += " AND end_time::date < NOW()::date"
+	default:
+		queryString += ""
+	}
+
+	switch req.PaymentType {
+	case "Free":
+		queryString += " AND event_payment_type = ?"
+		args = append(args, "Free")
+	case "Paid":
+		queryString += " AND event_payment_type = ?"
+		args = append(args, "Paid")
+	default:
+		queryString += ""
+	}
+
+	if req.Search != "" {
+		queryString += " AND name ILIKE ?"
+		args = append(args, "%"+req.Search+"%")
+	}
+
+	query = append(query, database.NewQuery(queryString, args...))
+
 	var total int64
-	if err := e.db.Count(ctx, &model.Event{}, &total, database.WithQuery(query...)); err != nil {
+	if err := e.db.Count(
+		ctx,
+		&model.Event{},
+		&total,
+		database.WithQuery(query...),
+		database.WithJoin(`
+			INNER JOIN event_categories ON event_categories.event_id = events.id
+		`)); err != nil {
 		return nil, nil, err
 	}
 
@@ -237,11 +284,30 @@ func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *d
 		database.WithQuery(query...),
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
-		database.WithOrder(order),
-		database.WithPreload([]string{"Reviews"}),
+		//database.WithOrder(order),
+		database.WithSelect("events.id, events.name, events.cover_image_url, events.start_time, events.location, events.is_private, events.deleted_at"),
+		database.WithJoin(`
+			INNER JOIN event_categories ON event_categories.event_id = events.id
+		`),
+		//database.WithPreload([]string{"Reviews"}),
 	); err != nil {
 		return nil, nil, err
 	}
+
+	var totalAll int64
+	totalAllQuery := database.NewQuery("user_id = ?", userId)
+	if err := e.db.Count(ctx, &model.Event{}, &totalAll, database.WithQuery(totalAllQuery)); err != nil {
+		return nil, nil, err
+	}
+	statistic.TotalAll = totalAll
+
+	var totalPublic int64
+	totalPublicQuery := database.NewQuery("user_id = ? AND is_private = ?", userId, false)
+	if err := e.db.Count(ctx, &model.Event{}, &totalPublic, database.WithQuery(totalPublicQuery)); err != nil {
+		return nil, nil, err
+	}
+	statistic.TotalPublic = totalPublic
+	statistic.TotalPrivate = totalAll - totalPublic
 
 	return events, pagination, nil
 }
@@ -251,12 +317,17 @@ func (e *EventRepo) ListTrashedEvents(ctx context.Context, userId string, req *d
 	defer cancel()
 
 	query := make([]database.Query, 0)
+	args := make([]interface{}, 0)
+
+	queryString := "user_id = ?"
+	args = append(args, userId)
 
 	if req.Search != "" {
-		query = append(query, database.NewQuery("user_id = ? AND name LIKE ?", userId, "%"+req.Search+"%"))
-	} else {
-		query = append(query, database.NewQuery("user_id = ?", userId))
+		queryString += " AND name LIKE ?"
+		args = append(args, "%"+req.Search+"%")
 	}
+
+	query = append(query, database.NewQuery(queryString, args...))
 
 	order := "created_at"
 	if req.OrderBy != "" {

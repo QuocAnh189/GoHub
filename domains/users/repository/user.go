@@ -25,6 +25,7 @@ type IUserRepository interface {
 	IsFollower(ctx context.Context, userFollower *model.UserFollower) bool
 	FollowerUser(ctx context.Context, userFollower *model.UserFollower) error
 	UnFollowerUser(ctx context.Context, userFollower *model.UserFollower) error
+	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
 }
 
 type UserRepository struct {
@@ -352,4 +353,12 @@ func (u *UserRepository) UnFollowerUser(ctx context.Context, userFollower *model
 		return err
 	}
 	return nil
+}
+
+func (u *UserRepository) CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error) {
+	query := database.NewQuery("follower_id = ? AND followee_id = ?", req.FollowerId, req.FolloweeId)
+	if err := u.db.FindOne(ctx, &model.UserFollower{}, database.WithQuery(query)); err != nil {
+		return false, err
+	}
+	return true, nil
 }

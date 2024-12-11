@@ -363,3 +363,29 @@ func (u *UserHandler) UnfollowUser(c *gin.Context) {
 	}
 	response.JSON(c, http.StatusOK, "UnFollow user successfully")
 }
+
+//		@Summary	 Check Follower
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/check-follower/{followedUserId} [patch]
+func (u *UserHandler) CheckFollower(c *gin.Context) {
+	var req dto.FollowerUserReq
+	req.FollowerId = c.GetString("userId")
+	req.FolloweeId = c.Param("followeeId")
+
+	result, err := u.service.CheckFollower(c, &req)
+	if err != nil {
+		logger.Error("Failed to check follower: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")
+		return
+	}
+
+	response.JSON(c, http.StatusOK, result)
+}

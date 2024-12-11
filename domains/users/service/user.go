@@ -28,6 +28,7 @@ type IUserService interface {
 	IsFollower(ctx context.Context, req *dto.FollowerUserReq) bool
 	FollowUser(ctx context.Context, req *dto.FollowerUserReq) error
 	UnfollowUser(ctx context.Context, req *dto.FollowerUserReq) error
+	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
 }
 
 type UserService struct {
@@ -223,4 +224,15 @@ func (u *UserService) UnfollowUser(ctx context.Context, req *dto.FollowerUserReq
 		return err
 	}
 	return nil
+}
+
+func (u *UserService) CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error) {
+	result, err := u.userRepo.CheckFollower(ctx, req)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+	return result, nil
 }

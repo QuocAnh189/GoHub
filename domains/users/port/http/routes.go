@@ -29,5 +29,6 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		userRoute.GET("/:id/followings", userHandler.GetFollowing)
 		userRoute.PATCH("/follow/:followeeId", userHandler.FollowUser)
 		userRoute.PATCH("/unfollow/:followeeId", userHandler.UnfollowUser)
+		userRoute.GET("/check-follower/:followeeId", userHandler.CheckFollower)
 	}
 }

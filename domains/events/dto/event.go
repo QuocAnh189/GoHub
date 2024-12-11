@@ -42,6 +42,16 @@ type Events struct {
 	Categories         []*Category `json:"categories"`
 }
 
+type MyEvent struct {
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	CoverImageUrl string `json:"coverImageUrl"`
+	StartTime     string `json:"startTime"`
+	Location      string `json:"location"`
+	IsPrivate     bool   `json:"isPrivate"`
+	DeletedAt     string `json:"deletedAt"`
+}
+
 type EventFavourite struct {
 	ID            string      `json:"id"`
 	Name          string      `json:"name"`
@@ -97,11 +107,25 @@ type ListEventReq struct {
 	OrderDesc   bool     `json:"-" form:"orderDesc"`
 	TakeAll     bool     `json:"-" form:"take_all"`
 	IsPrivate   bool     `json:"-" form:"is_private"`
+	Visibility  string   `json:"-" form:"visibility"`
+	PaymentType string   `json:"-" form:"paymentType"`
 }
 
 type ListEventRes struct {
 	Events     []*Events          `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
+}
+
+type ListMyEventRes struct {
+	Events     []*MyEvent         `json:"items"`
+	Pagination *paging.Pagination `json:"metadata"`
+	Statistic  StatisticMyEvent   `json:"statistic"`
+}
+
+type StatisticMyEvent struct {
+	TotalAll     int64 `json:"totalAll"`
+	TotalPublic  int64 `json:"totalPublic"`
+	TotalPrivate int64 `json:"totalPrivate"`
 }
 
 type ListEventFavouriteRes struct {

@@ -21,7 +21,7 @@ type IEventService interface {
 	UpdateEvent(ctx context.Context, id string, req *dto.UpdateEventReq) (*model.Event, error)
 	DeleteEvent(ctx context.Context, id string) error
 	DeleteEvents(ctx context.Context, ids *dto.DeleteRequest) error
-	GetCreatedEvent(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
+	GetCreatedEvent(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error)
 	RestoreEvents(ctx context.Context, ids *dto.RestoreRequest) error
 	GetTrashedEvent(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	FavouriteEvent(ctx context.Context, req *dto.CreateEventFavouriteReq) error
@@ -53,8 +53,6 @@ func (e *EventService) GetEvents(ctx context.Context, req *dto.ListEventReq) ([]
 	if err != nil {
 		return nil, nil, err
 	}
-
-	//AvgRate(events)
 
 	return events, pagination, nil
 }
@@ -139,13 +137,11 @@ func (e *EventService) DeleteEvents(ctx context.Context, ids *dto.DeleteRequest)
 	return nil
 }
 
-func (e *EventService) GetCreatedEvent(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error) {
-	events, pagination, err := e.eventRepo.ListCreatedEvents(ctx, userId, req)
+func (e *EventService) GetCreatedEvent(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error) {
+	events, pagination, err := e.eventRepo.ListCreatedEvents(ctx, userId, req, statistic)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	//AvgRate(events)
 
 	return events, pagination, nil
 }
@@ -165,8 +161,6 @@ func (e *EventService) GetTrashedEvent(ctx context.Context, userId string, req *
 	if err != nil {
 		return nil, nil, err
 	}
-
-	//AvgRate(events)
 
 	return events, pagination, nil
 }
@@ -210,7 +204,6 @@ func (e *EventService) GetFavouriteEvent(ctx context.Context, userId string, req
 		return nil, nil, err
 	}
 
-	//AvgRate(events)
 	return events, pagination, nil
 }
 
@@ -268,17 +261,3 @@ func (e *EventService) RemoveCoupons(ctx context.Context, eventId string, req *d
 
 	return nil
 }
-
-//func AvgRate(events []*model.Event) {
-//	for i := range events {
-//		var totalRate float32
-//		for _, review := range events[i].Reviews {
-//			totalRate += review.Rate
-//		}
-//		if len(events[i].Reviews) > 0 {
-//			events[i].AvgRate = totalRate / float32(len(events[i].Reviews))
-//		} else {
-//			events[i].AvgRate = 0
-//		}
-//	}
-//}

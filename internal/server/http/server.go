@@ -56,7 +56,7 @@ func (s Server) Run() error {
 
 	s.engine.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "Authorization", "access-control-allow-origin", "access-control-allow-headers"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,

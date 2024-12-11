@@ -213,15 +213,15 @@ func (h *EventHandler) GetCreatedEvent(c *gin.Context) {
 		return
 	}
 
+	var res dto.ListMyEventRes
 	userId := c.GetString("userId")
-	events, pagination, err := h.service.GetCreatedEvent(c, userId, &req)
+	events, pagination, err := h.service.GetCreatedEvent(c, userId, &req, &res.Statistic)
 	if err != nil {
 		logger.Error("Failed to get events: ", err)
 		response.Error(c, http.StatusInternalServerError, err, "Failed to get events")
 		return
 	}
 
-	var res dto.ListEventRes
 	utils.MapStruct(&res.Events, &events)
 	res.Pagination = pagination
 	response.JSON(c, http.StatusOK, res)
@@ -280,7 +280,7 @@ func (h *EventHandler) GetTrashedEvent(c *gin.Context) {
 		return
 	}
 
-	var res dto.ListEventRes
+	var res dto.ListMyEventRes
 	utils.MapStruct(&res.Events, &events)
 	res.Pagination = pagination
 	response.JSON(c, http.StatusOK, res)
