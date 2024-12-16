@@ -28,6 +28,7 @@ type ReviewByUser struct {
 type ReviewByEvent struct {
 	ID         string  `json:"id"`
 	User       User    `json:"user"`
+	EventId    string  `json:"eventId"`
 	Content    string  `json:"content"`
 	Rate       float32 `json:"rate"`
 	IsPositive bool    `json:"isPositive"`

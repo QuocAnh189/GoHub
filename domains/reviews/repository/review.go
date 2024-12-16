@@ -107,13 +107,7 @@ func (r *ReviewRepo) GetReviewByEventID(ctx context.Context, eventId string, req
 		query = append(query, database.NewQuery("event_id = ?", eventId))
 	}
 
-	order := "created_at"
-	if req.OrderBy != "" {
-		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
-		}
-	}
+	order := "created_at DESC"
 
 	var total int64
 	if err := r.db.Count(ctx, &model.Review{}, &total, database.WithQuery(query...)); err != nil {

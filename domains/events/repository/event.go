@@ -16,6 +16,7 @@ type IEventRepository interface {
 	UpdateEvent(ctx context.Context, event *model.Event) error
 	ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	ListCreatedEvents(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error)
+	ListCreatedEventsAnalysis(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	ListTrashedEvents(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	ListFavouriteEvents(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	Delete(ctx context.Context, id string) error
@@ -27,7 +28,7 @@ type IEventRepository interface {
 	RestoreEventFavourite(ctx context.Context, ids []string) error
 	MakeEventPublicOrPrivate(ctx context.Context, req *dto.MakeEventPublicOrPrivateReq, isPrivate bool) error
 	ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error
-	RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error
+	CheckFavourite(ctx context.Context, req *dto.UserFavouriteEvent) (bool, error)
 }
 
 type EventRepo struct {
@@ -125,6 +126,11 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 		default:
 			queryString += ""
 		}
+	}
+
+	if req.StartTimeRange != "" && req.EndTimeRange != "" {
+		queryString += " AND start_time BETWEEN ? AND ?"
+		args = append(args, req.StartTimeRange, req.EndTimeRange)
 	}
 
 	havingClause := ""
@@ -289,7 +295,7 @@ func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *d
 		database.WithJoin(`
 			INNER JOIN event_categories ON event_categories.event_id = events.id
 		`),
-		//database.WithPreload([]string{"Reviews"}),
+		database.WithPreload([]string{"Coupons"}),
 	); err != nil {
 		return nil, nil, err
 	}
@@ -308,6 +314,64 @@ func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *d
 	}
 	statistic.TotalPublic = totalPublic
 	statistic.TotalPrivate = totalAll - totalPublic
+
+	return events, pagination, nil
+}
+
+func (e *EventRepo) ListCreatedEventsAnalysis(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error) {
+	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
+	defer cancel()
+
+	query := make([]database.Query, 0)
+	args := make([]interface{}, 0)
+
+	queryString := "events.user_id = ?"
+	args = append(args, userId)
+
+	if req.Search != "" {
+		queryString += " AND name ILIKE ?"
+		args = append(args, "%"+req.Search+"%")
+	}
+
+	query = append(query, database.NewQuery(queryString, args...))
+
+	var total int64
+	if err := e.db.Count(
+		ctx,
+		&model.Event{},
+		&total,
+		database.WithQuery(query...),
+	); err != nil {
+		return nil, nil, err
+	}
+
+	pagination := paging.NewPagination(req.Page, req.Limit, total)
+
+	if req.TakeAll {
+		pagination.PageSize = total
+	}
+
+	var events []*model.Event
+	if err := e.db.Find(
+		ctx,
+		&events,
+		database.WithQuery(query...),
+		database.WithLimit(int(pagination.PageSize)),
+		database.WithOffset(int(pagination.Skip)),
+		//database.WithOrder(order),
+		database.WithJoin(`
+			LEFT JOIN event_favourites ON event_favourites.event_id = events.id
+			LEFT JOIN reviews ON reviews.event_id = events.id
+    	`),
+		database.WithSelect(`
+			events.*, 
+			COUNT(DISTINCT event_favourites.id) AS total_favourite,
+			COALESCE(AVG(reviews.rate), 0) AS average_rate
+    	`),
+		database.WithGroupBy("events.id"),
+	); err != nil {
+		return nil, nil, err
+	}
 
 	return events, pagination, nil
 }
@@ -503,6 +567,13 @@ func (e *EventRepo) MakeEventPublicOrPrivate(ctx context.Context, req *dto.MakeE
 }
 
 func (e *EventRepo) ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error {
+	query := database.NewQuery("event_id = ?", eventId)
+
+	err := e.db.ForceDelete(ctx, model.EventCoupons{}, database.WithQuery(query))
+	if err != nil {
+		return err
+	}
+
 	var eventCoupons []*model.EventCoupons
 	for _, id := range req.Ids {
 		eventCoupons = append(eventCoupons, &model.EventCoupons{EventId: eventId, CouponId: id})
@@ -511,24 +582,10 @@ func (e *EventRepo) ApplyCoupons(ctx context.Context, eventId string, req *dto.A
 	return e.db.CreateInBatches(ctx, &eventCoupons, len(eventCoupons))
 }
 
-func (e *EventRepo) RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error {
-	handler := func() error {
-		for _, id := range req.Ids {
-			eventCoupon := model.EventCoupons{EventId: eventId, CouponId: id}
-			query := database.NewQuery("event_id = ? AND coupon_id = ?", eventCoupon.EventId, eventCoupon.CouponId)
-
-			err := e.db.ForceDelete(ctx, eventCoupon, database.WithQuery(query))
-			if err != nil {
-				return err
-			}
-		}
-		return nil
+func (e *EventRepo) CheckFavourite(ctx context.Context, req *dto.UserFavouriteEvent) (bool, error) {
+	query := database.NewQuery("user_id = ? AND event_id = ?", req.UserId, req.EventId)
+	if err := e.db.FindOne(ctx, &model.EventFavourite{}, database.WithQuery(query)); err != nil {
+		return false, err
 	}
-	err := e.db.WithTransaction(handler)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return true, nil
 }

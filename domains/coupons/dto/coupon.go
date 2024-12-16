@@ -8,16 +8,15 @@ type Coupon struct {
 	Name            string  `json:"name" gorm:"not null"`
 	Description     string  `json:"description" gorm:"not null"`
 	MinQuantity     int     `json:"minQuantity"`
-	MinValue        float64 `json:"minValue"`
-	PercentageValue float64 `json:"percentValue"`
-	RealValue       float64 `json:"realValue"`
+	MinPrice        float64 `json:"minPrice"`
+	PercentageValue float64 `json:"percentageValue"`
 	ExpireDate      string  `json:"expireDate" gorm:"not null"`
 }
 
 type ListCouponReq struct {
-	Name      string `json:"name,omitempty" form:"name"`
+	Search    string `json:"name,omitempty" form:"search"`
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"limit"`
+	Limit     int64  `json:"-" form:"pageSize"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`
@@ -34,21 +33,18 @@ type CreateCouponReq struct {
 	Name            string  `form:"name" validate:"required"`
 	Description     string  `form:"description" validate:"required"`
 	MinQuantity     int     `form:"minQuantity" validate:"required"`
-	MinValue        float64 `form:"minValue" validate:"required"`
-	PercentageValue float64 `form:"percentValue" validate:"required"`
-	RealValue       float64 `form:"realValue" validate:"required"`
+	MinPrice        int     `form:"minPrice" validate:"required"`
+	PercentageValue float64 `form:"percentageValue" validate:"required"`
 	ExpireDate      string  `form:"expireDate" validate:"required"`
 }
 
 type UpdateCouponReq struct {
 	ID              string  `form:"id" validate:"required"`
-	UserId          string  `form:"userId" validate:"required"`
 	CoverImageUrl   string  `form:"coverImageUrl" validate:"required"`
 	Name            string  `form:"name" validate:"required"`
 	Description     string  `form:"description" validate:"required"`
 	MinQuantity     int     `form:"minQuantity" validate:"required"`
-	MinValue        float64 `form:"minValue" validate:"required"`
-	PercentageValue float64 `form:"percentValue" validate:"required"`
-	RealValue       float64 `form:"realValue" validate:"required"`
+	MinPrice        int     `form:"minPrice" validate:"required"`
+	PercentageValue float64 `form:"percentageValue" validate:"required"`
 	ExpireDate      string  `form:"expireDate" validate:"required"`
 }

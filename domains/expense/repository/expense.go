@@ -182,7 +182,6 @@ func (e *ExpenseRepository) DeleteSubExpense(ctx context.Context, subExpenseId s
 			if err := e.db.Update(ctx, expense); err != nil {
 				return err
 			}
-			return nil
 		}
 
 		if err := e.db.Delete(ctx, subExpense); err != nil {
@@ -194,5 +193,6 @@ func (e *ExpenseRepository) DeleteSubExpense(ctx context.Context, subExpenseId s
 	if err := e.db.WithTransaction(handler); err != nil {
 		return err
 	}
+
 	return nil
 }

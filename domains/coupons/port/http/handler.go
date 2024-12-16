@@ -54,7 +54,7 @@ func (h *CouponHandler) GetCoupons(c *gin.Context) {
 
 //		@Summary	 Retrieve a coupons by created
 //	 @Description Fetches the details of a specific category based on the provided category ID.
-//		@Tags		 Categories
+//		@Tags		 Coupons
 //		@Produce	 json
 //		@Success	 200	{object}	response.Response	"Category created successfully"
 //		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
@@ -156,7 +156,6 @@ func (h *CouponHandler) CreateCoupon(c *gin.Context) {
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
 //		@Router		 /api/v1/coupons/{couponId} [patch]
 func (h *CouponHandler) UpdateCoupon(c *gin.Context) {
-	couponId := c.Param("id")
 	var req dto.UpdateCouponReq
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error("Failed to get body", err)
@@ -164,6 +163,7 @@ func (h *CouponHandler) UpdateCoupon(c *gin.Context) {
 		return
 	}
 
+	couponId := c.Param("id")
 	coupon, err := h.service.UpdateCoupon(c, couponId, &req)
 	if err != nil {
 		logger.Error("Failed to update coupon ", err.Error())

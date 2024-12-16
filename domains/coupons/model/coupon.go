@@ -17,9 +17,8 @@ type Coupon struct {
 	Name            string          `json:"name" gorm:"not null"`
 	Description     string          `json:"description" gorm:"not null"`
 	MinQuantity     int             `json:"minQuantity"`
-	MinValue        float64         `json:"minValue"`
-	PercentageValue float64         `json:"percentValue"`
-	RealValue       float64         `json:"realValue"`
+	MinPrice        float64         `json:"minPrice"`
+	PercentageValue float64         `json:"percentageValue"`
 	ExpireDate      string          `json:"expireDate" gorm:"not null"`
 	CreatedAt       time.Time       `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt       time.Time       `json:"updatedAt" gorm:"autoUpdateTime"`

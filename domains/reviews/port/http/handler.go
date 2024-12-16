@@ -4,7 +4,6 @@ import (
 	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/reviews/dto"
 	"gohub/domains/reviews/service"
-	"gohub/pkg/messages"
 	"gohub/pkg/response"
 	"gohub/pkg/utils"
 	"net/http"
@@ -217,12 +216,10 @@ func (h *ReviewHandler) UpdateReview(c *gin.Context) {
 
 	review, err := h.service.UpdateReview(c, reviewId, &req)
 	if err != nil {
-		logger.Error("Failed to update category ", err.Error())
+		logger.Error("Failed to update review ", err.Error())
 		switch err.Error() {
-		case messages.CategoryNameExists:
-			response.Error(c, http.StatusConflict, err, messages.CategoryNameExists)
 		default:
-			response.Error(c, http.StatusInternalServerError, err, "Failed to update category")
+			response.Error(c, http.StatusInternalServerError, err, "Failed to update review")
 		}
 		return
 	}

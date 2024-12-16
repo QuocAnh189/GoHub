@@ -1,9 +1,5 @@
 package dto
 
-import (
-	"gohub/domains/users/dto"
-)
-
 type ValidateUserReq struct {
 	Email       string `json:"email" validate:"required,email"`
 	PhoneNumber string `json:"phoneNumber" validate:"required"`
@@ -58,21 +54,4 @@ type ResetPasswordReq struct {
 
 type ResetPasswordRes struct {
 	Message string `json:"message"`
-}
-
-type ProfileRes struct {
-	ID             string      `json:"id"`
-	Email          string      `json:"email"`
-	AvatarUrl      string      `json:"avatarUrl"`
-	AvatarFileName string      `json:"avatarFileName"`
-	FullName       string      `json:"fullName"`
-	UserName       string      `json:"userName"`
-	PhoneNumber    string      `json:"phoneNumber"`
-	Dob            string      `json:"dob"`
-	Gender         string      `json:"gender"`
-	Bio            string      `json:"bio"`
-	TotalEvent     int64       `json:"totalEvent"`
-	TotalFollower  int64       `json:"totalFollower"`
-	TotalFollowing int64       `json:"totalFollowing"`
-	Roles          []*dto.Role `json:"roles"`
 }

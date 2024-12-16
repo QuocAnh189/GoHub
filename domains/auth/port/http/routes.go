@@ -30,7 +30,5 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		authRoute.POST("/refresh-token", refreshAuthMiddleware, authHandler.RefreshToken)
 		authRoute.POST("/forgot-password", authHandler.ForgotPassword)
 		authRoute.POST("/reset-password", authMiddleware, authHandler.ResetPassword)
-		authRoute.GET("/profile", authMiddleware, authHandler.GetProfile)
 	}
-
 }

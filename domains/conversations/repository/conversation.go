@@ -50,7 +50,15 @@ func (c *ConversationRepo) GetConversationByOrganizer(ctx context.Context, organ
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	query = append(query, database.NewQuery("organizer_id = ?", organizerId))
+	args := make([]interface{}, 0)
+
+	queryString := "organizer_id = ?"
+	args = append(args, organizerId)
+
+	if req.Search != "" {
+		queryString += " AND users.user_name LIKE ? OR users.full_name LIKE ?"
+		args = append(args, "%"+req.Search+"%", "%"+req.Search+"%")
+	}
 
 	order := "created_at"
 	if req.OrderBy != "" {
@@ -60,8 +68,18 @@ func (c *ConversationRepo) GetConversationByOrganizer(ctx context.Context, organ
 		}
 	}
 
+	query = append(query, database.NewQuery(queryString, args...))
+
 	var total int64
-	if err := c.db.Count(ctx, &model.Conversation{}, &total, database.WithQuery(query...)); err != nil {
+	if err := c.db.Count(
+		ctx,
+		&model.Conversation{},
+		&total,
+		database.WithQuery(query...),
+		database.WithJoin(`
+			INNER JOIN users ON conversations.user_id = users.id
+    	`),
+	); err != nil {
 		return nil, nil, err
 	}
 
@@ -79,7 +97,10 @@ func (c *ConversationRepo) GetConversationByOrganizer(ctx context.Context, organ
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
-		database.WithPreload([]string{"User", "LastMessage"}),
+		database.WithJoin(`
+			INNER JOIN users ON conversations.user_id = users.id
+    	`),
+		database.WithPreload([]string{"User", "LastMessage", "Event"}),
 	); err != nil {
 		return nil, nil, err
 	}
@@ -91,8 +112,21 @@ func (c *ConversationRepo) GetConversationByUser(ctx context.Context, userId str
 	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
 	defer cancel()
 
+	//query := make([]database.Query, 0)
+	//query = append(query, database.NewQuery("user_id = ?", userId))
+
 	query := make([]database.Query, 0)
-	query = append(query, database.NewQuery("user_id = ?", userId))
+	args := make([]interface{}, 0)
+
+	queryString := "conversations.user_id = ?"
+	args = append(args, userId)
+
+	if req.Search != "" {
+		queryString += " AND events.name LIKE ?"
+		args = append(args, "%"+req.Search+"%")
+	}
+
+	query = append(query, database.NewQuery(queryString, args...))
 
 	order := "created_at"
 	if req.OrderBy != "" {
@@ -103,7 +137,15 @@ func (c *ConversationRepo) GetConversationByUser(ctx context.Context, userId str
 	}
 
 	var total int64
-	if err := c.db.Count(ctx, &model.Conversation{}, &total, database.WithQuery(query...)); err != nil {
+	if err := c.db.Count(
+		ctx,
+		&model.Conversation{},
+		&total,
+		database.WithQuery(query...),
+		database.WithJoin(`
+			INNER JOIN events ON conversations.event_id = events.id
+    	`),
+	); err != nil {
 		return nil, nil, err
 	}
 
@@ -121,7 +163,10 @@ func (c *ConversationRepo) GetConversationByUser(ctx context.Context, userId str
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
-		database.WithPreload([]string{"Organizer", "LastMessage"}),
+		database.WithJoin(`
+			INNER JOIN events ON conversations.event_id = events.id
+    	`),
+		database.WithPreload([]string{"Organizer", "LastMessage", "Event"}),
 	); err != nil {
 		return nil, nil, err
 	}

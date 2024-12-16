@@ -24,11 +24,15 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		userRoute.POST("/", userHandler.CreateUser)
 		userRoute.GET("/:id", userHandler.GetUserById)
 		userRoute.PUT("/:id", userHandler.UpdateUser)
-		userRoute.PATCH("/:id/change-password", userHandler.ChangePassword)
+		userRoute.GET("/profile", authMiddleware, userHandler.GetProfile)
+		userRoute.PATCH("/change-password", userHandler.ChangePassword)
 		userRoute.GET("/:id/followers", userHandler.GetFollowers)
 		userRoute.GET("/:id/followings", userHandler.GetFollowing)
 		userRoute.PATCH("/follow/:followeeId", userHandler.FollowUser)
 		userRoute.PATCH("/unfollow/:followeeId", userHandler.UnfollowUser)
 		userRoute.GET("/check-follower/:followeeId", userHandler.CheckFollower)
+		userRoute.GET("/invitations", userHandler.GetInvitations)
+		userRoute.GET("/notification-following", userHandler.GetNotificationFollowings)
+		userRoute.GET("/notification-order", userHandler.GetNotificationOrders)
 	}
 }

@@ -22,8 +22,8 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		categoryRoute.POST("/", CategoryHandler.CreateCategory)
 		categoryRoute.GET("/:id", CategoryHandler.GetCategoryById)
 		categoryRoute.PUT("/:id", CategoryHandler.UpdateCategory)
-		categoryRoute.DELETE("/", CategoryHandler.DeleteMultipleCategory)
 		categoryRoute.DELETE("/:id", CategoryHandler.DeleteCategory)
+		categoryRoute.DELETE("/", CategoryHandler.DeleteMultipleCategory)
 		categoryRoute.PATCH("/restore", CategoryHandler.RestoreCategories)
 	}
 }

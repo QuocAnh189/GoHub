@@ -11,7 +11,6 @@ import (
 	"gohub/domains/auth/dto"
 	roleModel "gohub/domains/roles/model"
 	roleRepository "gohub/domains/roles/repository"
-	dtoUser "gohub/domains/users/dto"
 	"gohub/domains/users/model"
 	"gohub/domains/users/repository"
 	"gohub/pkg/jwt"
@@ -32,7 +31,6 @@ type IAuthService interface {
 	RefreshToken(ctx context.Context, userId string) (string, error)
 	ForgotPassword(ctx context.Context, email string) error
 	ResetPassword(ctx context.Context, id string, req *dto.ResetPasswordReq) error
-	GetProfile(ctx context.Context, id string) (*model.User, *dtoUser.Calculation, error)
 }
 
 type AuthService struct {
@@ -210,14 +208,4 @@ func (a *AuthService) ResetPassword(ctx context.Context, id string, req *dto.Res
 	}
 
 	return nil
-}
-
-func (a *AuthService) GetProfile(ctx context.Context, id string) (*model.User, *dtoUser.Calculation, error) {
-	user, calculation, err := a.authRepo.GetUserByID(ctx, id, true)
-	if err != nil {
-		logger.Errorf("GetUserByID fail, id: %s, error: %s", id, err)
-		return nil, nil, err
-	}
-
-	return user, calculation, nil
 }

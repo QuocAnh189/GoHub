@@ -12,6 +12,7 @@ import (
 	"gohub/pkg/messages"
 	"gohub/pkg/paging"
 	"gohub/pkg/utils"
+	"gorm.io/gorm"
 )
 
 type IEventService interface {
@@ -22,6 +23,7 @@ type IEventService interface {
 	DeleteEvent(ctx context.Context, id string) error
 	DeleteEvents(ctx context.Context, ids *dto.DeleteRequest) error
 	GetCreatedEvent(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error)
+	GetCreatedEventAnalysis(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	RestoreEvents(ctx context.Context, ids *dto.RestoreRequest) error
 	GetTrashedEvent(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	FavouriteEvent(ctx context.Context, req *dto.CreateEventFavouriteReq) error
@@ -30,7 +32,7 @@ type IEventService interface {
 	MakeEventPrivate(ctx context.Context, req *dto.MakeEventPublicOrPrivateReq) error
 	MakeEventPublic(ctx context.Context, req *dto.MakeEventPublicOrPrivateReq) error
 	ApplyCoupons(ctx context.Context, eventId string, req *dto.ApplyCouponReq) error
-	RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error
+	CheckFavourite(ctx context.Context, req *dto.UserFavouriteEvent) (bool, error)
 }
 
 type EventService struct {
@@ -146,6 +148,15 @@ func (e *EventService) GetCreatedEvent(ctx context.Context, userId string, req *
 	return events, pagination, nil
 }
 
+func (e *EventService) GetCreatedEventAnalysis(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error) {
+	events, pagination, err := e.eventRepo.ListCreatedEventsAnalysis(ctx, userId, req)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return events, pagination, nil
+}
+
 func (e *EventService) RestoreEvents(ctx context.Context, ids *dto.RestoreRequest) error {
 	err := e.eventRepo.RestoreByIds(ctx, ids.Ids)
 
@@ -250,14 +261,13 @@ func (e *EventService) ApplyCoupons(ctx context.Context, eventId string, req *dt
 	return nil
 }
 
-func (e *EventService) RemoveCoupons(ctx context.Context, eventId string, req *dto.RemoveCouponReq) error {
-	if err := e.validator.ValidateStruct(req); err != nil {
-		return err
+func (e *EventService) CheckFavourite(ctx context.Context, req *dto.UserFavouriteEvent) (bool, error) {
+	result, err := e.eventRepo.CheckFavourite(ctx, req)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
 	}
-
-	if err := e.eventRepo.RemoveCoupons(ctx, eventId, req); err != nil {
-		return err
-	}
-
-	return nil
+	return result, nil
 }

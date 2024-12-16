@@ -43,13 +43,23 @@ type Events struct {
 }
 
 type MyEvent struct {
-	ID            string `json:"id"`
-	Name          string `json:"name"`
-	CoverImageUrl string `json:"coverImageUrl"`
-	StartTime     string `json:"startTime"`
-	Location      string `json:"location"`
-	IsPrivate     bool   `json:"isPrivate"`
-	DeletedAt     string `json:"deletedAt"`
+	ID            string    `json:"id"`
+	Name          string    `json:"name"`
+	CoverImageUrl string    `json:"coverImageUrl"`
+	StartTime     string    `json:"startTime"`
+	Location      string    `json:"location"`
+	IsPrivate     bool      `json:"isPrivate"`
+	DeletedAt     string    `json:"deletedAt"`
+	Coupons       []*Coupon `json:"coupons"`
+}
+
+type MyEventAnalysis struct {
+	ID             string  `json:"id"`
+	Name           string  `json:"name"`
+	CoverImageUrl  string  `json:"coverImageUrl"`
+	AverageRate    float32 `json:"averageRate"`
+	TotalSale      int     `json:"totalSale"`
+	TotalFavourite int     `json:"totalFavourite"`
 }
 
 type EventFavourite struct {
@@ -97,18 +107,20 @@ type UpdateEventReq struct {
 }
 
 type ListEventReq struct {
-	Search      string   `json:"name,omitempty" form:"search"`
-	CategoryIds []string `json:"category,omitempty" form:"categoryIds"`
-	Status      string   `json:"status,omitempty" form:"status"`
-	MinRate     int      `json:"minRate" form:"minRate"`
-	Page        int64    `json:"-" form:"page"`
-	Limit       int64    `json:"-" form:"pageSize"`
-	OrderBy     string   `json:"-" form:"order_by"`
-	OrderDesc   bool     `json:"-" form:"orderDesc"`
-	TakeAll     bool     `json:"-" form:"take_all"`
-	IsPrivate   bool     `json:"-" form:"is_private"`
-	Visibility  string   `json:"-" form:"visibility"`
-	PaymentType string   `json:"-" form:"paymentType"`
+	Search         string   `json:"name,omitempty" form:"search"`
+	CategoryIds    []string `json:"category,omitempty" form:"categoryIds"`
+	Status         string   `json:"status,omitempty" form:"status"`
+	MinRate        int      `json:"minRate" form:"minRate"`
+	Page           int64    `json:"-" form:"page"`
+	Limit          int64    `json:"-" form:"pageSize"`
+	OrderBy        string   `json:"-" form:"order_by"`
+	OrderDesc      bool     `json:"-" form:"orderDesc"`
+	TakeAll        bool     `json:"-" form:"take_all"`
+	IsPrivate      bool     `json:"-" form:"is_private"`
+	Visibility     string   `json:"-" form:"visibility"`
+	PaymentType    string   `json:"-" form:"paymentType"`
+	StartTimeRange string   `json:"-" form:"startTimeRange"`
+	EndTimeRange   string   `json:"-" form:"endTimeRange"`
 }
 
 type ListEventRes struct {
@@ -126,6 +138,11 @@ type StatisticMyEvent struct {
 	TotalAll     int64 `json:"totalAll"`
 	TotalPublic  int64 `json:"totalPublic"`
 	TotalPrivate int64 `json:"totalPrivate"`
+}
+
+type ListMyEventAnalysisRes struct {
+	Events     []*MyEventAnalysis `json:"items"`
+	Pagination *paging.Pagination `json:"metadata"`
 }
 
 type ListEventFavouriteRes struct {
@@ -162,4 +179,9 @@ type ApplyCouponReq struct {
 
 type RemoveCouponReq struct {
 	Ids []string `json:"ids" binding:"required"`
+}
+
+type UserFavouriteEvent struct {
+	UserId  string `json:"userId"`
+	EventId string `json:"eventId"`
 }

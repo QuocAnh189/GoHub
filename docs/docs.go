@@ -23,50 +23,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "//api/v1/conversations/{conversationId}/messages/{messageId}": {
-            "patch": {
-                "description": "Deletes the category with the specified ID.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Delete a message",
-                "responses": {
-                    "200": {
-                        "description": "Category updated successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - User not authenticated",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - User does not have the required permissions",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found - Category with the specified ID not found",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error - An error occurred while processing the request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/auth/external-auth-callback": {
             "get": {
                 "description": "Handles the callback from an external authentication provider and processes the authentication result.",
@@ -174,44 +130,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found - User with the provided email address not found",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error - An error occurred while processing the request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/auth/profile": {
-            "get": {
-                "description": "Fetches the details of the currently authenticated user.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Retrieve user profile",
-                "responses": {
-                    "200": {
-                        "description": "User profile retrieved successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - User not authenticated",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - User does not have the required permissions",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -1023,15 +941,57 @@ const docTemplate = `{
             }
         },
         "/api/v1/conversations/{conversationId}/messages/{messageId}": {
-            "patch": {
+            "put": {
                 "description": "Updates the details of an existing category based on the provided category ID and update information.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Categories"
+                    "Conversations"
                 ],
                 "summary": "Update an existing message",
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes the category with the specified ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Conversations"
+                ],
+                "summary": "Delete a message",
                 "responses": {
                     "200": {
                         "description": "Category updated successfully",
@@ -1159,7 +1119,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Categories"
+                    "Coupons"
                 ],
                 "summary": "Retrieve a coupons by created",
                 "responses": {
@@ -1430,6 +1390,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/events/check-favourite/{eventId}": {
+            "get": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Check Favourite",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/events/favourite/{eventId}": {
             "patch": {
                 "description": "Marks an existing event as a favourite based on the provided event ID.",
@@ -1481,6 +1491,44 @@ const docTemplate = `{
             }
         },
         "/api/v1/events/get-created-events": {
+            "get": {
+                "description": "Fetches a paginated list of events created by the user, based on the provided pagination filter.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Events"
+                ],
+                "summary": "Retrieve created events",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved events",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/events/get-created-events-analysis": {
             "get": {
                 "description": "Fetches a paginated list of events created by the user, based on the provided pagination filter.",
                 "produces": [
@@ -2061,7 +2109,43 @@ const docTemplate = `{
                     }
                 }
             },
-            "post": {
+            "put": {
+                "description": "Creates a new expense based on the provided details. The request must include multipart form data.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Expenses"
+                ],
+                "summary": "Update an exists expense",
+                "responses": {
+                    "201": {
+                        "description": "Expense updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
                 "description": "Creates a new expense based on the provided details",
                 "produces": [
                     "application/json"
@@ -2682,6 +2766,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/reviews/get-by-created-event": {
+            "get": {
+                "description": "Fetches a paginated list of reviews created by the user, based on the provided pagination filter.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Retrieve a list of reviews by created events",
+                "responses": {
+                    "202": {
+                        "description": "Successfully retrieved the list of reviews",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Event with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/reviews/get-by-event/{eventId}": {
             "get": {
                 "description": "Fetches a paginated list of reviews created by the event, based on the provided pagination filter.",
@@ -3066,6 +3194,56 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/users/check-follower/{followedUserId}": {
+            "get": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Check Follower",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/follow/{followedUserId}": {
             "patch": {
                 "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
@@ -3103,6 +3281,44 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/profile": {
+            "get": {
+                "description": "Fetches the details of the currently authenticated user.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Retrieve user profile",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -3358,7 +3574,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/{userId}/following-users": {
+        "/api/v1/users/{userId}/followings": {
             "get": {
                 "description": "Fetches a paginated list of following users based on the provided user ID and filter parameters.",
                 "produces": [

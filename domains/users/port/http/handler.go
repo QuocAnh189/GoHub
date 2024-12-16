@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/users/dto"
 	"gohub/domains/users/service"
@@ -52,6 +53,38 @@ func (u *UserHandler) GetUsers(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Retrieve user profile
+//	 @Description Fetches the details of the currently authenticated user.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"User profile retrieved successfully"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/profile [get]
+func (u *UserHandler) GetProfile(c *gin.Context) {
+	userID := c.GetString("userId")
+
+	if userID == "" {
+		response.Error(c, http.StatusUnauthorized, errors.New("unauthorized"), "Unauthorized")
+		return
+	}
+
+	user, calculation, err := u.service.GetProfile(c, userID)
+	if err != nil {
+		logger.Error(err.Error())
+		response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
+		return
+	}
+
+	var res dto.User
+	utils.MapStruct(&res, &user)
+	res.TotalEvent = calculation.TotalEvent
+	res.TotalFollower = calculation.TotalFollower
+	res.TotalFollowing = calculation.TotalFollowing
+	response.JSON(c, http.StatusOK, res)
+}
+
 //		@Summary	 Retrieve a user by its ID
 //	 @Description Successfully retrieved the user
 //		@Tags		 Users
@@ -74,6 +107,7 @@ func (u *UserHandler) GetUserById(c *gin.Context) {
 
 	var res dto.User
 	utils.MapStruct(&res, user)
+	res.TotalEvent = calculation.TotalEvent
 	res.TotalFollower = calculation.TotalFollower
 	res.TotalFollowing = calculation.TotalFollowing
 	response.JSON(c, http.StatusOK, res)
@@ -178,13 +212,13 @@ func (u *UserHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 
-	userId := c.Param("id")
+	userId := c.GetString("userId")
 
 	err := u.service.ChangePassword(c, userId, &req)
 	if err != nil {
 		switch err.Error() {
 		case messages.WrongPassword:
-			response.Error(c, http.StatusConflict, err, messages.WrongPassword)
+			response.Error(c, http.StatusConflict, err, messages.AccountOrPasswordWrong)
 		case messages.UserNotFound:
 			response.Error(c, http.StatusNotFound, err, messages.UserNotFound)
 		default:
@@ -246,7 +280,7 @@ func (u *UserHandler) GetFollowers(c *gin.Context) {
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/users/{userId}/following-users [get]
+//		@Router		 /api/v1/users/{userId}/followings [get]
 func (u *UserHandler) GetFollowing(c *gin.Context) {
 	var req dto.ListUserReq
 	if err := c.ShouldBind(&req); err != nil {
@@ -374,7 +408,7 @@ func (u *UserHandler) UnfollowUser(c *gin.Context) {
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/users/check-follower/{followedUserId} [patch]
+//		@Router		 /api/v1/users/check-follower/{followedUserId} [get]
 func (u *UserHandler) CheckFollower(c *gin.Context) {
 	var req dto.FollowerUserReq
 	req.FollowerId = c.GetString("userId")
@@ -388,4 +422,84 @@ func (u *UserHandler) CheckFollower(c *gin.Context) {
 	}
 
 	response.JSON(c, http.StatusOK, result)
+}
+
+//		@Summary	 Get Invitations
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/invitation [get]
+func (u *UserHandler) GetInvitations(c *gin.Context) {
+	var req dto.ListInvitationReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+		return
+	}
+	inviteeId := c.GetString("userId")
+
+	var res dto.ListInvitationRes
+	invitations, pagination, err := u.service.GetInvitations(c, &req, inviteeId)
+	if err != nil {
+		logger.Error("Failed to get invitations: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")
+		return
+	}
+
+	utils.MapStruct(&res.Invitations, &invitations)
+	res.Pagination = pagination
+	response.JSON(c, http.StatusOK, res)
+}
+
+//		@Summary	 Get Notification Following
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/notification-following [get]
+func (u *UserHandler) GetNotificationFollowings(c *gin.Context) {
+	var req dto.ListNotificationReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+		return
+	}
+	inviteeId := c.GetString("userId")
+
+	var res dto.ListNotificationFollowingRes
+	results, pagination, err := u.service.GetNotificationFollowings(c, &req, inviteeId)
+	if err != nil {
+		logger.Error("Failed to get invitations: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")
+		return
+	}
+
+	utils.MapStruct(&res.Notifications, &results)
+	res.Pagination = pagination
+	response.JSON(c, http.StatusOK, res)
+}
+
+//		@Summary	 Get Notification Order
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/notification-order [get]
+func (u *UserHandler) GetNotificationOrders(c *gin.Context) {
 }

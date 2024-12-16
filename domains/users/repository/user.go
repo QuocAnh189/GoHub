@@ -26,6 +26,8 @@ type IUserRepository interface {
 	FollowerUser(ctx context.Context, userFollower *model.UserFollower) error
 	UnFollowerUser(ctx context.Context, userFollower *model.UserFollower) error
 	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
+	GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error)
+	GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, followeeId string) ([]*model.UserFollower, *paging.Pagination, error)
 }
 
 type UserRepository struct {
@@ -361,4 +363,78 @@ func (u *UserRepository) CheckFollower(ctx context.Context, req *dto.FollowerUse
 		return false, err
 	}
 	return true, nil
+}
+
+func (u *UserRepository) GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error) {
+
+	query := make([]database.Query, 0)
+
+	query = append(query, database.NewQuery("invitee_id = ?", inviteeId))
+
+	order := "created_at"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
+	}
+
+	var total int64
+	if err := u.db.Count(ctx, &modelEvent.Invitation{}, &total, database.WithQuery(query...)); err != nil {
+		return nil, nil, err
+	}
+
+	pagination := paging.NewPagination(req.Page, req.Limit, total)
+
+	var invitations []*modelEvent.Invitation
+	if err := u.db.Find(
+		ctx,
+		&invitations,
+		database.WithQuery(query...),
+		database.WithLimit(int(pagination.PageSize)),
+		database.WithOffset(int(pagination.Skip)),
+		database.WithOrder(order),
+		database.WithPreload([]string{"Inviter", "Event"}),
+	); err != nil {
+		return nil, nil, err
+	}
+
+	return invitations, pagination, nil
+}
+
+func (u *UserRepository) GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, followeeId string) ([]*model.UserFollower, *paging.Pagination, error) {
+
+	query := make([]database.Query, 0)
+
+	query = append(query, database.NewQuery("followee_id = ?", followeeId))
+
+	order := "created_at"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
+	}
+
+	var total int64
+	if err := u.db.Count(ctx, &model.UserFollower{}, &total, database.WithQuery(query...)); err != nil {
+		return nil, nil, err
+	}
+
+	pagination := paging.NewPagination(req.Page, req.Limit, total)
+
+	var userFollowers []*model.UserFollower
+	if err := u.db.Find(
+		ctx,
+		&userFollowers,
+		database.WithQuery(query...),
+		database.WithLimit(int(pagination.PageSize)),
+		database.WithOffset(int(pagination.Skip)),
+		database.WithOrder(order),
+		database.WithPreload([]string{"Follower"}),
+	); err != nil {
+		return nil, nil, err
+	}
+
+	return userFollowers, pagination, nil
 }

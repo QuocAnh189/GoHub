@@ -120,7 +120,7 @@ func (h *ExpenseHandler) CreateExpense(c *gin.Context) {
 //		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/expenses/{expenseId} [post]
+//		@Router		 /api/v1/expenses/{expenseId} [put]
 func (h *ExpenseHandler) UpdateExpense(c *gin.Context) {
 	var req dto.UpdatedExpenseReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -153,7 +153,7 @@ func (h *ExpenseHandler) UpdateExpense(c *gin.Context) {
 //		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/expenses/{expenseId} [post]
+//		@Router		 /api/v1/expenses/{expenseId} [delete]
 func (h *ExpenseHandler) DeleteExpense(c *gin.Context) {
 	expenseId := c.Param("id")
 
@@ -222,7 +222,7 @@ func (h *ExpenseHandler) UpdateSubExpense(c *gin.Context) {
 	subExpenseId := c.Param("subExpenseId")
 	err := h.service.UpdateSubExpense(c, subExpenseId, &req)
 	if err != nil {
-		logger.Error("Failed to update sub_expense ", err.Error())
+		logger.Error("Failed to update sub expense ", err.Error())
 		switch err.Error() {
 		default:
 			response.Error(c, http.StatusInternalServerError, err, "Failed to update expense")

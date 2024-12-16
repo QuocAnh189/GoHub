@@ -5,6 +5,7 @@ import (
 	"errors"
 	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/QuocAnh189/GoBin/validation"
+	modelEvent "gohub/domains/events/model"
 	roleModel "gohub/domains/roles/model"
 	roleRepository "gohub/domains/roles/repository"
 	"gohub/domains/users/dto"
@@ -29,6 +30,9 @@ type IUserService interface {
 	FollowUser(ctx context.Context, req *dto.FollowerUserReq) error
 	UnfollowUser(ctx context.Context, req *dto.FollowerUserReq) error
 	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
+	GetProfile(ctx context.Context, id string) (*model.User, *dto.Calculation, error)
+	GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error)
+	GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, inviteeId string) ([]*model.UserFollower, *paging.Pagination, error)
 }
 
 type UserService struct {
@@ -235,4 +239,30 @@ func (u *UserService) CheckFollower(ctx context.Context, req *dto.FollowerUserRe
 		return false, err
 	}
 	return result, nil
+}
+
+func (u *UserService) GetProfile(ctx context.Context, id string) (*model.User, *dto.Calculation, error) {
+	user, calculation, err := u.userRepo.GetUserByID(ctx, id, true)
+	if err != nil {
+		logger.Errorf("GetUserByID fail, id: %s, error: %s", id, err)
+		return nil, nil, err
+	}
+
+	return user, calculation, nil
+}
+
+func (u *UserService) GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error) {
+	invitations, pagination, err := u.userRepo.GetInvitations(ctx, req, inviteeId)
+	if err != nil {
+		return nil, nil, err
+	}
+	return invitations, pagination, nil
+}
+
+func (u *UserService) GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, inviteeId string) ([]*model.UserFollower, *paging.Pagination, error) {
+	results, pagination, err := u.userRepo.GetNotificationFollowings(ctx, req, inviteeId)
+	if err != nil {
+		return nil, nil, err
+	}
+	return results, pagination, nil
 }

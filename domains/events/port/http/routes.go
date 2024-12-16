@@ -25,6 +25,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		eventRoute.DELETE("/:id", eventHandler.DeleteEvent)
 		eventRoute.DELETE("/", eventHandler.DeleteMultipleEvent)
 		eventRoute.GET("/get-created-events", eventHandler.GetCreatedEvent)
+		eventRoute.GET("/get-created-events-analysis", eventHandler.GetCreatedEventAnalysis)
 		eventRoute.PATCH("/restore", eventHandler.RestoreEvents)
 		eventRoute.GET("/get-deleted-events", eventHandler.GetTrashedEvent)
 		eventRoute.PATCH("/favourite/:id", eventHandler.FavouriteEvent)
@@ -33,6 +34,6 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		eventRoute.PATCH("/make-events-private", eventHandler.MakeEventPrivate)
 		eventRoute.PATCH("/make-events-public", eventHandler.MakeEventPublic)
 		eventRoute.PATCH("/apply-coupons/:id", eventHandler.ApplyCoupons)
-		eventRoute.PATCH("/remove-coupons/:id", eventHandler.RemoveCoupons)
+		eventRoute.GET("/check-favourite/:id", eventHandler.CheckFavourite)
 	}
 }

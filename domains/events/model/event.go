@@ -34,7 +34,8 @@ type Event struct {
 	TicketTypes        []*TicketType             `json:"ticketTypes"`
 	Reviews            []*Review                 `json:"reviews"`
 	UserFavourite      []*modelUser.User         `json:"userFavourite" gorm:"many2many:event_favourites;"`
-	AverageRate        float64                   `json:"averageRate" sql:"average_rate"`
+	AverageRate        float64                   `json:"averageRate"`
+	TotalFavourite     float64                   `json:"totalFavourite"`
 	CreatedAt          time.Time                 `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt          time.Time                 `json:"updatedAt" gorm:"autoUpdateTime"`
 	DeletedAt          gorm.DeletedAt            `json:"deletedAt" gorm:"index"`

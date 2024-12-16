@@ -23,7 +23,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		categoryRoute.GET("/get-created-coupons", CouponHandler.GetCreatedCoupons)
 		categoryRoute.GET("/:id", CouponHandler.GetCouponById)
 		categoryRoute.POST("/", CouponHandler.CreateCoupon)
-		categoryRoute.PATCH("/:id", CouponHandler.UpdateCoupon)
+		categoryRoute.PUT("/:id", CouponHandler.UpdateCoupon)
 		categoryRoute.DELETE("/:id", CouponHandler.DeleteCoupon)
 	}
 }

@@ -48,7 +48,7 @@ func (h *ConversationHandler) GetConversationsByOrganizer(c *gin.Context) {
 	}
 
 	var res dto.ListConversationByOrganizerRes
-	utils.MapStruct(&res.Conversation, conversations)
+	utils.MapStruct(&res.Conversation, &conversations)
 	res.Pagination = pagination
 	response.JSON(c, http.StatusOK, res)
 }
@@ -80,7 +80,7 @@ func (h *ConversationHandler) GetConversationsByUser(c *gin.Context) {
 	}
 
 	var res dto.ListConversationByUserRes
-	utils.MapStruct(&res.Conversation, conversations)
+	utils.MapStruct(&res.Conversation, &conversations)
 	res.Pagination = pagination
 	response.JSON(c, http.StatusOK, res)
 }
@@ -151,14 +151,14 @@ func (h *ConversationHandler) CreateMessage(c *gin.Context) {
 
 //		@Summary	 Update an existing message
 //	 @Description Updates the details of an existing category based on the provided category ID and update information.
-//		@Tags		 Categories
+//		@Tags		 Conversations
 //		@Produce	 json
 //		@Success	 200	{object}	response.Response	"Category updated successfully"
 //		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/conversations/{conversationId}/messages/{messageId} [patch]
+//		@Router		 /api/v1/conversations/{conversationId}/messages/{messageId} [put]
 func (h *ConversationHandler) UpdateMessage(c *gin.Context) {
 	messageId := c.Param("messageId")
 	var req dto.UpdateMessageReq
@@ -185,14 +185,14 @@ func (h *ConversationHandler) UpdateMessage(c *gin.Context) {
 
 //		@Summary	 Delete a message
 //	 @Description Deletes the category with the specified ID.
-//		@Tags		 Categories
+//		@Tags		 Conversations
 //		@Produce	 json
 //		@Success	 200	{object}	response.Response	"Category updated successfully"
 //		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 //api/v1/conversations/{conversationId}/messages/{messageId} [patch]
+//		@Router		 /api/v1/conversations/{conversationId}/messages/{messageId} [delete]
 func (h *ConversationHandler) DeleteMessage(c *gin.Context) {
 	messageId := c.Param("messageId")
 

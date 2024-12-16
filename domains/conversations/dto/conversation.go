@@ -19,6 +19,7 @@ type ConversationByOrganizer struct {
 	ID          string  `json:"id"`
 	User        User    `json:"user"`
 	LastMessage Message `json:"lastMessage"`
+	Event       Event   `json:"event"`
 	CreatedAt   string  `json:"createdAt"`
 	UpdatedAt   string  `json:"updatedAt"`
 }
@@ -27,6 +28,7 @@ type ConversationByUser struct {
 	ID          string  `json:"id"`
 	Organizer   User    `json:"organizer"`
 	LastMessage Message `json:"lastMessage"`
+	Event       Event   `json:"event"`
 	CreatedAt   string  `json:"createdAt"`
 	UpdatedAt   string  `json:"updatedAt"`
 }
@@ -40,6 +42,7 @@ type User struct {
 }
 
 type Message struct {
+	Id         string         `json:"id"`
 	SenderId   string         `json:"senderId"`
 	ReceiverId string         `json:"receiverId"`
 	Content    string         `json:"content"`
@@ -48,9 +51,16 @@ type Message struct {
 	DeletedAt  gorm.DeletedAt `json:"deletedAt"`
 }
 
+type Event struct {
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	CoverImageUrl string `json:"coverImageUrl"`
+}
+
 type ListConversationReq struct {
+	Search    string `json:"-" form:"search"`
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"limit"`
+	Limit     int64  `json:"-" form:"pageSize"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`
@@ -68,7 +78,7 @@ type ListConversationByUserRes struct {
 
 type ListMessageReq struct {
 	Page      int64  `json:"-" form:"page"`
-	Limit     int64  `json:"-" form:"limit"`
+	Limit     int64  `json:"-" form:"pageSize"`
 	OrderBy   string `json:"-" form:"order_by"`
 	OrderDesc bool   `json:"-" form:"order_desc"`
 	TakeAll   bool   `json:"-" form:"take_all"`

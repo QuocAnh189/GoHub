@@ -8,7 +8,6 @@ import (
 	"gohub/domains/auth/service"
 	"gohub/pkg/messages"
 	"gohub/pkg/response"
-	"gohub/pkg/utils"
 	"net/http"
 	"strings"
 
@@ -272,37 +271,5 @@ func (auth *AuthHandler) ResetPassword(c *gin.Context) {
 	res := dto.ResetPasswordRes{
 		Message: "Reset Password Successfully",
 	}
-	response.JSON(c, http.StatusOK, res)
-}
-
-//		@Summary	 Retrieve user profile
-//	 @Description Fetches the details of the currently authenticated user.
-//		@Tags		 Auth
-//		@Produce	 json
-//		@Success	 200	{object}	response.Response	"User profile retrieved successfully"
-//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
-//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
-//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/auth/profile [get]
-func (auth *AuthHandler) GetProfile(c *gin.Context) {
-	userID := c.GetString("userId")
-
-	if userID == "" {
-		response.Error(c, http.StatusUnauthorized, errors.New("unauthorized"), "Unauthorized")
-		return
-	}
-
-	user, calculation, err := auth.service.GetProfile(c, userID)
-	if err != nil {
-		logger.Error(err.Error())
-		response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
-		return
-	}
-
-	var res dto.ProfileRes
-	utils.MapStruct(&res, &user)
-	res.TotalEvent = calculation.TotalEvent
-	res.TotalFollower = calculation.TotalFollower
-	res.TotalFollowing = calculation.TotalFollowing
 	response.JSON(c, http.StatusOK, res)
 }

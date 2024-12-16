@@ -227,6 +227,37 @@ func (h *EventHandler) GetCreatedEvent(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Retrieve created events
+//	 @Description Fetches a paginated list of events created by the user, based on the provided pagination filter.
+//		@Tags		 Events
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"Successfully retrieved events"
+//		@Success	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Success	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/events/get-created-events-analysis [get]
+func (h *EventHandler) GetCreatedEventAnalysis(c *gin.Context) {
+	var req dto.ListEventReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+		return
+	}
+
+	var res dto.ListMyEventAnalysisRes
+	userId := c.GetString("userId")
+	events, pagination, err := h.service.GetCreatedEventAnalysis(c, userId, &req)
+	if err != nil {
+		logger.Error("Failed to get events: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Failed to get events")
+		return
+	}
+
+	utils.MapStruct(&res.Events, &events)
+	res.Pagination = pagination
+	response.JSON(c, http.StatusOK, res)
+}
+
 //		@Summary	 Restore deleted events
 //	 @Description Restores a list of deleted events based on the provided event IDs.
 //		@Tags		 Events
@@ -468,31 +499,29 @@ func (h *EventHandler) ApplyCoupons(c *gin.Context) {
 	response.JSON(c, http.StatusOK, "Apply coupons successfully")
 }
 
-//		@Summary	 Remove Coupons from event
-//	 @Description Changes the visibility of specified events to public based on the provided event IDs.
+//		@Summary	 Check Favourite
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
 //		@Tags		 Events
 //		@Produce	 json
-//		@Success	 200	{object}	response.Response	"Events marked as public successfully"
-//		@Success	 401	{object}	response.Response	"Unauthorized - User not authenticated"
-//		@Success	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/events/remove-coupons/{eventId} [patch]
-func (h *EventHandler) RemoveCoupons(c *gin.Context) {
-	var req dto.RemoveCouponReq
-	if err := c.ShouldBind(&req); err != nil {
-		logger.Error("Failed to parse request query: ", err)
-		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+//		@Router		 /api/v1/events/check-favourite/{eventId} [get]
+func (h *EventHandler) CheckFavourite(c *gin.Context) {
+	req := dto.UserFavouriteEvent{
+		UserId:  c.GetString("userId"),
+		EventId: c.Param("id"),
 	}
 
-	eventId := c.Param("id")
-	err := h.service.RemoveCoupons(c, eventId, &req)
+	result, err := h.service.CheckFavourite(c, &req)
 	if err != nil {
-		switch err.Error() {
-		default:
-			response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
-			return
-		}
+		logger.Error("Failed to check favourite event: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")
+		return
 	}
 
-	response.JSON(c, http.StatusOK, "Remove coupons successfully")
+	response.JSON(c, http.StatusOK, result)
 }

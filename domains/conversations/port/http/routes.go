@@ -22,7 +22,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		conversationRoute.GET("/get-by-user/:userId", conversationHandler.GetConversationsByUser)
 		conversationRoute.GET("/:id/messages", conversationHandler.GetMessagesByConversation)
 		conversationRoute.POST("/:id/messages", conversationHandler.CreateMessage)
-		conversationRoute.PATCH("/:id/messages/:messageId", conversationHandler.UpdateMessage)
+		conversationRoute.PUT("/:id/messages/:messageId", conversationHandler.UpdateMessage)
 		conversationRoute.DELETE("/:id/messages/:messageId", conversationHandler.DeleteMessage)
 	}
 }

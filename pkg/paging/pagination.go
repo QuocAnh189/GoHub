@@ -20,7 +20,7 @@ type Pagination struct {
 func NewPagination(page int64, pageSize int64, total int64) *Pagination {
 	var pageInfo Pagination
 	limit := DefaultPageSize
-	if pageSize > 0 && pageSize <= limit {
+	if pageSize > 0 && pageSize <= 1000 {
 		pageInfo.PageSize = pageSize
 	} else {
 		pageInfo.PageSize = limit
