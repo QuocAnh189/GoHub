@@ -37,7 +37,7 @@ func (c *CategoryRepository) ListCategories(ctx context.Context, req *dto.ListCa
 		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Name+"%"))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {

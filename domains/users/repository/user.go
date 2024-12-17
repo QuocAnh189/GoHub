@@ -47,7 +47,7 @@ func (u *UserRepository) ListUsers(ctx context.Context, req *dto.ListUserReq) ([
 		query = append(query, database.NewQuery("name LIKE ? OR email LIKE ?", "%"+req.Search+"%", "%"+req.Search+"%"))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -215,7 +215,7 @@ func (u *UserRepository) GetUserFollowers(ctx context.Context, req *dto.ListUser
 		query = append(query, database.NewQuery("followee_id = ?", id))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -275,7 +275,7 @@ func (u *UserRepository) GetUserFollowings(ctx context.Context, req *dto.ListUse
 		query = append(query, database.NewQuery("follower_id = ?", id))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -371,7 +371,7 @@ func (u *UserRepository) GetInvitations(ctx context.Context, req *dto.ListInvita
 
 	query = append(query, database.NewQuery("invitee_id = ?", inviteeId))
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -408,7 +408,7 @@ func (u *UserRepository) GetNotificationFollowings(ctx context.Context, req *dto
 
 	query = append(query, database.NewQuery("followee_id = ?", followeeId))
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {

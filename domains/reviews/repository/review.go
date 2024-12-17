@@ -7,6 +7,7 @@ import (
 	"gohub/domains/reviews/dto"
 	"gohub/domains/reviews/model"
 	"gohub/pkg/paging"
+	"math"
 )
 
 type IReviewRepository interface {
@@ -58,10 +59,11 @@ func (r *ReviewRepo) ListReview(ctx context.Context, req *dto.ListReviewReq) ([]
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	if req.Content != "" {
-		query = append(query, database.NewQuery("content LIKE ?", "%"+req.Content+"%"))
+	if req.Search != "" {
+		query = append(query, database.NewQuery("content LIKE ?", "%"+req.Search+"%"))
 	}
-	order := "created_at"
+
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -101,13 +103,19 @@ func (r *ReviewRepo) GetReviewByEventID(ctx context.Context, eventId string, req
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	if req.Content != "" {
-		query = append(query, database.NewQuery("event_id = ? AND content LIKE ?", eventId, "%"+req.Content+"%"))
+	if req.Search != "" {
+		query = append(query, database.NewQuery("event_id = ? AND content LIKE ?", eventId, "%"+req.Search+"%"))
 	} else {
 		query = append(query, database.NewQuery("event_id = ?", eventId))
 	}
 
 	order := "created_at DESC"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
+	}
 
 	var total int64
 	if err := r.db.Count(ctx, &model.Review{}, &total, database.WithQuery(query...)); err != nil {
@@ -141,13 +149,13 @@ func (r *ReviewRepo) GetReviewByUserID(ctx context.Context, userID string, req *
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	if req.Content != "" {
-		query = append(query, database.NewQuery("user_id = ? AND content LIKE ?", userID, "%"+req.Content+"%"))
+	if req.Search != "" {
+		query = append(query, database.NewQuery("user_id = ? AND content LIKE ?", userID, "%"+req.Search+"%"))
 	} else {
 		query = append(query, database.NewQuery("user_id = ?", userID))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -181,18 +189,24 @@ func (r *ReviewRepo) GetReviewByUserID(ctx context.Context, userID string, req *
 	return reviews, pagination, nil
 }
 
-func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string, req *dto.ListReviewReq, statistic *dto.StatisticReviewCreatedEvent) ([]*model.Review, *paging.Pagination, error) {
+func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userId string, req *dto.ListReviewReq, statistic *dto.StatisticReviewCreatedEvent) ([]*model.Review, *paging.Pagination, error) {
 	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
 	defer cancel()
 
 	query := make([]database.Query, 0)
-	if req.Content != "" {
-		query = append(query, database.NewQuery("events.user_id = ? AND content LIKE ?", userID, "%"+req.Content+"%"))
-	} else {
-		query = append(query, database.NewQuery("events.user_id = ?", userID))
+	args := make([]interface{}, 0)
+
+	queryString := "events.user_id = ?"
+	args = append(args, userId)
+
+	if req.Search != "" {
+		queryString += " AND content ILIKE ? OR users.user_name ILIKE ? OR users.full_name ILIKE ? OR users.email ILIKE ?"
+		args = append(args, "%"+req.Search+"%", "%"+req.Search+"%", "%"+req.Search+"%", "%"+req.Search+"%")
 	}
 
-	order := "created_at"
+	query = append(query, database.NewQuery(queryString, args...))
+
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -206,12 +220,12 @@ func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string
 		FROM reviews
 		INNER JOIN events ON reviews.event_id = events.id
 		WHERE events.user_id = ?`,
-		userID,
+		userId,
 	).Scan(&avgRate).Error
 	if err != nil {
 		return nil, nil, err
 	}
-	statistic.AverageRate = avgRate
+	statistic.AverageRate = math.Round(avgRate*100) / 100
 
 	var totalPositive float64
 	if err := r.db.GetDB().Raw(
@@ -219,7 +233,7 @@ func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string
 		FROM reviews
 		INNER JOIN events ON reviews.event_id = events.id
 		WHERE events.user_id = ? AND reviews.is_positive = ?`,
-		userID, true,
+		userId, true,
 	).Scan(&totalPositive).Error; err != nil {
 		return nil, nil, err
 	}
@@ -231,7 +245,7 @@ func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string
 		FROM reviews
 		INNER JOIN events ON reviews.event_id = events.id
 		WHERE events.user_id = ? AND reviews.is_positive = ?`,
-		userID, false,
+		userId, false,
 	).Scan(&totalNegative).Error; err != nil {
 		return nil, nil, err
 	}
@@ -244,7 +258,7 @@ func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string
 		INNER JOIN events ON reviews.event_id = events.id
 		WHERE events.user_id = ?
 		GROUP BY reviews.rate ORDER BY reviews.rate ASC`,
-		userID,
+		userId,
 	).Scan(&rateCounts).Error; err != nil {
 		return nil, nil, err
 	}
@@ -256,7 +270,10 @@ func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string
 		ctx,
 		&model.Review{},
 		&total,
-		database.WithJoin("INNER JOIN events ON reviews.event_id = events.id"),
+		database.WithJoin(`
+			INNER JOIN events ON reviews.event_id = events.id
+			INNER JOIN users ON users.id = reviews.user_id
+		`),
 		database.WithQuery(query...),
 	); err != nil {
 		return nil, nil, err
@@ -276,7 +293,10 @@ func (r *ReviewRepo) GetReviewByCreatedEvents(ctx context.Context, userID string
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
 		database.WithOrder(order),
-		database.WithJoin("INNER JOIN events ON reviews.event_id = events.id"),
+		database.WithJoin(`
+			INNER JOIN events ON reviews.event_id = events.id
+			INNER JOIN users ON users.id = reviews.user_id
+		`),
 		database.WithPreload([]string{"User", "Event"}),
 	); err != nil {
 		return nil, nil, err

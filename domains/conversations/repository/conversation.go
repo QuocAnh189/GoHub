@@ -60,7 +60,7 @@ func (c *ConversationRepo) GetConversationByOrganizer(ctx context.Context, organ
 		args = append(args, "%"+req.Search+"%", "%"+req.Search+"%")
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -112,9 +112,6 @@ func (c *ConversationRepo) GetConversationByUser(ctx context.Context, userId str
 	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
 	defer cancel()
 
-	//query := make([]database.Query, 0)
-	//query = append(query, database.NewQuery("user_id = ?", userId))
-
 	query := make([]database.Query, 0)
 	args := make([]interface{}, 0)
 
@@ -128,7 +125,7 @@ func (c *ConversationRepo) GetConversationByUser(ctx context.Context, userId str
 
 	query = append(query, database.NewQuery(queryString, args...))
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -181,8 +178,6 @@ func (c *ConversationRepo) GetMessageByConversation(ctx context.Context, conserv
 	query := make([]database.Query, 0)
 	query = append(query, database.NewQuery("conversation_id = ?", conservationId))
 
-	order := "created_at"
-
 	var total int64
 	if err := c.db.Count(ctx, &model.Message{}, &total, database.WithQuery(query...)); err != nil {
 		return nil, nil, err
@@ -192,6 +187,14 @@ func (c *ConversationRepo) GetMessageByConversation(ctx context.Context, conserv
 
 	if req.TakeAll {
 		pagination.PageSize = total
+	}
+
+	order := "created_at DESC"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
 	}
 
 	var messages []*model.Message

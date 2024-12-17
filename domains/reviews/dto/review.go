@@ -62,7 +62,7 @@ type User struct {
 }
 
 type ListReviewReq struct {
-	Content   string `json:"content,omitempty" form:"content"`
+	Search    string `json:"content,omitempty" form:"search"`
 	Page      int64  `json:"-" form:"page"`
 	Limit     int64  `json:"-" form:"pageSize"`
 	OrderBy   string `json:"-" form:"order_by"`
@@ -119,6 +119,7 @@ type CreateReviewRes struct {
 }
 
 type UpdateReviewReq struct {
+	ID      string  `form:"id" validate:"required"`
 	UserId  string  `form:"userId" validate:"required"`
 	EventId string  `form:"eventId" validate:"required"`
 	Content string  `form:"content" validate:"required"`

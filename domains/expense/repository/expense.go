@@ -50,7 +50,7 @@ func (e *ExpenseRepository) GetExpensesByEventId(ctx context.Context, eventId st
 		query = append(query, database.NewQuery("event_id = ? ", eventId))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {

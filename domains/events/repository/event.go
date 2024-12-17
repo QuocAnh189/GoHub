@@ -140,12 +140,12 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 
 	query = append(query, database.NewQuery(queryString, args...))
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
-	}
-	if req.OrderDesc {
-		order += " DESC"
+		if req.OrderDesc {
+			order += " DESC"
+		}
 	}
 
 	var total int64
@@ -283,6 +283,14 @@ func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *d
 		pagination.PageSize = total
 	}
 
+	order := "events.created_at DESC"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
+	}
+
 	var events []*model.Event
 	if err := e.db.Find(
 		ctx,
@@ -290,7 +298,7 @@ func (e *EventRepo) ListCreatedEvents(ctx context.Context, userId string, req *d
 		database.WithQuery(query...),
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
-		//database.WithOrder(order),
+		database.WithOrder(order),
 		database.WithSelect("events.id, events.name, events.cover_image_url, events.start_time, events.location, events.is_private, events.deleted_at"),
 		database.WithJoin(`
 			INNER JOIN event_categories ON event_categories.event_id = events.id
@@ -351,6 +359,14 @@ func (e *EventRepo) ListCreatedEventsAnalysis(ctx context.Context, userId string
 		pagination.PageSize = total
 	}
 
+	order := "created_at DESC"
+	if req.OrderBy != "" {
+		order = req.OrderBy
+		if req.OrderDesc {
+			order += " DESC"
+		}
+	}
+
 	var events []*model.Event
 	if err := e.db.Find(
 		ctx,
@@ -358,7 +374,7 @@ func (e *EventRepo) ListCreatedEventsAnalysis(ctx context.Context, userId string
 		database.WithQuery(query...),
 		database.WithLimit(int(pagination.PageSize)),
 		database.WithOffset(int(pagination.Skip)),
-		//database.WithOrder(order),
+		database.WithOrder(order),
 		database.WithJoin(`
 			LEFT JOIN event_favourites ON event_favourites.event_id = events.id
 			LEFT JOIN reviews ON reviews.event_id = events.id
@@ -393,7 +409,7 @@ func (e *EventRepo) ListTrashedEvents(ctx context.Context, userId string, req *d
 
 	query = append(query, database.NewQuery(queryString, args...))
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -445,7 +461,7 @@ func (e *EventRepo) ListFavouriteEvents(ctx context.Context, userId string, req 
 
 	query = append(query, database.NewQuery(queryString, args...))
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {

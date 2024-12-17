@@ -21,6 +21,7 @@ import (
 	permissionHttp "gohub/domains/permissions/port/http"
 	reviewHttp "gohub/domains/reviews/port/http"
 	routeHttp "gohub/domains/roles/port/http"
+	statisticHttp "gohub/domains/statistic/port/http"
 	userHttp "gohub/domains/users/port/http"
 
 	"github.com/QuocAnh189/GoBin/logger"
@@ -100,5 +101,6 @@ func (s Server) MapRoutes() error {
 	permissionHttp.Routes(routesV1, s.db, s.validator)
 	couponHttp.Routes(routesV1, s.db, s.validator)
 	expenseHttp.Routes(routesV1, s.db, s.validator)
+	statisticHttp.Routes(routesV1, s.db, s.validator)
 	return nil
 }

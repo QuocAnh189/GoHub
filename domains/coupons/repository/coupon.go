@@ -36,7 +36,7 @@ func (c *CouponRepository) ListCoupons(ctx context.Context, req *dto.ListCouponR
 		query = append(query, database.NewQuery("name LIKE ?", "%"+req.Search+"%"))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
@@ -81,7 +81,7 @@ func (c *CouponRepository) GetCreatedCoupons(ctx context.Context, userId string,
 		query = append(query, database.NewQuery("user_id = ? ", userId))
 	}
 
-	order := "created_at"
+	order := "created_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {
