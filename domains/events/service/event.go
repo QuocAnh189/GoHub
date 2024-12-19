@@ -81,15 +81,15 @@ func (e *EventService) GetEventById(ctx context.Context, id string) (*model.Even
 		return nil, err
 	}
 
-	//var totalRate float32
-	//for _, review := range event.Reviews {
-	//	totalRate += review.Rate
-	//}
-	//if len(event.Reviews) > 0 {
-	//	event.AvgRate = totalRate / float32(len(event.Reviews))
-	//} else {
-	//	event.AvgRate = 0
-	//}
+	var totalRate float32
+	for _, review := range event.Reviews {
+		totalRate += review.Rate
+	}
+	if len(event.Reviews) > 0 {
+		event.AverageRate = totalRate / float32(len(event.Reviews))
+	} else {
+		event.AverageRate = 0
+	}
 
 	return event, nil
 }

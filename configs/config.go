@@ -20,16 +20,21 @@ var AuthIgnoreMethods = []string{
 }
 
 type Config struct {
-	Environment        string `mapstructure:"ENVIRONMENT"`
-	HttpPort           int    `mapstructure:"HTTP_PORT"`
-	GrpcPort           int    `mapstructure:"GRPC_PORT"`
-	AuthSecret         string `mapstructure:"AUTH_SECRET"`
-	DatabaseURI        string `mapstructure:"DATABASE_URI"`
-	RedisURI           string `mapstructure:"REDIS_URI"`
-	RedisPassword      string `mapstructure:"REDIS_PASSWORD"`
-	RedisDB            int    `mapstructure:"REDIS_DB"`
-	GoogleClientID     string `mapstructure:"GOOGLE_CLIENT_ID"`
-	GoogleClientSecret string `mapstructure:"GOOGLE_CLIENT_SECRET"`
+	Environment            string `mapstructure:"ENVIRONMENT"`
+	HttpPort               int    `mapstructure:"HTTP_PORT"`
+	GrpcPort               int    `mapstructure:"GRPC_PORT"`
+	AuthSecret             string `mapstructure:"AUTH_SECRET"`
+	DatabaseURI            string `mapstructure:"DATABASE_URI"`
+	RedisURI               string `mapstructure:"REDIS_URI"`
+	RedisPassword          string `mapstructure:"REDIS_PASSWORD"`
+	RedisDB                int    `mapstructure:"REDIS_DB"`
+	GoogleClientID         string `mapstructure:"GOOGLE_CLIENT_ID"`
+	GoogleClientSecret     string `mapstructure:"GOOGLE_CLIENT_SECRET"`
+	CloudinaryCloudName    string `mapstructure:"CLOUDINARY_CLOUD_NAME"`
+	CloudinaryApiKey       string `mapstructure:"CLOUDINARY_API_KEY"`
+	CloudinaryApiSecret    string `mapstructure:"CLOUDINARY_API_SECRET"`
+	CloudinaryUploadFolder string `mapstructure:"CLOUDINARY_UPLOAD_FOLDER"`
+	UrlCloudinary          string `mapstructure:"URL_CLOUDINARY"`
 }
 
 var (

@@ -7,3 +7,9 @@ type TicketType struct {
 	Sale     int     `json:"sale"`
 	Price    float64 `json:"price"`
 }
+
+type CreateTicketType struct {
+	Name     string  `json:"name"`
+	Quantity int     `json:"quantity"`
+	Price    float64 `json:"price"`
+}

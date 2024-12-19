@@ -5,10 +5,10 @@ import "time"
 type Coupon struct {
 	ID              string    `json:"id"`
 	Name            string    `json:"name"`
+	CoverImageUrl   string    `json:"coverImageUrl"`
 	Description     string    `json:"description"`
 	MinQuantity     int       `json:"minQuantity"`
-	MinValue        float64   `json:"minValue"`
-	PercentageValue float64   `json:"percentValue"`
-	RealValue       float64   `json:"realValue"`
+	MinPrice        float64   `json:"minPrice"`
+	PercentageValue float64   `json:"percentageValue"`
 	ExpireDate      time.Time `json:"expireDate"`
 }

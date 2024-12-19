@@ -46,14 +46,13 @@ type UpdateUserReq struct {
 	ID          string                `form:"id"`
 	Email       string                `form:"email" validate:"required,email"`
 	AvatarUrl   string                `form:"avatarUrl"`
-	NewAvatar   *multipart.FileHeader `form:"newAvatar"`
+	Avatar      *multipart.FileHeader `form:"avatar"`
 	FullName    string                `form:"fullName"`
 	UserName    string                `form:"userName" validate:"required"`
 	PhoneNumber string                `form:"phoneNumber" validate:"required"`
 	Dob         string                `form:"dob"`
 	Gender      string                `form:"gender"`
 	Bio         string                `form:"bio"`
-	Role        []string              `form:"roles"`
 }
 
 type UserList struct {

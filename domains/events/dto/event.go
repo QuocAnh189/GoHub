@@ -2,27 +2,28 @@ package dto
 
 import (
 	"gohub/pkg/paging"
+	"mime/multipart"
 )
 
 type Event struct {
-	ID                 string      `json:"id"`
-	User               *User       `json:"creator"`
-	Name               string      `json:"name"`
-	Description        string      `json:"description"`
-	CoverImageUrl      string      `json:"coverImageUrl"`
-	CoverImageFileName string      `json:"coverImageFileName"`
-	StartTime          string      `json:"startTime"`
-	EndTime            string      `json:"endTime"`
-	Location           string      `json:"location"`
-	PathLocation       string      `json:"pathLocation"`
-	EventCycleType     string      `json:"eventCycleType"`
-	EventPaymentType   string      `json:"eventPaymentType"`
-	IsPrivate          bool        `json:"isPrivate"`
-	SubImage           []*SubImage `json:"subImages"`
-	Categories         []*Category `json:"categories"`
-	Reasons            []*Reason   `json:"reasons"`
-	Coupons            []*Coupon   `json:"coupons"`
-	AvgRate            float32     `json:"avgRate"`
+	ID               string        `json:"id"`
+	User             *User         `json:"creator"`
+	Name             string        `json:"name"`
+	Description      string        `json:"description"`
+	CoverImageUrl    string        `json:"coverImageUrl"`
+	StartTime        string        `json:"startTime"`
+	EndTime          string        `json:"endTime"`
+	Location         string        `json:"location"`
+	PathLocation     string        `json:"pathLocation"`
+	EventCycleType   string        `json:"eventCycleType"`
+	EventPaymentType string        `json:"eventPaymentType"`
+	IsPrivate        bool          `json:"isPrivate"`
+	SubImage         []*SubImage   `json:"subImages"`
+	Categories       []*Category   `json:"categories"`
+	Reasons          []*Reason     `json:"reasons"`
+	TicketTypes      []*TicketType `json:"ticketTypes"`
+	Coupons          []*Coupon     `json:"coupons"`
+	AverageRate      float32       `json:"averageRate"`
 }
 
 type Events struct {
@@ -72,20 +73,20 @@ type EventFavourite struct {
 }
 
 type CreateEventReq struct {
-	UserId             string   `form:"userId"`
-	Name               string   `form:"name"`
-	Description        string   `form:"description"`
-	CoverImageUrl      string   `form:"coverImageUrl"`
-	CoverImageFileName string   `form:"coverImageFileName"`
-	StartTime          string   `form:"startTime"`
-	EndTime            string   `form:"endTime"`
-	Location           string   `form:"location"`
-	PathLocation       string   `form:"pathLocation"`
-	EventCycleType     string   `form:"eventCycleType"`
-	EventPaymentType   string   `form:"eventPaymentType"`
-	IsPrivate          bool     `form:"isPrivate"`
-	CategoryIds        []string `form:"categoryIds"`
-	ReasonItems        []string `form:"reasonItems"`
+	UserId           string                  `form:"userId"`
+	Name             string                  `form:"name"`
+	Description      string                  `form:"description"`
+	CoverImage       *multipart.FileHeader   `form:"coverImage"`
+	SubImageItems    []*multipart.FileHeader `form:"subImageItems"`
+	StartTime        string                  `form:"startTime"`
+	EndTime          string                  `form:"endTime"`
+	Location         string                  `form:"location"`
+	EventCycleType   string                  `form:"eventCycleType"`
+	EventPaymentType string                  `form:"eventPaymentType"`
+	IsPrivate        bool                    `form:"isPrivate"`
+	CategoryIds      []string                `form:"categoryIds"`
+	TicketTypeItems  []*CreateTicketType     `form:"ticketTypeItems"`
+	ReasonItems      []string                `form:"reasonItems"`
 }
 
 type UpdateEventReq struct {

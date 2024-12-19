@@ -7,6 +7,7 @@ import (
 	"gohub/domains/events/dto"
 	"gohub/domains/events/model"
 	"gohub/pkg/paging"
+	"gohub/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -41,6 +42,16 @@ func NewEventRepository(db database.IDatabase) *EventRepo {
 
 func (e *EventRepo) CreateEvent(ctx context.Context, event *model.Event, req *dto.CreateEventReq) error {
 	handler := func() error {
+		if req.CoverImage.Header != nil && req.CoverImage.Filename != "" {
+			uploadUrl, err := utils.ImageUpload(req.CoverImage, "/eventhub/events")
+			if err != nil {
+				return err
+			}
+
+			event.CoverImageFileName = req.CoverImage.Filename
+			event.CoverImageUrl = uploadUrl
+		}
+
 		if err := e.db.Create(ctx, event); err != nil {
 			return err
 		}
@@ -53,11 +64,36 @@ func (e *EventRepo) CreateEvent(ctx context.Context, event *model.Event, req *dt
 			return err
 		}
 
+		var subImages []*model.EventSubImage
+		for _, subImage := range req.SubImageItems {
+			if subImage.Header != nil && subImage.Filename != "" {
+				uploadUrl, err := utils.ImageUpload(subImage, "/eventhub/events")
+				if err != nil {
+					return err
+				}
+
+				subImages = append(subImages, &model.EventSubImage{EventId: event.ID, ImageUrl: uploadUrl, ImageFileName: subImage.Filename})
+			}
+		}
+		if err := e.db.CreateInBatches(ctx, &subImages, len(subImages)); err != nil {
+			return err
+		}
+
 		var reasons []*model.Reason
 		for _, reason := range req.ReasonItems {
 			reasons = append(reasons, &model.Reason{EventId: event.ID, Content: reason})
 		}
 		if err := e.db.CreateInBatches(ctx, &reasons, len(reasons)); err != nil {
+			return err
+		}
+
+		var ticketTypes []*model.TicketType
+		for _, ticketItem := range req.TicketTypeItems {
+			ticketTypes = append(ticketTypes,
+				&model.TicketType{EventId: event.ID, Name: ticketItem.Name, Quantity: ticketItem.Quantity, Price: ticketItem.Price},
+			)
+		}
+		if err := e.db.CreateInBatches(ctx, &ticketTypes, len(ticketTypes)); err != nil {
 			return err
 		}
 

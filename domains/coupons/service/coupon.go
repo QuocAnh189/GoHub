@@ -43,6 +43,16 @@ func (s *CouponService) CreateCoupon(ctx context.Context, req *dto.CreateCouponR
 	var coupon model.Coupon
 	utils.MapStruct(&coupon, req)
 
+	if req.Image.Header != nil && req.Image.Filename != "" {
+		uploadUrl, err := utils.ImageUpload(req.Image, "/eventhub/conpons")
+		if err != nil {
+			return nil, err
+		}
+
+		coupon.CoverImageFileName = req.Image.Filename
+		coupon.CoverImageUrl = uploadUrl
+	}
+
 	err := s.repoCoupon.Create(ctx, &coupon)
 	if err != nil {
 		logger.Errorf("Create fail, error: %s", err)
@@ -103,6 +113,17 @@ func (s *CouponService) UpdateCoupon(ctx context.Context, id string, req *dto.Up
 	}
 
 	utils.MapStruct(coupon, req)
+	if req.Image.Header != nil && req.Image.Filename != "" {
+		logger.Info("vao day")
+		uploadUrl, err := utils.ImageUpload(req.Image, "/eventhub/conpons")
+		if err != nil {
+			return nil, err
+		}
+
+		coupon.CoverImageFileName = req.Image.Filename
+		coupon.CoverImageUrl = uploadUrl
+	}
+
 	err = s.repoCoupon.Update(ctx, coupon)
 	if err != nil {
 		logger.Errorf("Create fail, error: %s", err)

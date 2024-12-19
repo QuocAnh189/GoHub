@@ -146,6 +146,16 @@ func (u *UserService) UpdateUser(ctx context.Context, id string, req *dto.Update
 	utils.MapStruct(&user, req)
 	user.Password = userExists.Password
 
+	if req.Avatar.Header != nil && req.Avatar.Filename != "" {
+		uploadUrl, err := utils.ImageUpload(req.Avatar, "/eventhub/users")
+		if err != nil {
+			return nil, err
+		}
+
+		user.AvatarFileName = req.Avatar.Filename
+		user.AvatarUrl = uploadUrl
+	}
+
 	err = u.userRepo.UpdateUser(ctx, &user)
 	if err != nil {
 		logger.Errorf("Update fail, error: %s", err)

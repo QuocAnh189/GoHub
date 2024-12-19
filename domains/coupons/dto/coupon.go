@@ -1,6 +1,9 @@
 package dto
 
-import "gohub/pkg/paging"
+import (
+	"gohub/pkg/paging"
+	"mime/multipart"
+)
 
 type Coupon struct {
 	ID              string  `json:"id"`
@@ -28,23 +31,24 @@ type ListCouponRes struct {
 }
 
 type CreateCouponReq struct {
-	UserId          string  `form:"userId"`
-	CoverImageUrl   string  `form:"coverImageUrl" validate:"required"`
-	Name            string  `form:"name" validate:"required"`
-	Description     string  `form:"description" validate:"required"`
-	MinQuantity     int     `form:"minQuantity" validate:"required"`
-	MinPrice        int     `form:"minPrice" validate:"required"`
-	PercentageValue float64 `form:"percentageValue" validate:"required"`
-	ExpireDate      string  `form:"expireDate" validate:"required"`
+	UserId          string                `form:"userId"`
+	Image           *multipart.FileHeader `form:"image"`
+	Name            string                `form:"name" validate:"required"`
+	Description     string                `form:"description" validate:"required"`
+	MinQuantity     int                   `form:"minQuantity" validate:"required"`
+	MinPrice        int                   `form:"minPrice" validate:"required"`
+	PercentageValue float64               `form:"percentageValue" validate:"required"`
+	ExpireDate      string                `form:"expireDate" validate:"required"`
 }
 
 type UpdateCouponReq struct {
-	ID              string  `form:"id" validate:"required"`
-	CoverImageUrl   string  `form:"coverImageUrl" validate:"required"`
-	Name            string  `form:"name" validate:"required"`
-	Description     string  `form:"description" validate:"required"`
-	MinQuantity     int     `form:"minQuantity" validate:"required"`
-	MinPrice        int     `form:"minPrice" validate:"required"`
-	PercentageValue float64 `form:"percentageValue" validate:"required"`
-	ExpireDate      string  `form:"expireDate" validate:"required"`
+	ID              string                `form:"id" validate:"required"`
+	CoverImageUrl   string                `form:"coverImageUrl" validate:"required"`
+	Image           *multipart.FileHeader `form:"image"`
+	Name            string                `form:"name" validate:"required"`
+	Description     string                `form:"description" validate:"required"`
+	MinQuantity     int                   `form:"minQuantity" validate:"required"`
+	MinPrice        int                   `form:"minPrice" validate:"required"`
+	PercentageValue float64               `form:"percentageValue" validate:"required"`
+	ExpireDate      string                `form:"expireDate" validate:"required"`
 }
