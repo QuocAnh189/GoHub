@@ -18,10 +18,12 @@ import (
 	eventHttp "gohub/domains/events/port/http"
 	expenseHttp "gohub/domains/expense/port/http"
 	functionHttp "gohub/domains/functions/port/http"
+	paymentHttp "gohub/domains/payments/port/http"
 	permissionHttp "gohub/domains/permissions/port/http"
 	reviewHttp "gohub/domains/reviews/port/http"
 	routeHttp "gohub/domains/roles/port/http"
 	statisticHttp "gohub/domains/statistic/port/http"
+	ticketHttp "gohub/domains/tickets/port/http"
 	userHttp "gohub/domains/users/port/http"
 
 	"github.com/QuocAnh189/GoBin/logger"
@@ -102,5 +104,7 @@ func (s Server) MapRoutes() error {
 	couponHttp.Routes(routesV1, s.db, s.validator)
 	expenseHttp.Routes(routesV1, s.db, s.validator)
 	statisticHttp.Routes(routesV1, s.db, s.validator)
+	ticketHttp.Routes(routesV1, s.db, s.validator)
+	paymentHttp.Routes(routesV1, s.db, s.validator)
 	return nil
 }

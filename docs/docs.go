@@ -1730,44 +1730,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/events/remove-coupons/{eventId}": {
-            "patch": {
-                "description": "Changes the visibility of specified events to public based on the provided event IDs.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Events"
-                ],
-                "summary": "Remove Coupons from event",
-                "responses": {
-                    "200": {
-                        "description": "Events marked as public successfully",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized - User not authenticated",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden - User does not have the required permissions",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error - An error occurred while processing the request",
-                        "schema": {
-                            "$ref": "#/definitions/response.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/events/restore": {
             "patch": {
                 "description": "Restores a list of deleted events based on the provided event IDs.",
@@ -3114,6 +3076,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/tickets/get-created-tickets": {
+            "get": {
+                "description": "Fetches the details of a specific expense based on the provided expense ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Retrieve an tickets by created",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "description": "Fetches a paginated list of users based on the provided filter parameters.",
@@ -3257,6 +3263,156 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "User followed successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/invitation": {
+            "get": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get Invitations",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/notification-following": {
+            "get": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get Notification Following",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/users/notification-order": {
+            "get": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get Notification Order",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }

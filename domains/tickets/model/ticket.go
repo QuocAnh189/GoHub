@@ -25,7 +25,6 @@ type Ticket struct {
 	User          *modelUser.User        `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	PaymentId     string                 `json:"paymentId" gorm:"not null"`
 	Payment       *modelPayment.Payment  `json:"payment" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Status        string                 `json:"status" gorm:"default:'ACTIVE'"`
 	CreatedAt     time.Time              `json:"createdAt" gorm:"autoCreateTime"`
 	UpdatedAt     time.Time              `json:"updatedAt" gorm:"autoUpdateTime"`
 	DeletedAt     gorm.DeletedAt         `json:"deletedAt" gorm:"index"`
