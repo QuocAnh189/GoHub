@@ -42,6 +42,7 @@ func (r *ReviewService) CreateReview(ctx context.Context, req *dto.CreateReviewR
 
 	var review model.Review
 	utils.MapStruct(&review, req)
+	logger.Info(review.IsPositive)
 
 	err := r.repoReview.Create(ctx, &review)
 	if err != nil {

@@ -117,13 +117,14 @@ func (h *EventHandler) GetEvent(c *gin.Context) {
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
 //		@Router		 /api/v1/events/{eventId} [put]
 func (h *EventHandler) UpdateEvent(c *gin.Context) {
-	eventId := c.Param("id")
 	var req dto.UpdateEventReq
 	if err := c.ShouldBind(&req); err != nil {
 		logger.Error("Failed to get body", err)
 		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
 		return
 	}
+
+	eventId := c.Param("id")
 	req.UserId = c.GetString("userId")
 
 	event, err := h.service.UpdateEvent(c, eventId, &req)

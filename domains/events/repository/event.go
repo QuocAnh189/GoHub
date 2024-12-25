@@ -14,7 +14,7 @@ import (
 type IEventRepository interface {
 	GetEventById(ctx context.Context, id string, preload bool) (*model.Event, error)
 	CreateEvent(ctx context.Context, event *model.Event, req *dto.CreateEventReq) error
-	UpdateEvent(ctx context.Context, event *model.Event) error
+	UpdateEvent(ctx context.Context, event *model.Event, req *dto.UpdateEventReq) error
 	ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
 	ListCreatedEvents(ctx context.Context, userId string, req *dto.ListEventReq, statistic *dto.StatisticMyEvent) ([]*model.Event, *paging.Pagination, error)
 	ListCreatedEventsAnalysis(ctx context.Context, userId string, req *dto.ListEventReq) ([]*model.Event, *paging.Pagination, error)
@@ -109,8 +109,85 @@ func (e *EventRepo) CreateEvent(ctx context.Context, event *model.Event, req *dt
 	return nil
 }
 
-func (e *EventRepo) UpdateEvent(ctx context.Context, event *model.Event) error {
-	return e.db.Update(ctx, event)
+func (e *EventRepo) UpdateEvent(ctx context.Context, event *model.Event, req *dto.UpdateEventReq) error {
+	handler := func() error {
+		if req.CoverImage.Header != nil && req.CoverImage.Filename != "" {
+			uploadUrl, err := utils.ImageUpload(req.CoverImage, "/eventhub/events")
+			if err != nil {
+				return err
+			}
+
+			event.CoverImageFileName = req.CoverImage.Filename
+			event.CoverImageUrl = uploadUrl
+		}
+
+		if err := e.db.Update(ctx, event); err != nil {
+			return err
+		}
+
+		if err := e.db.ForceDelete(ctx, model.EventCategory{}, database.WithQuery(database.NewQuery("event_id = ?", req.ID))); err != nil {
+			return err
+		}
+		var eventCategories []*model.EventCategory
+		for _, categoryId := range req.CategoryIds {
+			eventCategories = append(eventCategories, &model.EventCategory{EventId: event.ID, CategoryId: categoryId})
+		}
+		if err := e.db.CreateInBatches(ctx, &eventCategories, len(eventCategories)); err != nil {
+			return err
+		}
+
+		//if err := e.db.ForceDelete(ctx, model.EventSubImage{}, database.WithQuery(database.NewQuery("event_id = ?", req.ID))); err != nil {
+		//	return err
+		//}
+		//var subImages []*model.EventSubImage
+		//for _, subImage := range req.SubImageItems {
+		//	if subImage.Header != nil && subImage.Filename != "" {
+		//		uploadUrl, err := utils.ImageUpload(subImage, "/eventhub/events")
+		//		if err != nil {
+		//			return err
+		//		}
+		//
+		//		subImages = append(subImages, &model.EventSubImage{EventId: event.ID, ImageUrl: uploadUrl, ImageFileName: subImage.Filename})
+		//	}
+		//}
+		//if err := e.db.CreateInBatches(ctx, &subImages, len(subImages)); err != nil {
+		//	return err
+		//}
+
+		if err := e.db.ForceDelete(ctx, model.Reason{}, database.WithQuery(database.NewQuery("event_id = ?", req.ID))); err != nil {
+			return err
+		}
+		var reasons []*model.Reason
+		for _, reason := range req.ReasonItems {
+			reasons = append(reasons, &model.Reason{EventId: event.ID, Content: reason})
+		}
+		if err := e.db.CreateInBatches(ctx, &reasons, len(reasons)); err != nil {
+			return err
+		}
+
+		if err := e.db.ForceDelete(ctx, model.TicketType{}, database.WithQuery(database.NewQuery("event_id = ?", req.ID))); err != nil {
+			return err
+		}
+		var ticketTypes []*model.TicketType
+		for _, ticketItem := range req.TicketTypeItems {
+			ticketTypes = append(ticketTypes,
+				&model.TicketType{EventId: event.ID, Name: ticketItem.Name, Quantity: ticketItem.Quantity, Price: ticketItem.Price},
+			)
+		}
+		if err := e.db.CreateInBatches(ctx, &ticketTypes, len(ticketTypes)); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	err := e.db.WithTransaction(handler)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (e *EventRepo) GetEventById(ctx context.Context, id string, preload bool) (*model.Event, error) {
@@ -421,6 +498,7 @@ func (e *EventRepo) ListCreatedEventsAnalysis(ctx context.Context, userId string
 			COALESCE(AVG(reviews.rate), 0) AS average_rate
     	`),
 		database.WithGroupBy("events.id"),
+		database.WithPreload([]string{"Expenses"}),
 	); err != nil {
 		return nil, nil, err
 	}

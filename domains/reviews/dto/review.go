@@ -104,10 +104,11 @@ type RateCount struct {
 }
 
 type CreateReviewReq struct {
-	UserId  string  `form:"userId" validate:"required"`
-	EventId string  `form:"eventId" validate:"required"`
-	Content string  `form:"content" validate:"required"`
-	Rate    float32 `form:"rate" validate:"required"`
+	UserId     string  `form:"userId" validate:"required"`
+	EventId    string  `form:"eventId" validate:"required"`
+	Content    string  `form:"content" validate:"required"`
+	Rate       float32 `form:"rate" validate:"required"`
+	IsPositive bool    `form:"isPositive"`
 }
 
 type CreateReviewRes struct {

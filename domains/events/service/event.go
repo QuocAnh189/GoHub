@@ -106,7 +106,7 @@ func (e *EventService) UpdateEvent(ctx context.Context, id string, req *dto.Upda
 	}
 
 	utils.MapStruct(event, req)
-	err = e.eventRepo.UpdateEvent(ctx, event)
+	err = e.eventRepo.UpdateEvent(ctx, event, req)
 	if err != nil {
 		logger.Errorf("Update fail, id: %s, error: %s", id, err)
 		return nil, err

@@ -69,8 +69,20 @@ func main() {
 
 	validator := validation.New()
 
-	var httpServer = httpServer.NewServer(validator, db)
-	if err := httpServer.Run(); err != nil {
-		logger.Fatal("HTTP server failed to start", err)
+	//go func() {
+	//	httpSvr := httpServer.NewServer(validator, db)
+	//	if err = httpSvr.Run(); err != nil {
+	//		logger.Fatal(err)
+	//	}
+	//}()
+	//
+	//grpcSvr := grpcServer.NewServer(validator, db)
+	//if err = grpcSvr.Run(); err != nil {
+	//	logger.Fatal(err)
+	//}
+
+	httpSvr := httpServer.NewServer(validator, db)
+	if err = httpSvr.Run(); err != nil {
+		logger.Fatal(err)
 	}
 }

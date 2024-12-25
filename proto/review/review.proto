@@ -1,0 +1,16 @@
+syntax = "proto3";
+package review;
+
+option go_package = "./reviews";
+
+message ReviewRequest {
+  string content = 1;
+}
+
+message PredictResponse {
+  string result = 1;
+}
+
+service Review {
+  rpc sentiment_analysis(ReviewRequest) returns (PredictResponse) {}
+}

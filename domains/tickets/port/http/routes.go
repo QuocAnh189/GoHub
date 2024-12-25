@@ -6,7 +6,7 @@ import (
 	"gohub/database"
 	"gohub/domains/tickets/repository"
 	"gohub/domains/tickets/service"
-	middleware "gohub/pkg/middlewares"
+	middleware "gohub/pkg/middleware"
 )
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {

@@ -54,13 +54,19 @@ type MyEvent struct {
 	Coupons       []*Coupon `json:"coupons"`
 }
 
+type Expense struct {
+	ID    string  `json:"id"`
+	Total float64 `json:"total"`
+}
+
 type MyEventAnalysis struct {
-	ID             string  `json:"id"`
-	Name           string  `json:"name"`
-	CoverImageUrl  string  `json:"coverImageUrl"`
-	AverageRate    float32 `json:"averageRate"`
-	TotalSale      int     `json:"totalSale"`
-	TotalFavourite int     `json:"totalFavourite"`
+	ID             string     `json:"id"`
+	Name           string     `json:"name"`
+	CoverImageUrl  string     `json:"coverImageUrl"`
+	AverageRate    float32    `json:"averageRate"`
+	TotalSale      int        `json:"totalSale"`
+	TotalFavourite int        `json:"totalFavourite"`
+	Expenses       []*Expense `json:"expenses"`
 }
 
 type EventFavourite struct {
@@ -90,21 +96,24 @@ type CreateEventReq struct {
 }
 
 type UpdateEventReq struct {
-	ID                 string   `form:"id"`
-	UserId             string   `form:"userId"`
-	Name               string   `form:"name"`
-	Description        string   `form:"description"`
-	CoverImageUrl      string   `form:"coverImageUrl"`
-	CoverImageFileName string   `form:"coverImageFileName"`
-	StartTime          string   `form:"startTime"`
-	EndTime            string   `form:"endTime"`
-	Location           string   `form:"location"`
-	PathLocation       string   `form:"pathLocation"`
-	EventCycleType     string   `form:"eventCycleType"`
-	EventPaymentType   string   `form:"eventPaymentType"`
-	IsPrivate          bool     `form:"isPrivate"`
-	CategoryIds        []string `form:"categoryIds"`
-	ReasonItems        []string `form:"reasonItems"`
+	ID                 string                `form:"id"`
+	UserId             string                `form:"userId"`
+	Name               string                `form:"name"`
+	Description        string                `form:"description"`
+	CoverImageUrl      string                `form:"coverImageUrl"`
+	CoverImageFileName string                `form:"coverImageFileName"`
+	CoverImage         *multipart.FileHeader `form:"coverImage"`
+	SubImageItems      []interface{}         `form:"subImageItems"`
+	StartTime          string                `form:"startTime"`
+	EndTime            string                `form:"endTime"`
+	Location           string                `form:"location"`
+	PathLocation       string                `form:"pathLocation"`
+	EventCycleType     string                `form:"eventCycleType"`
+	EventPaymentType   string                `form:"eventPaymentType"`
+	IsPrivate          bool                  `form:"isPrivate"`
+	CategoryIds        []string              `form:"categoryIds"`
+	TicketTypeItems    []*CreateTicketType   `form:"ticketTypeItems"`
+	ReasonItems        []string              `form:"reasonItems"`
 }
 
 type ListEventReq struct {

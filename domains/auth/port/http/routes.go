@@ -5,7 +5,7 @@ import (
 	"gohub/domains/auth/service"
 	roleRepository "gohub/domains/roles/repository"
 	"gohub/domains/users/repository"
-	middleware "gohub/pkg/middlewares"
+	middleware "gohub/pkg/middleware"
 
 	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"

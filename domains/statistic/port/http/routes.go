@@ -6,7 +6,7 @@ import (
 	"gohub/database"
 	"gohub/domains/statistic/repository"
 	"gohub/domains/statistic/service"
-	middleware "gohub/pkg/middlewares"
+	middleware "gohub/pkg/middleware"
 )
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {
@@ -23,7 +23,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 		statisticRoute.GET("/customer-segmentation-age", statisticHandler.CustomerSegmentationRate)
 		statisticRoute.GET("/event-total-statistic", statisticHandler.EventTotalStatistic)
 		statisticRoute.GET("/event-period-revenue", statisticHandler.EventPeriodRevenue)
-		statisticRoute.GET("/event-review-by-customer", statisticHandler.EventRevenueByCustomer)
+		statisticRoute.GET("/event-reviews-by-customer", statisticHandler.EventRevenueByCustomer)
 		statisticRoute.GET("/overview-total-statistic", statisticHandler.OverviewTotalStatistic)
 		statisticRoute.GET("/overview-sale-statistic", statisticHandler.OverviewSaleStatistic)
 	}

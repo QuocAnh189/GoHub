@@ -4,7 +4,7 @@ import (
 	"gohub/database"
 	"gohub/domains/reviews/repository"
 	"gohub/domains/reviews/service"
-	middleware "gohub/pkg/middlewares"
+	middleware "gohub/pkg/middleware"
 
 	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"

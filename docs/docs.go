@@ -2692,14 +2692,14 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Creates a new review based on the provided details.",
+                "description": "Creates a new reviews based on the provided details.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Create a new review",
+                "summary": "Create a new reviews",
                 "responses": {
                     "201": {
                         "description": "Review created successfully",
@@ -2850,17 +2850,17 @@ const docTemplate = `{
         },
         "/api/v1/reviews/{reviewId}": {
             "get": {
-                "description": "Fetches the details of a specific review based on the provided review ID.",
+                "description": "Fetches the details of a specific reviews based on the provided review ID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Retrieve a reviews by its ID",
+                "summary": "Retrieve a review by its ID",
                 "responses": {
                     "200": {
-                        "description": "Successfully retrieved the review",
+                        "description": "Successfully retrieved the reviews",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -2892,14 +2892,14 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Deletes the review with the specified ID.",
+                "description": "Deletes the reviews with the specified ID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Delete a review",
+                "summary": "Delete a reviews",
                 "responses": {
                     "200": {
                         "description": "Review deleted successfully",
@@ -2934,17 +2934,17 @@ const docTemplate = `{
                 }
             },
             "patch": {
-                "description": "Updates the details of an existing review based on the provided review ID and update information.",
+                "description": "Updates the details of an existing reviews based on the provided pb_reviews ID and update information.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Update an existing review",
+                "summary": "Update an existing reviews",
                 "responses": {
                     "200": {
-                        "description": "Successfully retrieved the review",
+                        "description": "Successfully retrieved the reviews",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
