@@ -27,6 +27,8 @@ type IUserRepository interface {
 	UnFollowerUser(ctx context.Context, userFollower *model.UserFollower) error
 	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
 	GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error)
+	InviteUsers(ctx context.Context, req *dto.InviteUsers, userId string) error
+	CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error)
 	GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, followeeId string) ([]*model.UserFollower, *paging.Pagination, error)
 }
 
@@ -44,7 +46,7 @@ func (u *UserRepository) ListUsers(ctx context.Context, req *dto.ListUserReq) ([
 
 	query := make([]database.Query, 0)
 	if req.Search != "" {
-		query = append(query, database.NewQuery("name LIKE ? OR email LIKE ?", "%"+req.Search+"%", "%"+req.Search+"%"))
+		query = append(query, database.NewQuery("user_name LIKE ? OR email LIKE ?", "%"+req.Search+"%", "%"+req.Search+"%"))
 	}
 
 	order := "created_at DESC"
@@ -400,6 +402,26 @@ func (u *UserRepository) GetInvitations(ctx context.Context, req *dto.ListInvita
 	}
 
 	return invitations, pagination, nil
+}
+
+func (u *UserRepository) InviteUsers(ctx context.Context, req *dto.InviteUsers, userId string) error {
+	var invitations []*modelEvent.Invitation
+	for _, id := range req.UserIds {
+		invitations = append(invitations, &modelEvent.Invitation{InviterId: userId, InviteeId: id, EventId: req.EventId})
+	}
+
+	if err := u.db.CreateInBatches(ctx, &invitations, len(invitations)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *UserRepository) CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error) {
+	query := database.NewQuery("inviter_id = ? AND invitee_id = ?", userId, inviteeId)
+	if err := u.db.FindOne(ctx, &modelEvent.Invitation{}, database.WithQuery(query)); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func (u *UserRepository) GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, followeeId string) ([]*model.UserFollower, *paging.Pagination, error) {

@@ -457,6 +457,60 @@ func (u *UserHandler) GetInvitations(c *gin.Context) {
 	response.JSON(c, http.StatusOK, res)
 }
 
+//		@Summary	 Invitate User
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/invitation [patch]
+func (u *UserHandler) InviteUsers(c *gin.Context) {
+	var req dto.InviteUsers
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+		return
+	}
+
+	userId := c.GetString("userId")
+	if err := u.service.InviteUsers(c, &req, userId); err != nil {
+		logger.Error("Failed to invite users: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")
+		return
+	}
+
+	response.JSON(c, http.StatusOK, "Invite Successfully")
+}
+
+//		@Summary	 Check Follower
+//	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
+//		@Tags		 Users
+//		@Produce	 json
+//		@Success	 200	{object}	response.Response	"true or false"
+//		@Failure	 400	{object}	response.Response	"BadRequest - Invalid input or request data"
+//		@Failure	 401	{object}	response.Response	"Unauthorized - User not authenticated"
+//		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
+//		@Failure	 404	{object}	response.Response	"Not Found - User with the specified ID not found"
+//		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
+//		@Router		 /api/v1/users/check-invitation/{inviteeId} [get]
+func (u *UserHandler) CheckInvitation(c *gin.Context) {
+	inviteeId := c.Param("inviteeId")
+	userId := c.GetString("userId")
+
+	result, err := u.service.CheckInvitation(c, inviteeId, userId)
+	if err != nil {
+		logger.Error("Failed to check follower: ", err)
+		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")
+		return
+	}
+
+	response.JSON(c, http.StatusOK, result)
+}
+
 //		@Summary	 Get Notification Following
 //	 @Description Allows the authenticated user to follow another user by specifying the followed user's ID.
 //		@Tags		 Users

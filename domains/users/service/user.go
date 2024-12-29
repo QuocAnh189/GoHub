@@ -32,6 +32,8 @@ type IUserService interface {
 	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
 	GetProfile(ctx context.Context, id string) (*model.User, *dto.Calculation, error)
 	GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error)
+	CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error)
+	InviteUsers(ctx context.Context, req *dto.InviteUsers, userId string) error
 	GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, inviteeId string) ([]*model.UserFollower, *paging.Pagination, error)
 }
 
@@ -267,6 +269,24 @@ func (u *UserService) GetInvitations(ctx context.Context, req *dto.ListInvitatio
 		return nil, nil, err
 	}
 	return invitations, pagination, nil
+}
+
+func (u *UserService) CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error) {
+	result, err := u.userRepo.CheckInvitation(ctx, inviteeId, userId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+	return result, nil
+}
+
+func (u *UserService) InviteUsers(ctx context.Context, req *dto.InviteUsers, userId string) error {
+	if err := u.userRepo.InviteUsers(ctx, req, userId); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (u *UserService) GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, inviteeId string) ([]*model.UserFollower, *paging.Pagination, error) {

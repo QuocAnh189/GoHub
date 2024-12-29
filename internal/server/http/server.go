@@ -106,5 +106,6 @@ func (s Server) MapRoutes() error {
 	statisticHttp.Routes(routesV1, s.db, s.validator)
 	ticketHttp.Routes(routesV1, s.db, s.validator)
 	paymentHttp.Routes(routesV1, s.db, s.validator)
+
 	return nil
 }

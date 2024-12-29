@@ -23,6 +23,7 @@ type Config struct {
 	Environment            string `mapstructure:"ENVIRONMENT"`
 	HttpPort               int    `mapstructure:"HTTP_PORT"`
 	GrpcPort               int    `mapstructure:"GRPC_PORT"`
+	SocketPort             int    `mapstructure:"SOCKET_PORT"`
 	AuthSecret             string `mapstructure:"AUTH_SECRET"`
 	DatabaseURI            string `mapstructure:"DATABASE_URI"`
 	RedisURI               string `mapstructure:"REDIS_URI"`

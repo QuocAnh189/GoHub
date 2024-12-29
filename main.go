@@ -5,7 +5,10 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
+	socketioServer "gohub/internal/libs/websocket"
 	httpServer "gohub/internal/server/http"
+	"log"
+	"sync"
 
 	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/QuocAnh189/GoBin/validation"
@@ -37,7 +40,6 @@ const (
 
 func main() {
 	cfg := configs.LoadConfig(".")
-
 	logger.Initialize(cfg.Environment)
 
 	db, err := database.NewDatabase(cfg.DatabaseURI)
@@ -45,18 +47,11 @@ func main() {
 		logger.Fatal("Cannot connect to database", err)
 	}
 
-	//err = migrations.AutoMigrate(db)
-	//if err != nil {
-	//	logger.Fatal("Cannot migrate database", err)
-	//}
-
 	store := sessions.NewCookieStore([]byte(key))
 	store.MaxAge(MaxAge)
-
 	store.Options.Path = "/"
 	store.Options.HttpOnly = true
 	store.Options.Secure = IsProd
-
 	gothic.Store = store
 
 	goth.UseProviders(
@@ -69,20 +64,34 @@ func main() {
 
 	validator := validation.New()
 
-	//go func() {
-	//	httpSvr := httpServer.NewServer(validator, db)
-	//	if err = httpSvr.Run(); err != nil {
-	//		logger.Fatal(err)
-	//	}
-	//}()
-	//
-	//grpcSvr := grpcServer.NewServer(validator, db)
-	//if err = grpcSvr.Run(); err != nil {
-	//	logger.Fatal(err)
-	//}
-
+	// Initialize HTTP server
 	httpSvr := httpServer.NewServer(validator, db)
-	if err = httpSvr.Run(); err != nil {
-		logger.Fatal(err)
+
+	// Initialize Socket.IO server
+	socketSvr, err := socketioServer.NewServer()
+	if err != nil {
+		logger.Fatal("Cannot initialize Socket.IO server", err)
 	}
+
+	// Run both servers in separate goroutines
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	// Run HTTP server
+	go func() {
+		defer wg.Done()
+		if err := httpSvr.Run(); err != nil {
+			logger.Fatal("Running HTTP server error:", err)
+		}
+	}()
+
+	// Run Socket.IO server on port 9000
+	go func() {
+		defer wg.Done()
+		if err := socketSvr.Run(cfg.SocketPort); err != nil {
+			log.Fatalf("Socket.IO server error: %v", err)
+		}
+	}()
+
+	wg.Wait()
 }

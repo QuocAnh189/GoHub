@@ -189,7 +189,7 @@ func (c *ConversationRepo) GetMessageByConversation(ctx context.Context, conserv
 		pagination.PageSize = total
 	}
 
-	order := "created_at DESC"
+	order := "updated_at DESC"
 	if req.OrderBy != "" {
 		order = req.OrderBy
 		if req.OrderDesc {

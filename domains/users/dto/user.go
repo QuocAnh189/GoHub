@@ -56,11 +56,12 @@ type UpdateUserReq struct {
 }
 
 type UserList struct {
-	ID        string  `json:"id"`
-	Email     string  `json:"email"`
-	AvatarUrl string  `json:"avatarUrl"`
-	UserName  string  `json:"userName"`
-	Roles     []*Role `json:"roles"`
+	ID           string  `json:"id"`
+	Email        string  `json:"email"`
+	AvatarUrl    string  `json:"avatarUrl"`
+	UserName     string  `json:"userName"`
+	IsInvitation bool    `json:"isInvitation"`
+	Roles        []*Role `json:"roles"`
 }
 
 type Invitations struct {
@@ -122,6 +123,11 @@ type FollowerUserReq struct {
 type ChangePassword struct {
 	Password    string `json:"password" validate:"required,password"`
 	NewPassword string `json:"newPassword" validate:"required,password"`
+}
+
+type InviteUsers struct {
+	UserIds []string `json:"userIds"`
+	EventId string   `json:"eventId"`
 }
 
 type ListInvitationReq struct {
