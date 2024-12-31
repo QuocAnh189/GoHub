@@ -20,5 +20,6 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 	{
 		expenseRoute.GET("/get-transactions", PaymentHandler.GetTransactions)
 		expenseRoute.GET("/get-orders", PaymentHandler.GetOrders)
+		expenseRoute.POST("/checkout", PaymentHandler.Checkout)
 	}
 }

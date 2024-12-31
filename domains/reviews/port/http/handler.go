@@ -263,7 +263,7 @@ func (h *ReviewHandler) DeleteReview(c *gin.Context) {
 }
 
 func Predict(reviewContent string) string {
-	conn, err := grpc.NewClient("localhost:3000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient("localhost:4000", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		//c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("could not connect to server: %v", err)})
 		return ""

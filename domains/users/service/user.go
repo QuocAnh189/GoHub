@@ -21,7 +21,7 @@ import (
 type IUserService interface {
 	CreateUser(ctx context.Context, req *dto.CreateUserReq) (*model.User, error)
 	GetUserById(ctx context.Context, id string) (*model.User, *dto.Calculation, error)
-	GetUsers(ctx context.Context, req *dto.ListUserReq) ([]*model.User, *paging.Pagination, error)
+	GetUsers(ctx context.Context, req *dto.ListUserReq, userId string) ([]*model.User, *paging.Pagination, error)
 	UpdateUser(ctx context.Context, id string, req *dto.UpdateUserReq) (*model.User, error)
 	ChangePassword(ctx context.Context, id string, req *dto.ChangePassword) error
 	GetFollowers(ctx context.Context, req *dto.ListUserReq, id string) ([]*model.User, *paging.Pagination, error)
@@ -32,7 +32,7 @@ type IUserService interface {
 	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
 	GetProfile(ctx context.Context, id string) (*model.User, *dto.Calculation, error)
 	GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error)
-	CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error)
+	CheckInvitation(ctx context.Context, req *dto.CheckInvitationReq, userId string) (bool, error)
 	InviteUsers(ctx context.Context, req *dto.InviteUsers, userId string) error
 	GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, inviteeId string) ([]*model.UserFollower, *paging.Pagination, error)
 }
@@ -110,8 +110,8 @@ func (u *UserService) GetUserById(ctx context.Context, id string) (*model.User, 
 	return user, calculation, nil
 }
 
-func (u *UserService) GetUsers(ctx context.Context, req *dto.ListUserReq) ([]*model.User, *paging.Pagination, error) {
-	users, pagination, err := u.userRepo.ListUsers(ctx, req)
+func (u *UserService) GetUsers(ctx context.Context, req *dto.ListUserReq, userId string) ([]*model.User, *paging.Pagination, error) {
+	users, pagination, err := u.userRepo.ListUsers(ctx, req, userId)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -271,8 +271,8 @@ func (u *UserService) GetInvitations(ctx context.Context, req *dto.ListInvitatio
 	return invitations, pagination, nil
 }
 
-func (u *UserService) CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error) {
-	result, err := u.userRepo.CheckInvitation(ctx, inviteeId, userId)
+func (u *UserService) CheckInvitation(ctx context.Context, req *dto.CheckInvitationReq, userId string) (bool, error) {
+	result, err := u.userRepo.CheckInvitation(ctx, req, userId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil

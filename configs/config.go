@@ -36,6 +36,7 @@ type Config struct {
 	CloudinaryApiSecret    string `mapstructure:"CLOUDINARY_API_SECRET"`
 	CloudinaryUploadFolder string `mapstructure:"CLOUDINARY_UPLOAD_FOLDER"`
 	UrlCloudinary          string `mapstructure:"URL_CLOUDINARY"`
+	StripeSecretKey        string `mapstructure:"STRIPE_SECRET_KEY"`
 }
 
 var (

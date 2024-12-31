@@ -72,3 +72,17 @@ type ListOrderRes struct {
 	Order      []*Order           `json:"items"`
 	Pagination *paging.Pagination `json:"metadata"`
 }
+
+type TicketPurchaseRequest struct {
+	Email       string `json:"email"`
+	TicketItems []struct {
+		Type     *string `json:"type" binding:"required"`
+		Quantity int     `json:"quantity" binding:"required,min=1"`
+		Price    int     `json:"price" binding:"required"`
+	} `json:"line_items" binding:"required"`
+}
+
+type TicketPurchaseResponse struct {
+	SessionID   string `json:"session_id"`
+	CheckoutURL string `json:"checkoutUrl"`
+}

@@ -12,7 +12,7 @@ import (
 )
 
 type IUserRepository interface {
-	ListUsers(ctx context.Context, req *dto.ListUserReq) ([]*model.User, *paging.Pagination, error)
+	ListUsers(ctx context.Context, req *dto.ListUserReq, userId string) ([]*model.User, *paging.Pagination, error)
 	CreateUser(ctx context.Context, user *model.User, userRoles []*model.UserRole) error
 	UpdateUser(ctx context.Context, user *model.User) error
 	GetUserByID(ctx context.Context, id string, preload bool) (*model.User, *dto.Calculation, error)
@@ -28,7 +28,7 @@ type IUserRepository interface {
 	CheckFollower(ctx context.Context, req *dto.FollowerUserReq) (bool, error)
 	GetInvitations(ctx context.Context, req *dto.ListInvitationReq, inviteeId string) ([]*modelEvent.Invitation, *paging.Pagination, error)
 	InviteUsers(ctx context.Context, req *dto.InviteUsers, userId string) error
-	CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error)
+	CheckInvitation(ctx context.Context, req *dto.CheckInvitationReq, userId string) (bool, error)
 	GetNotificationFollowings(ctx context.Context, req *dto.ListNotificationReq, followeeId string) ([]*model.UserFollower, *paging.Pagination, error)
 }
 
@@ -40,14 +40,22 @@ func NewUserRepository(db database.IDatabase) *UserRepository {
 	return &UserRepository{db: db}
 }
 
-func (u *UserRepository) ListUsers(ctx context.Context, req *dto.ListUserReq) ([]*model.User, *paging.Pagination, error) {
+func (u *UserRepository) ListUsers(ctx context.Context, req *dto.ListUserReq, userId string) ([]*model.User, *paging.Pagination, error) {
 	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
 	defer cancel()
 
 	query := make([]database.Query, 0)
+	args := make([]interface{}, 0)
+
+	queryString := "id != ?"
+	args = append(args, userId)
+
 	if req.Search != "" {
-		query = append(query, database.NewQuery("user_name LIKE ? OR email LIKE ?", "%"+req.Search+"%", "%"+req.Search+"%"))
+		queryString += " AND (user_name LIKE ? OR email LIKE ?)"
+		args = append(args, "%"+req.Search+"%", "%"+req.Search+"%")
 	}
+
+	query = append(query, database.NewQuery(queryString, args...))
 
 	order := "created_at DESC"
 	if req.OrderBy != "" {
@@ -416,8 +424,8 @@ func (u *UserRepository) InviteUsers(ctx context.Context, req *dto.InviteUsers, 
 	return nil
 }
 
-func (u *UserRepository) CheckInvitation(ctx context.Context, inviteeId string, userId string) (bool, error) {
-	query := database.NewQuery("inviter_id = ? AND invitee_id = ?", userId, inviteeId)
+func (u *UserRepository) CheckInvitation(ctx context.Context, req *dto.CheckInvitationReq, userId string) (bool, error) {
+	query := database.NewQuery("inviter_id = ? AND invitee_id = ? AND event_id = ?", userId, req.InviteeId, req.EventId)
 	if err := u.db.FindOne(ctx, &modelEvent.Invitation{}, database.WithQuery(query)); err != nil {
 		return false, err
 	}

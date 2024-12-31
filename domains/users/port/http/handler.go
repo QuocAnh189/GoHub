@@ -40,8 +40,10 @@ func (u *UserHandler) GetUsers(c *gin.Context) {
 		return
 	}
 
+	userId := c.GetString("userId")
+
 	var res dto.ListUserRes
-	users, pagination, err := u.service.GetUsers(c, &req)
+	users, pagination, err := u.service.GetUsers(c, &req, userId)
 	if err != nil {
 		logger.Error("Failed to get list products: ", err)
 		response.Error(c, http.StatusInternalServerError, err, "Something went wrong")
@@ -498,10 +500,16 @@ func (u *UserHandler) InviteUsers(c *gin.Context) {
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
 //		@Router		 /api/v1/users/check-invitation/{inviteeId} [get]
 func (u *UserHandler) CheckInvitation(c *gin.Context) {
-	inviteeId := c.Param("inviteeId")
+	var req dto.CheckInvitationReq
+	if err := c.ShouldBind(&req); err != nil {
+		logger.Error("Failed to parse request query: ", err)
+		response.Error(c, http.StatusBadRequest, err, "Invalid parameters")
+		return
+	}
+	//inviteeId := c.Param("inviteeId")
 	userId := c.GetString("userId")
 
-	result, err := u.service.CheckInvitation(c, inviteeId, userId)
+	result, err := u.service.CheckInvitation(c, &req, userId)
 	if err != nil {
 		logger.Error("Failed to check follower: ", err)
 		response.Error(c, http.StatusInternalServerError, err, "Some thing went wrong")

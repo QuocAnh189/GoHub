@@ -62,6 +62,16 @@ func NewServer() (*Server, error) {
 		})
 	})
 
+	server.OnEvent("/", "send_review", func(s socketio.Conn, data map[string]string) {
+		userName := data["user_name"]
+		organizerId := data["organizer_id"]
+		logger.Info("Review Event")
+
+		server.BroadcastToRoom("/", socketConnect[organizerId], "notify_review", map[string]string{
+			"userName": userName,
+		})
+	})
+
 	server.OnEvent("/", "invitation", func(s socketio.Conn, inviteeIds []string) {
 		logger.Info("Invitation")
 

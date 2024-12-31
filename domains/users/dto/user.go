@@ -155,3 +155,8 @@ type ListNotificationFollowingRes struct {
 	Notifications []*NotificationFollowing `json:"items"`
 	Pagination    *paging.Pagination       `json:"metadata"`
 }
+
+type CheckInvitationReq struct {
+	InviteeId string `json:"-" form:"inviteeId"`
+	EventId   string `json:"-" form:"eventId"`
+}
