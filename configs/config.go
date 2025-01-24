@@ -3,8 +3,8 @@ package configs
 import (
 	"time"
 
-	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/spf13/viper"
+	"gohub/internal/libs/logger"
 )
 
 const (

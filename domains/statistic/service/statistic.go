@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/QuocAnh189/GoBin/validation"
 	"gohub/domains/statistic/repository"
+	"gohub/internal/libs/validation"
 )
 
 type IStatisticService interface{}

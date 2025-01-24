@@ -5,7 +5,7 @@ import (
 	"gohub/domains/commands/model"
 	"gohub/domains/commands/repository"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
 
 type ICommandService interface {

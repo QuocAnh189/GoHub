@@ -27,20 +27,21 @@ type Event struct {
 }
 
 type Events struct {
-	ID                 string      `json:"id"`
-	Name               string      `json:"name"`
-	Description        string      `json:"description"`
-	CoverImageUrl      string      `json:"coverImageUrl"`
-	CoverImageFileName string      `json:"coverImageFileName"`
-	StartTime          string      `json:"startTime"`
-	EndTime            string      `json:"endTime"`
-	Location           string      `json:"location"`
-	PathLocation       string      `json:"pathLocation"`
-	EventCycleType     string      `json:"eventCycleType"`
-	EventPaymentType   string      `json:"eventPaymentType"`
-	IsPrivate          bool        `json:"isPrivate"`
-	AverageRate        float32     `json:"averageRate"`
-	Categories         []*Category `json:"categories"`
+	ID                 string        `json:"id"`
+	Name               string        `json:"name"`
+	Description        string        `json:"description"`
+	CoverImageUrl      string        `json:"coverImageUrl"`
+	CoverImageFileName string        `json:"coverImageFileName"`
+	StartTime          string        `json:"startTime"`
+	EndTime            string        `json:"endTime"`
+	Location           string        `json:"location"`
+	PathLocation       string        `json:"pathLocation"`
+	EventCycleType     string        `json:"eventCycleType"`
+	EventPaymentType   string        `json:"eventPaymentType"`
+	IsPrivate          bool          `json:"isPrivate"`
+	AverageRate        float32       `json:"averageRate"`
+	Categories         []*Category   `json:"categories"`
+	TicketTypes        []*TicketType `json:"ticketTypes"`
 }
 
 type MyEvent struct {

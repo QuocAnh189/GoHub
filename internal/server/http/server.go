@@ -26,9 +26,9 @@ import (
 	ticketHttp "gohub/domains/tickets/port/http"
 	userHttp "gohub/domains/users/port/http"
 
-	"github.com/QuocAnh189/GoBin/logger"
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
+	"gohub/internal/libs/logger"
+	"gohub/internal/libs/validation"
 
 	"gohub/configs"
 	"gohub/database"

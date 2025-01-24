@@ -3,15 +3,15 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/categories/dto"
 	"gohub/domains/categories/model"
 	"gohub/domains/categories/repository"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/messages"
 	"gohub/pkg/paging"
 	"gohub/pkg/utils"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
 
 type ICategoryService interface {

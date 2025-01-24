@@ -10,8 +10,8 @@ import (
 	"log"
 	"sync"
 
-	"github.com/QuocAnh189/GoBin/logger"
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/logger"
+	"gohub/internal/libs/validation"
 
 	"gohub/configs"
 	"gohub/database"

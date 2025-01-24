@@ -4,8 +4,9 @@ import (
 	"context"
 	"gohub/domains/roles/repository"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
+
 type IRoleService interface {
 	AddFunction(ctx context.Context)
 	RemoveFunction(ctx context.Context)

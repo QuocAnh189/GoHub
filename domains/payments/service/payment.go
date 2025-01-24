@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"github.com/QuocAnh189/GoBin/validation"
 	"gohub/domains/payments/dto"
 	"gohub/domains/payments/model"
 	"gohub/domains/payments/repository"
+	"gohub/internal/libs/validation"
 	"gohub/pkg/paging"
 )
 

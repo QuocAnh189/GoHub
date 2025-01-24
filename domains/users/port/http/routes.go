@@ -7,8 +7,8 @@ import (
 	"gohub/domains/users/service"
 	middleware "gohub/pkg/middleware"
 
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
+	"gohub/internal/libs/validation"
 )
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {

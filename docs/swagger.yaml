@@ -905,7 +905,7 @@ paths:
       summary: Retrieve a coupon by its ID
       tags:
       - Coupons
-    patch:
+    put:
       description: Fetches the details of a specific category based on the provided
         category ID.
       produces:
@@ -1855,6 +1855,99 @@ paths:
       summary: Enable a command for a function
       tags:
       - Functions
+  /api/v1/payments/checkout:
+    post:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Checkout
+      tags:
+      - Payments
+  /api/v1/payments/get-orders:
+    get:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a orders
+      tags:
+      - Payments
+  /api/v1/payments/get-transactions:
+    get:
+      description: Fetches the details of a specific category based on the provided
+        category ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Category created successfully
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - Category with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve a transactions
+      tags:
+      - Payments
   /api/v1/permissions:
     get:
       description: Fetches a list of all permissions associated with the specified
@@ -2038,7 +2131,7 @@ paths:
       summary: Retrieve a review by its ID
       tags:
       - Reviews
-    patch:
+    put:
       description: Updates the details of an existing reviews based on the provided
         pb_reviews ID and update information.
       produces:
@@ -2222,6 +2315,158 @@ paths:
       summary: Remove a function from a role
       tags:
       - Roles
+  /api/v1/statistics/customer-conversion-rate:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the customer conversion rate
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the customer conversion rate
+      tags:
+      - Statistics
+  /api/v1/statistics/customer-retention-rate:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the customer retention rate
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the customer retention rate
+      tags:
+      - Statistics
+  /api/v1/statistics/customer-segmentation-rate:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the customer segmentation rate
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the customer segmentation rate
+      tags:
+      - Statistics
+  /api/v1/statistics/event-period-revenue:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the Event Period Revenue
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the event period revenue
+      tags:
+      - Statistics
+  /api/v1/statistics/event-reviews-by-customer:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the event reviews by customer
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the event reviews by customer
+      tags:
+      - Statistics
+  /api/v1/statistics/event-total-statistic:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the event total statistic
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the event total statistic
+      tags:
+      - Statistics
+  /api/v1/statistics/overview-sale-statistic:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the overview sale statistic
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the overview sale statistic
+      tags:
+      - Statistics
+  /api/v1/statistics/overview-total-statistic:
+    get:
+      description: Fetches a paginated list of reviews based on the provided filter
+        parameters.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved the overview total statistic
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Retrieve the overview total statistic
+      tags:
+      - Statistics
   /api/v1/tickets/get-created-tickets:
     get:
       description: Fetches the details of a specific expense based on the provided
@@ -2514,6 +2759,41 @@ paths:
       summary: Check Follower
       tags:
       - Users
+  /api/v1/users/check-invitation/{inviteeId}:
+    get:
+      description: Allows the authenticated user to follow another user by specifying
+        the followed user's ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true or false
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Check Follower
+      tags:
+      - Users
   /api/v1/users/follow/{followedUserId}:
     patch:
       description: Allows the authenticated user to follow another user by specifying
@@ -2582,6 +2862,40 @@ paths:
           schema:
             $ref: '#/definitions/response.Response'
       summary: Get Invitations
+      tags:
+      - Users
+    patch:
+      description: Allows the authenticated user to follow another user by specifying
+        the followed user's ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true or false
+          schema:
+            $ref: '#/definitions/response.Response'
+        "400":
+          description: BadRequest - Invalid input or request data
+          schema:
+            $ref: '#/definitions/response.Response'
+        "401":
+          description: Unauthorized - User not authenticated
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: Forbidden - User does not have the required permissions
+          schema:
+            $ref: '#/definitions/response.Response'
+        "404":
+          description: Not Found - User with the specified ID not found
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: Internal Server Error - An error occurred while processing
+            the request
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: Invitate User
       tags:
       - Users
   /api/v1/users/notification-following:

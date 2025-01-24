@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gohub/database"
 
-	"github.com/QuocAnh189/GoBin/logger"
+	"gohub/internal/libs/logger"
 
 	categoryModel "gohub/domains/categories/model"
 	commandModel "gohub/domains/commands/model"

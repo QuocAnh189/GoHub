@@ -1,11 +1,11 @@
 package socketio
 
 import (
-	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/googollee/go-socket.io/engineio"
 	"github.com/googollee/go-socket.io/engineio/transport"
 	"github.com/googollee/go-socket.io/engineio/transport/polling"
 	"github.com/googollee/go-socket.io/engineio/transport/websocket"
+	"gohub/internal/libs/logger"
 	"log"
 	"net/http"
 	"time"

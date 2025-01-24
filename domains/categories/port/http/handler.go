@@ -1,9 +1,9 @@
 package http
 
 import (
-	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/categories/dto"
 	"gohub/domains/categories/service"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/messages"
 	"gohub/pkg/response"
 	"gohub/pkg/utils"

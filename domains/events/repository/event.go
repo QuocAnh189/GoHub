@@ -254,11 +254,15 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
 	query = append(query, database.NewQuery(queryString, args...))
 
 	order := "created_at DESC"
-	if req.OrderBy != "" {
-		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
-		}
+	//if req.OrderBy != "" {
+	//	order = req.OrderBy
+	//	if !req.OrderDesc {
+	//		order = " ASC"
+	//	}
+	//}
+
+	if !req.OrderDesc {
+		order = "created_at ASC"
 	}
 
 	var total int64
@@ -306,7 +310,7 @@ func (e *EventRepo) ListEvents(ctx context.Context, req *dto.ListEventReq) ([]*m
     	`),
 		database.WithGroupBy("events.id"),
 		database.WithHaving(havingClause, req.MinRate),
-		database.WithPreload([]string{"Reviews", "Categories"}),
+		database.WithPreload([]string{"Reviews", "Categories", "TicketTypes"}),
 	); err != nil {
 		return nil, nil, err
 	}

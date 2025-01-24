@@ -5,12 +5,12 @@ import (
 	"gohub/domains/commands/repository"
 	"gohub/domains/commands/service"
 
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
+	"gohub/internal/libs/validation"
 )
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {
-    commandRepository := repository.NewCommandRepository(sqlDB)
+	commandRepository := repository.NewCommandRepository(sqlDB)
 	commandService := service.NewCommandService(validator, commandRepository)
 	commandHandler := NewCommandHandler(commandService)
 

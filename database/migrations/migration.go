@@ -2,15 +2,15 @@ package migrations
 
 import (
 	"gohub/database"
-	"gohub/domains/expenses/model"
 
-	"github.com/QuocAnh189/GoBin/logger"
+	"gohub/internal/libs/logger"
 
 	categoryModel "gohub/domains/categories/model"
 	commandModel "gohub/domains/commands/model"
 	conversationModel "gohub/domains/conversations/model"
 	couponModel "gohub/domains/coupons/model"
 	eventModel "gohub/domains/events/model"
+	expenseModel "gohub/domains/expense/model"
 	functionModel "gohub/domains/functions/model"
 	paymentModel "gohub/domains/payments/model"
 	permissionModel "gohub/domains/permissions/model"
@@ -36,8 +36,8 @@ func AutoMigrate(db *database.Database) error {
 		&eventModel.EventSubImage{},
 		&eventModel.Reason{},
 		&eventModel.TicketType{},
-		&model.EventExpense{},
-		&model.SubExpense{},
+		&expenseModel.Expense{},
+		&expenseModel.SubExpense{},
 		&reviewModel.Review{},
 		&couponModel.Coupon{},
 		&ticketModel.Ticket{},

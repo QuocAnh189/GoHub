@@ -4,14 +4,13 @@ import (
 	"context"
 	"gohub/domains/permissions/repository"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
 
 type IPermissionService interface {
 	GetPermissions(ctx context.Context)
 	GetPermissionsByRoles(ctx context.Context, id string)
 	GetPermissionsByUser(ctx context.Context, id string)
-	
 }
 
 type PermissionService struct {
@@ -31,10 +30,9 @@ func (p *PermissionService) GetPermissions(ctx context.Context) {
 }
 
 func (p *PermissionService) GetPermissionsByRoles(ctx context.Context, id string) {
-    panic("unimplemented")
+	panic("unimplemented")
 }
 
 func (p *PermissionService) GetPermissionsByUser(ctx context.Context, id string) {
 	panic("unimplemented")
 }
-

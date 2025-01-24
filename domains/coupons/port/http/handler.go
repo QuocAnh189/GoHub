@@ -1,10 +1,10 @@
 package http
 
 import (
-	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/gin-gonic/gin"
 	"gohub/domains/coupons/dto"
 	"gohub/domains/coupons/service"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/messages"
 	"gohub/pkg/response"
 	"gohub/pkg/utils"
@@ -154,7 +154,7 @@ func (h *CouponHandler) CreateCoupon(c *gin.Context) {
 //		@Failure	 403	{object}	response.Response	"Forbidden - User does not have the required permissions"
 //		@Failure	 404	{object}	response.Response	"Not Found - Category with the specified ID not found"
 //		@Failure	 500	{object}	response.Response	"Internal Server Error - An error occurred while processing the request"
-//		@Router		 /api/v1/coupons/{couponId} [patch]
+//		@Router		 /api/v1/coupons/{couponId} [put]
 func (h *CouponHandler) UpdateCoupon(c *gin.Context) {
 	var req dto.UpdateCouponReq
 	if err := c.ShouldBind(&req); err != nil {

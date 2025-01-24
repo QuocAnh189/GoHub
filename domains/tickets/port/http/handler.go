@@ -1,10 +1,10 @@
 package http
 
 import (
-	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/gin-gonic/gin"
 	"gohub/domains/tickets/dto"
 	"gohub/domains/tickets/service"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/response"
 	"gohub/pkg/utils"
 	"net/http"

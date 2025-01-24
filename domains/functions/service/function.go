@@ -4,7 +4,7 @@ import (
 	"context"
 	"gohub/domains/functions/repository"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
 
 type IFunctionService interface {
@@ -18,19 +18,19 @@ type IFunctionService interface {
 }
 
 type FunctionService struct {
-	validator 	validation.Validation
-	repo 		repository.IFunctionRepository
+	validator validation.Validation
+	repo      repository.IFunctionRepository
 }
 
 func NewFunctionService(validator validation.Validation, repo repository.IFunctionRepository) *FunctionService {
 	return &FunctionService{
 		validator: validator,
-		repo: repo,
+		repo:      repo,
 	}
 }
 
 func (f *FunctionService) CreateFunction(ctx context.Context) {
-    panic("unimplemented")
+	panic("unimplemented")
 }
 
 func (f *FunctionService) GetFunctions(ctx context.Context) {
@@ -46,7 +46,7 @@ func (f *FunctionService) UpdateFunction(ctx context.Context) {
 }
 
 func (f *FunctionService) DeleteFunction(ctx context.Context) {
-    panic("unimplemented")
+	panic("unimplemented")
 }
 
 func (f *FunctionService) EnableCommand(ctx context.Context) {
@@ -54,5 +54,5 @@ func (f *FunctionService) EnableCommand(ctx context.Context) {
 }
 
 func (f *FunctionService) DisableCommand(ctx context.Context) {
-    panic("unimplemented")
+	panic("unimplemented")
 }

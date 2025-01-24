@@ -3,9 +3,9 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/auth/dto"
 	"gohub/domains/auth/service"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/messages"
 	"gohub/pkg/response"
 	"net/http"

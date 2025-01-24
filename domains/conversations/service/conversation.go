@@ -2,14 +2,14 @@ package service
 
 import (
 	"context"
-	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/conversations/dto"
 	"gohub/domains/conversations/model"
 	"gohub/domains/conversations/repository"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/paging"
 	"gohub/pkg/utils"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
 
 type IConversationService interface {

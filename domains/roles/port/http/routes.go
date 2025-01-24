@@ -5,11 +5,11 @@ import (
 	"gohub/domains/roles/repository"
 	"gohub/domains/roles/service"
 
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
+	"gohub/internal/libs/validation"
 )
 
-func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation){
+func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {
 	roleRepository := repository.NewRoleRepository(sqlDB)
 	roleService := service.NewRolService(validator, roleRepository)
 	roleHandler := NewRoleHandler(roleService)

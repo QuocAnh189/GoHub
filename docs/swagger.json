@@ -1191,7 +1191,7 @@
                     }
                 }
             },
-            "delete": {
+            "put": {
                 "description": "Fetches the details of a specific category based on the provided category ID.",
                 "produces": [
                     "application/json"
@@ -1199,7 +1199,7 @@
                 "tags": [
                     "Coupons"
                 ],
-                "summary": "Delete coupon",
+                "summary": "Update coupon",
                 "responses": {
                     "200": {
                         "description": "Category created successfully",
@@ -1233,7 +1233,7 @@
                     }
                 }
             },
-            "patch": {
+            "delete": {
                 "description": "Fetches the details of a specific category based on the provided category ID.",
                 "produces": [
                     "application/json"
@@ -1241,7 +1241,7 @@
                 "tags": [
                     "Coupons"
                 ],
-                "summary": "Update coupon",
+                "summary": "Delete coupon",
                 "responses": {
                     "200": {
                         "description": "Category created successfully",
@@ -2544,6 +2544,138 @@
                 }
             }
         },
+        "/api/v1/payments/checkout": {
+            "post": {
+                "description": "Fetches the details of a specific category based on the provided category ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Checkout",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/get-orders": {
+            "get": {
+                "description": "Fetches the details of a specific category based on the provided category ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Retrieve a orders",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/payments/get-transactions": {
+            "get": {
+                "description": "Fetches the details of a specific category based on the provided category ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Retrieve a transactions",
+                "responses": {
+                    "200": {
+                        "description": "Category created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - Category with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/permissions": {
             "get": {
                 "description": "Fetches a list of all permissions associated with the specified function ID.",
@@ -2883,18 +3015,18 @@
                     }
                 }
             },
-            "delete": {
-                "description": "Deletes the reviews with the specified ID.",
+            "put": {
+                "description": "Updates the details of an existing reviews based on the provided pb_reviews ID and update information.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Delete a reviews",
+                "summary": "Update an existing reviews",
                 "responses": {
                     "200": {
-                        "description": "Review deleted successfully",
+                        "description": "Successfully retrieved the reviews",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -2925,18 +3057,18 @@
                     }
                 }
             },
-            "patch": {
-                "description": "Updates the details of an existing reviews based on the provided pb_reviews ID and update information.",
+            "delete": {
+                "description": "Deletes the reviews with the specified ID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Reviews"
                 ],
-                "summary": "Update an existing reviews",
+                "summary": "Delete a reviews",
                 "responses": {
                     "200": {
-                        "description": "Successfully retrieved the reviews",
+                        "description": "Review deleted successfully",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -3055,6 +3187,214 @@
                     },
                     "404": {
                         "description": "Not Found - Role or function with the specified IDs not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/customer-conversion-rate": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the customer conversion rate",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the customer conversion rate",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/customer-retention-rate": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the customer retention rate",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the customer retention rate",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/customer-segmentation-rate": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the customer segmentation rate",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the customer segmentation rate",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/event-period-revenue": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the event period revenue",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the Event Period Revenue",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/event-reviews-by-customer": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the event reviews by customer",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the event reviews by customer",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/event-total-statistic": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the event total statistic",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the event total statistic",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/overview-sale-statistic": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the overview sale statistic",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the overview sale statistic",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/statistics/overview-total-statistic": {
+            "get": {
+                "description": "Fetches a paginated list of reviews based on the provided filter parameters.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistics"
+                ],
+                "summary": "Retrieve the overview total statistic",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved the overview total statistic",
                         "schema": {
                             "$ref": "#/definitions/response.Response"
                         }
@@ -3242,6 +3582,56 @@
                 }
             }
         },
+        "/api/v1/users/check-invitation/{inviteeId}": {
+            "get": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Check Follower",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/users/follow/{followedUserId}": {
             "patch": {
                 "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
@@ -3302,6 +3692,54 @@
                     "Users"
                 ],
                 "summary": "Get Invitations",
+                "responses": {
+                    "200": {
+                        "description": "true or false",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest - Invalid input or request data",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - User not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User does not have the required permissions",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found - User with the specified ID not found",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error - An error occurred while processing the request",
+                        "schema": {
+                            "$ref": "#/definitions/response.Response"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Allows the authenticated user to follow another user by specifying the followed user's ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Invitate User",
                 "responses": {
                     "200": {
                         "description": "true or false",

@@ -5,8 +5,8 @@ import (
 	"gohub/domains/functions/repository"
 	"gohub/domains/functions/service"
 
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
+	"gohub/internal/libs/validation"
 )
 
 func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.Validation) {

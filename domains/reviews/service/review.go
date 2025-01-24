@@ -2,14 +2,14 @@ package service
 
 import (
 	"context"
-	"github.com/QuocAnh189/GoBin/logger"
 	"gohub/domains/reviews/dto"
 	"gohub/domains/reviews/model"
 	"gohub/domains/reviews/repository"
+	"gohub/internal/libs/logger"
 	"gohub/pkg/paging"
 	"gohub/pkg/utils"
 
-	"github.com/QuocAnh189/GoBin/validation"
+	"gohub/internal/libs/validation"
 )
 
 type IReviewService interface {

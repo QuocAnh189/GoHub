@@ -2,10 +2,10 @@ package grpc
 
 import (
 	"fmt"
-	"github.com/QuocAnh189/GoBin/logger"
-	"github.com/QuocAnh189/GoBin/validation"
 	"gohub/configs"
 	"gohub/database"
+	"gohub/internal/libs/logger"
+	"gohub/internal/libs/validation"
 	middleware "gohub/pkg/middleware"
 	"google.golang.org/grpc"
 	"net"

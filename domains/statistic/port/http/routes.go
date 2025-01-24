@@ -1,11 +1,11 @@
 package http
 
 import (
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
 	"gohub/database"
 	"gohub/domains/statistic/repository"
 	"gohub/domains/statistic/service"
+	"gohub/internal/libs/validation"
 	middleware "gohub/pkg/middleware"
 )
 
@@ -16,7 +16,7 @@ func Routes(r *gin.RouterGroup, sqlDB database.IDatabase, validator validation.V
 
 	authMiddleware := middleware.JWTAuth()
 
-	statisticRoute := r.Group("/statistic").Use(authMiddleware)
+	statisticRoute := r.Group("/statistics").Use(authMiddleware)
 	{
 		statisticRoute.GET("/customer-retention-rate", statisticHandler.CustomerRetentionRate)
 		statisticRoute.GET("/customer-conversion-rate", statisticHandler.CustomerConversionRate)

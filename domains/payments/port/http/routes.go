@@ -1,11 +1,11 @@
 package http
 
 import (
-	"github.com/QuocAnh189/GoBin/validation"
 	"github.com/gin-gonic/gin"
 	"gohub/database"
 	"gohub/domains/payments/repository"
 	"gohub/domains/payments/service"
+	"gohub/internal/libs/validation"
 	middleware "gohub/pkg/middleware"
 )
 

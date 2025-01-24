@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/QuocAnh189/GoBin/logger"
 	"github.com/golang-jwt/jwt"
+	"gohub/internal/libs/logger"
 
 	"gohub/configs"
 	"gohub/pkg/utils"
