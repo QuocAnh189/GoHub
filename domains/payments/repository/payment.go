@@ -179,6 +179,7 @@ func (p *PaymentRepository) Checkout(ctx context.Context, req *dto.TicketCheckou
 			totalQuantity += ticket.Quantity
 		}
 
+		payment.ID = req.PaymentId
 		payment.TicketQuantity = totalQuantity
 		payment.PaymentSessionID = req.SessionId
 		payment.Status = "Success"

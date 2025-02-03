@@ -104,7 +104,7 @@ type UpdateEventReq struct {
 	CoverImageUrl      string                `form:"coverImageUrl"`
 	CoverImageFileName string                `form:"coverImageFileName"`
 	CoverImage         *multipart.FileHeader `form:"coverImage"`
-	SubImageItems      []interface{}         `form:"subImageItems"`
+	SubImageItems      []string              `form:"subImageItems"`
 	StartTime          string                `form:"startTime"`
 	EndTime            string                `form:"endTime"`
 	Location           string                `form:"location"`

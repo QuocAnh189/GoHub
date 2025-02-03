@@ -14,7 +14,7 @@ import (
 type IPaymentService interface {
 	GetTransactions(ctx context.Context, userId string, req *dto.ListTransactionReq) ([]*model.Payment, *paging.Pagination, error)
 	GetOrders(ctx context.Context, userId string, req *dto.ListOrderReq) ([]*model.Payment, *paging.Pagination, error)
-	CreateSession(ctx context.Context, req *dto.TicketCheckoutRequest, stripeKey string) (string, string, error)
+	CreateSession(ctx context.Context, req *dto.TicketCheckoutRequest, stripeKey string) (string, string, string, error)
 	Checkout(ctx context.Context, req *dto.TicketCheckoutRequest) error
 }
 
@@ -48,7 +48,7 @@ func (s *PaymentService) GetOrders(ctx context.Context, userId string, req *dto.
 	return orders, pagination, nil
 }
 
-func (s *PaymentService) CreateSession(ctx context.Context, req *dto.TicketCheckoutRequest, stripeKey string) (string, string, error) {
+func (s *PaymentService) CreateSession(ctx context.Context, req *dto.TicketCheckoutRequest, stripeKey string) (string, string, string, error) {
 	stripe.Key = stripeKey
 
 	var lineItems []*stripe.CheckoutSessionLineItemParams
@@ -77,14 +77,19 @@ func (s *PaymentService) CreateSession(ctx context.Context, req *dto.TicketCheck
 	sessionCheckout, err := session.New(params)
 
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return sessionCheckout.ID, sessionCheckout.URL, nil
+	var paymentIntentID string
+	if sessionCheckout.PaymentIntent != nil {
+		paymentIntentID = sessionCheckout.PaymentIntent.ID
+	}
+
+	return sessionCheckout.ID, sessionCheckout.URL, paymentIntentID, nil
 }
 
 func (s *PaymentService) Checkout(ctx context.Context, req *dto.TicketCheckoutRequest) error {
-	if err := s.repoPayment.Checkout(ctx, req, req.SessionId); err != nil {
+	if err := s.repoPayment.Checkout(ctx, req); err != nil {
 		return err
 	}
 

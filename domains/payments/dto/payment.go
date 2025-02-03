@@ -85,6 +85,7 @@ type TicketCheckoutRequest struct {
 	TotalPrice    float32      `json:"totalPrice"`
 	FinalPrice    float32      `json:"finalPrice"`
 	SessionId     string       `json:"sessionId"`
+	PaymentId     string       `json:"paymentId"`
 }
 
 type TicketItem struct {
@@ -95,8 +96,9 @@ type TicketItem struct {
 }
 
 type TicketCheckoutResponse struct {
-	SessionID  string                `json:"session_id"`
+	SessionID  string                `json:"sessionId"`
 	SessionUrl string                `json:"sessionUrl"`
+	PaymentId  string                `json:"paymentId"`
 	Data       TicketCheckoutRequest `json:"data"`
 }
 

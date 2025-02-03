@@ -105,7 +105,7 @@ func (h *PaymentHandler) CreateSession(c *gin.Context) {
 		return
 	}
 
-	sessionId, sessionUrl, err := h.service.CreateSession(c, &req, cfg.StripeSecretKey)
+	sessionId, sessionUrl, paymentId, err := h.service.CreateSession(c, &req, cfg.StripeSecretKey)
 
 	if err != nil {
 		logger.Error("Failed to checkout: ", err)
@@ -116,6 +116,7 @@ func (h *PaymentHandler) CreateSession(c *gin.Context) {
 	result := dto.TicketCheckoutResponse{
 		SessionID:  sessionId,
 		SessionUrl: sessionUrl,
+		PaymentId:  paymentId,
 		Data:       req,
 	}
 	response.JSON(c, http.StatusOK, result)
