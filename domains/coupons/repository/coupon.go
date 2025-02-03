@@ -82,12 +82,6 @@ func (c *CouponRepository) GetCreatedCoupons(ctx context.Context, userId string,
 	}
 
 	order := "created_at DESC"
-	if req.OrderBy != "" {
-		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
-		}
-	}
 
 	var total int64
 	if err := c.db.Count(ctx, &model.Coupon{}, &total, database.WithQuery(query...)); err != nil {

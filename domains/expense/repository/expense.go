@@ -51,12 +51,6 @@ func (e *ExpenseRepository) GetExpensesByEventId(ctx context.Context, eventId st
 	}
 
 	order := "created_at DESC"
-	if req.OrderBy != "" {
-		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
-		}
-	}
 
 	var total int64
 	if err := e.db.Count(ctx, &model.Expense{}, &total, database.WithQuery(query...)); err != nil {

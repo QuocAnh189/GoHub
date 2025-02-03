@@ -52,6 +52,7 @@ func NewServer() (*Server, error) {
 		return nil
 	})
 
+	// Follow User
 	server.OnEvent("/", "follow", func(s socketio.Conn, data map[string]string) {
 		followerID := data["follower_id"]
 		followeeID := data["followee_id"]
@@ -72,6 +73,7 @@ func NewServer() (*Server, error) {
 		})
 	})
 
+	// Invitation
 	server.OnEvent("/", "invitation", func(s socketio.Conn, inviteeIds []string) {
 		logger.Info("Invitation")
 
@@ -81,6 +83,16 @@ func NewServer() (*Server, error) {
 				"message": "You have a new invitation",
 			})
 		}
+	})
+
+	server.OnEvent("/", "buy_tickets", func(s socketio.Conn, data map[string]string) {
+		userName := data["user_name"]
+		organizerId := data["organizer_id"]
+		logger.Info("Buy Tickets")
+
+		server.BroadcastToRoom("/", socketConnect[organizerId], "notify_buy_tickets", map[string]string{
+			"userName": userName,
+		})
 	})
 
 	// Join Room

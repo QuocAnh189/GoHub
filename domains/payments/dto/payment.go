@@ -73,16 +73,42 @@ type ListOrderRes struct {
 	Pagination *paging.Pagination `json:"metadata"`
 }
 
-type TicketPurchaseRequest struct {
-	Email       string `json:"email"`
-	TicketItems []struct {
-		Type     *string `json:"type" binding:"required"`
-		Quantity int     `json:"quantity" binding:"required,min=1"`
-		Price    int     `json:"price" binding:"required"`
-	} `json:"line_items" binding:"required"`
+type TicketCheckoutRequest struct {
+	EventId       string       `json:"eventId"`
+	UserId        string       `json:"userId"`
+	CouponId      string       `json:"couponId"`
+	CustomerEmail string       `json:"customerEmail"`
+	CustomerName  string       `json:"customerName"`
+	CustomerPhone string       `json:"customerPhone"`
+	TicketItems   []TicketItem `json:"tickets"`
+	DiscountPrice float32      `json:"discountPrice"`
+	TotalPrice    float32      `json:"totalPrice"`
+	FinalPrice    float32      `json:"finalPrice"`
+	SessionId     string       `json:"sessionId"`
 }
 
-type TicketPurchaseResponse struct {
-	SessionID   string `json:"session_id"`
-	CheckoutURL string `json:"checkoutUrl"`
+type TicketItem struct {
+	TicketTypeId string  `json:"ticketTypeId"`
+	Name         string  `json:"name"`
+	Quantity     int     `json:"quantity"`
+	Price        float32 `json:"price"`
+}
+
+type TicketCheckoutResponse struct {
+	SessionID  string                `json:"session_id"`
+	SessionUrl string                `json:"sessionUrl"`
+	Data       TicketCheckoutRequest `json:"data"`
+}
+
+type ConFirmTransactionRequest struct {
+	EventId       string       `json:"eventId"`
+	UserId        string       `json:"userId"`
+	CouponId      string       `json:"couponId"`
+	CustomerEmail string       `json:"customerEmail"`
+	CustomerName  string       `json:"customerName"`
+	CustomerPhone string       `json:"customerPhone"`
+	TicketItems   []TicketItem `json:"tickets"`
+	TotalPrice    float32      `json:"totalPrice"`
+	DiscountPrice float32      `json:"discountPrice"`
+	FinalPrice    float32      `json:"finalPrice"`
 }

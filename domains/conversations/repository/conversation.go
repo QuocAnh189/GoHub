@@ -184,18 +184,13 @@ func (c *ConversationRepo) GetMessageByConversation(ctx context.Context, conserv
 	}
 
 	pagination := paging.NewPagination(req.Page, req.Limit, total)
+	pagination.Skip = total - pagination.PageSize
 
 	if req.TakeAll {
 		pagination.PageSize = total
 	}
 
-	order := "updated_at DESC"
-	if req.OrderBy != "" {
-		order = req.OrderBy
-		if req.OrderDesc {
-			order += " DESC"
-		}
-	}
+	order := "created_at ASC"
 
 	var messages []*model.Message
 	if err := c.db.Find(
@@ -203,7 +198,7 @@ func (c *ConversationRepo) GetMessageByConversation(ctx context.Context, conserv
 		&messages,
 		database.WithQuery(query...),
 		database.WithLimit(int(pagination.PageSize)),
-		database.WithOffset(int(pagination.Skip)),
+		database.WithOffset(int(total-pagination.PageSize)),
 		database.WithOrder(order),
 	); err != nil {
 		return nil, nil, err

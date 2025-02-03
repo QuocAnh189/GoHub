@@ -6,10 +6,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "gohub/docs"
-	"log"
-	"net/http"
-	"time"
-
 	authHttp "gohub/domains/auth/port/http"
 	categoryHttp "gohub/domains/categories/port/http"
 	commandHttp "gohub/domains/commands/port/http"
@@ -25,6 +21,9 @@ import (
 	statisticHttp "gohub/domains/statistic/port/http"
 	ticketHttp "gohub/domains/tickets/port/http"
 	userHttp "gohub/domains/users/port/http"
+	"log"
+	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gohub/internal/libs/logger"
@@ -57,10 +56,12 @@ func (s Server) Run() error {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
+	//s.engine.Use(cors.Default())
+
 	s.engine.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8888", "https://checkout.stripe.com"},
 		AllowMethods:     []string{"GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type", "Authorization", "access-control-allow-origin", "access-control-allow-headers"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "access-control-allow-origin", "access-control-allow-headers"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,

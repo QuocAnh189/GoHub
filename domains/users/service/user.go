@@ -147,6 +147,7 @@ func (u *UserService) UpdateUser(ctx context.Context, id string, req *dto.Update
 	var user model.User
 	utils.MapStruct(&user, req)
 	user.Password = userExists.Password
+	user.AvatarFileName = userExists.AvatarFileName
 
 	if req.Avatar.Header != nil && req.Avatar.Filename != "" {
 		uploadUrl, err := utils.ImageUpload(req.Avatar, "/eventhub/users")

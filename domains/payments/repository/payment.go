@@ -6,12 +6,15 @@ import (
 	"gohub/database"
 	"gohub/domains/payments/dto"
 	"gohub/domains/payments/model"
+	modelTicket "gohub/domains/tickets/model"
 	"gohub/pkg/paging"
+	"gohub/pkg/utils"
 )
 
 type IPaymentRepository interface {
 	GetTransactions(ctx context.Context, userId string, req *dto.ListTransactionReq) ([]*model.Payment, *paging.Pagination, error)
 	GetOrders(ctx context.Context, userId string, req *dto.ListOrderReq) ([]*model.Payment, *paging.Pagination, error)
+	Checkout(ctx context.Context, req *dto.TicketCheckoutRequest) error
 }
 
 type PaymentRepository struct {
@@ -161,4 +164,69 @@ func (p *PaymentRepository) GetOrders(ctx context.Context, userId string, req *d
 	}
 
 	return transactions, pagination, nil
+}
+
+func (p *PaymentRepository) Checkout(ctx context.Context, req *dto.TicketCheckoutRequest) error {
+	ctx, cancel := context.WithTimeout(ctx, configs.DatabaseTimeout)
+	defer cancel()
+
+	handler := func() error {
+		var payment model.Payment
+		utils.MapStruct(&payment, req)
+
+		var totalQuantity int
+		for _, ticket := range req.TicketItems {
+			totalQuantity += ticket.Quantity
+		}
+
+		payment.TicketQuantity = totalQuantity
+		payment.PaymentSessionID = req.SessionId
+		payment.Status = "Success"
+
+		if err := p.db.Create(ctx, &payment); err != nil {
+			return err
+		}
+
+		var paymentLines []*model.PaymentLine
+		var tickets []*modelTicket.Ticket
+		for _, ticket := range req.TicketItems {
+			paymentLines = append(paymentLines, &model.PaymentLine{
+				PaymentID:    payment.ID,
+				EventID:      payment.EventID,
+				TicketTypeID: ticket.TicketTypeId,
+				Quantity:     ticket.Quantity,
+				Price:        ticket.Price,
+			})
+
+			for i := 0; i < ticket.Quantity; i++ {
+				tickets = append(tickets, &modelTicket.Ticket{
+					UserId:        payment.UserId,
+					CustomerName:  payment.CustomerName,
+					CustomerEmail: payment.CustomerEmail,
+					CustomerPhone: payment.CustomerPhone,
+					EventId:       payment.EventID,
+					PaymentId:     payment.ID,
+					TicketTypeId:  ticket.TicketTypeId,
+				})
+			}
+		}
+
+		if err := p.db.CreateInBatches(ctx, &paymentLines, len(paymentLines)); err != nil {
+			return err
+		}
+
+		if err := p.db.CreateInBatches(ctx, &tickets, len(tickets)); err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	err := p.db.WithTransaction(handler)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
