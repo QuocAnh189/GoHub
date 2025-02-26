@@ -3,9 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/gothic"
 	"gohub/domains/auth/dto"
 	roleModel "gohub/domains/roles/model"
 	roleRepository "gohub/domains/roles/repository"
@@ -16,9 +13,12 @@ import (
 	"gohub/pkg/jwt"
 	"gohub/pkg/messages"
 	"gohub/pkg/utils"
+	"net/http"
+
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/gothic"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"net/http"
 )
 
 type IAuthService interface {
@@ -134,7 +134,6 @@ func (a *AuthService) SignIn(ctx context.Context, req *dto.SignInReq) (string, s
 		return "", "", err
 	}
 
-	fmt.Print()
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		return "", "", errors.New(messages.AccountOrPasswordWrong)
 	}

@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/stripe/stripe-go/v81"
+	couponStripe "github.com/stripe/stripe-go/v81/coupon"
 	"gohub/domains/coupons/dto"
 	"gohub/domains/coupons/model"
 	"gohub/domains/coupons/repository"
@@ -12,10 +14,11 @@ import (
 	"gohub/pkg/messages"
 	"gohub/pkg/paging"
 	"gohub/pkg/utils"
+	"log"
 )
 
 type ICouponService interface {
-	CreateCoupon(ctx context.Context, req *dto.CreateCouponReq) (*model.Coupon, error)
+	CreateCoupon(ctx context.Context, req *dto.CreateCouponReq, stripeKey string) (*model.Coupon, error)
 	GetCoupons(ctx context.Context, req *dto.ListCouponReq) ([]*model.Coupon, *paging.Pagination, error)
 	GetCreatedCoupons(ctx context.Context, userId string, req *dto.ListCouponReq) ([]*model.Coupon, *paging.Pagination, error)
 	GetCouponById(ctx context.Context, id string) (*model.Coupon, error)
@@ -35,13 +38,27 @@ func NewCouponService(validator validation.Validation, repoCoupon repository.ICo
 	}
 }
 
-func (s *CouponService) CreateCoupon(ctx context.Context, req *dto.CreateCouponReq) (*model.Coupon, error) {
+func (s *CouponService) CreateCoupon(ctx context.Context, req *dto.CreateCouponReq, stripeKey string) (*model.Coupon, error) {
 	if err := s.validator.ValidateStruct(req); err != nil {
 		return nil, err
 	}
 
 	var coupon model.Coupon
 	utils.MapStruct(&coupon, req)
+
+	stripe.Key = stripeKey
+	params := &stripe.CouponParams{
+		PercentOff: stripe.Float64(req.PercentageValue),
+		Duration:   stripe.String("once"),
+		Name:       stripe.String(req.Name),
+	}
+
+	newCoupon, err := couponStripe.New(params)
+	if err != nil {
+		log.Fatalf("Error creating coupon: %v", err)
+	}
+
+	coupon.CouponId = newCoupon.ID
 
 	if req.Image.Header != nil && req.Image.Filename != "" {
 		uploadUrl, err := utils.ImageUpload(req.Image, "/eventhub/conpons")
@@ -53,7 +70,7 @@ func (s *CouponService) CreateCoupon(ctx context.Context, req *dto.CreateCouponR
 		coupon.CoverImageUrl = uploadUrl
 	}
 
-	err := s.repoCoupon.Create(ctx, &coupon)
+	err = s.repoCoupon.Create(ctx, &coupon)
 	if err != nil {
 		logger.Errorf("Create fail, error: %s", err)
 		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {

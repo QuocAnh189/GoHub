@@ -74,6 +74,14 @@ func (s *PaymentService) CreateSession(ctx context.Context, req *dto.TicketCheck
 		CustomerEmail:      stripe.String(req.CustomerEmail),
 	}
 
+	if req.CouponId != "" {
+		params.Discounts = []*stripe.CheckoutSessionDiscountParams{
+			{
+				Coupon: stripe.String(req.CouponId),
+			},
+		}
+	}
+
 	sessionCheckout, err := session.New(params)
 
 	if err != nil {

@@ -1,8 +1,28 @@
-# Go-Event-Hub
+# Go-EventHub
+
+### Swagger-UI
+
+![iamgedemo](https://res.cloudinary.com/dadvtny30/image/upload/v1740562599/gohub/agwlljseppfpkibf146g.png)
+
+### Tech Stack :
+
+- Restful API
+- GRPC
+- Gin-gonic
+- Gorm
+- Swagger
+- Logging
+- Jwt-Go
+- Gin-gonic
+- Postgres
+- Socket-io
+- Stripe
+
+## Relate Source
+
+- EventHub_FE: https://github.com/QuocAnh189/EventHub
 
 ## Author Contact
-
-### Read the documentation
 
 Contact me with any questions!<br>
 

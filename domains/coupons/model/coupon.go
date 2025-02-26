@@ -11,6 +11,7 @@ import (
 
 type Coupon struct {
 	ID                 string          `json:"id" gorm:"unique;not null;index;primary_key"`
+	CouponId           string          `json:"couponId"`
 	UserId             string          `json:"userId" gorm:"not null"`
 	User               *modelUser.User `json:"user" gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	CoverImageUrl      string          `json:"coverImageUrl" gorm:"not null"`

@@ -4,6 +4,7 @@ import "time"
 
 type Coupon struct {
 	ID              string    `json:"id"`
+	CouponId        string    `json:"couponId"`
 	Name            string    `json:"name"`
 	CoverImageUrl   string    `json:"coverImageUrl"`
 	Description     string    `json:"description"`

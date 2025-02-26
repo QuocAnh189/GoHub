@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"gohub/configs"
 	"gohub/domains/coupons/dto"
 	"gohub/domains/coupons/service"
 	"gohub/internal/libs/logger"
@@ -128,7 +129,9 @@ func (h *CouponHandler) CreateCoupon(c *gin.Context) {
 	}
 	req.UserId = c.GetString("userId")
 
-	coupon, err := h.service.CreateCoupon(c, &req)
+	stripeKey := configs.GetConfig().StripeSecretKey
+
+	coupon, err := h.service.CreateCoupon(c, &req, stripeKey)
 	if err != nil {
 		logger.Error("Failed to create coupon ", err.Error())
 		switch err.Error() {
